@@ -24,9 +24,9 @@ function ProductDetail() {
   }, [id]);
 
   const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('si-LK', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'LKR',
       minimumFractionDigits: 2
     }).format(price);
   };

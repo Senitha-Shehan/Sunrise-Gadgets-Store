@@ -11,6 +11,8 @@ function ProductList() {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [newArrivalsPage, setNewArrivalsPage] = useState(0);
+  const [otherProductsPage, setOtherProductsPage] = useState(0);
 
   const categories = [
     "4K Projectors",
@@ -72,8 +74,62 @@ function ProductList() {
     setFilteredProducts(filtered);
   }, [products, searchTerm, selectedCategory]);
 
+  // Separate new arrivals and other products
+  const newArrivals = filteredProducts.filter(product => product.newArrival);
+  const otherProducts = filteredProducts.filter(product => !product.newArrival);
+
+  // Pagination settings - reduced for testing
+  const productsPerPage = 4; // Reduced from 8 to 4 for testing
+  const newArrivalsPages = Math.ceil(newArrivals.length / productsPerPage);
+  const otherProductsPages = Math.ceil(otherProducts.length / productsPerPage);
+
+  // Get paginated products
+  const getPaginatedProducts = (products, page) => {
+    const start = page * productsPerPage;
+    return products.slice(start, start + productsPerPage);
+  };
+
+  const handleNewArrivalsNext = () => {
+    console.log('Next clicked, current page:', newArrivalsPage, 'total pages:', newArrivalsPages);
+    if (newArrivalsPage < newArrivalsPages - 1) {
+      setNewArrivalsPage(newArrivalsPage + 1);
+    }
+  };
+
+  const handleNewArrivalsPrev = () => {
+    console.log('Prev clicked, current page:', newArrivalsPage);
+    if (newArrivalsPage > 0) {
+      setNewArrivalsPage(newArrivalsPage - 1);
+    }
+  };
+
+  const handleOtherProductsNext = () => {
+    console.log('Other Next clicked, current page:', otherProductsPage, 'total pages:', otherProductsPages);
+    if (otherProductsPage < otherProductsPages - 1) {
+      setOtherProductsPage(otherProductsPage + 1);
+    }
+  };
+
+  const handleOtherProductsPrev = () => {
+    console.log('Other Prev clicked, current page:', otherProductsPage);
+    if (otherProductsPage > 0) {
+      setOtherProductsPage(otherProductsPage - 1);
+    }
+  };
+
   if (loading) return <div className="p-4">Loading...</div>;
   if (error) return <div className="p-4 text-red-500">{error}</div>;
+
+  // Debug info
+  console.log('Debug info:', {
+    totalProducts: filteredProducts.length,
+    newArrivals: newArrivals.length,
+    otherProducts: otherProducts.length,
+    newArrivalsPages,
+    otherProductsPages,
+    newArrivalsPage,
+    otherProductsPage
+  });
 
   return (
     <div>
@@ -101,14 +157,102 @@ function ProductList() {
           )}
         </div>
 
-        {/* Products Grid */}
-        {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filteredProducts.map(product => (
-              <ProductCard key={product._id} product={product} />
-            ))}
+        {/* New Arrivals Section */}
+        {newArrivals.length > 0 && (
+          <div className="mb-12">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center">
+                <h3 className="text-2xl font-bold text-gray-900"> New Arrivals ({newArrivals.length})</h3>
+                <div className="ml-4 flex-1 h-px bg-gray-200 w-32"></div>
+              </div>
+              {/* Always show navigation for testing */}
+              <div className="flex items-center space-x-2">
+                <button 
+                  type="button" 
+                  aria-label="Previous New Arrivals" 
+                  role="button" 
+                  className={`owl-prev p-2 rounded-full border border-gray-300 hover:bg-gray-50 transition-colors ${newArrivalsPage === 0 ? 'disabled opacity-50 cursor-not-allowed' : ''}`}
+                  onClick={handleNewArrivalsPrev}
+                  disabled={newArrivalsPage === 0}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <span className="text-sm text-gray-600">
+                  {newArrivalsPage + 1} / {Math.max(1, newArrivalsPages)}
+                </span>
+                <button 
+                  type="button" 
+                  aria-label="Next New Arrivals" 
+                  role="button" 
+                  className={`owl-next p-2 rounded-full border border-gray-300 hover:bg-gray-50 transition-colors ${newArrivalsPage >= newArrivalsPages - 1 ? 'disabled opacity-50 cursor-not-allowed' : ''}`}
+                  onClick={handleNewArrivalsNext}
+                  disabled={newArrivalsPage >= newArrivalsPages - 1}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {getPaginatedProducts(newArrivals, newArrivalsPage).map(product => (
+                <ProductCard key={product._id} product={product} />
+              ))}
+            </div>
           </div>
-        ) : (
+        )}
+
+        {/* Other Products Section */}
+        {otherProducts.length > 0 && (
+          <div className="mb-12">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center">
+                <h3 className="text-2xl font-bold text-gray-900">Products for You ({otherProducts.length})</h3>
+                <div className="ml-4 flex-1 h-px bg-gray-200 w-32"></div>
+              </div>
+              {/* Always show navigation for testing */}
+              <div className="flex items-center space-x-2">
+                <button 
+                  type="button" 
+                  aria-label="Previous Products" 
+                  role="button" 
+                  className={`owl-prev p-2 rounded-full border border-gray-300 hover:bg-gray-50 transition-colors ${otherProductsPage === 0 ? 'disabled opacity-50 cursor-not-allowed' : ''}`}
+                  onClick={handleOtherProductsPrev}
+                  disabled={otherProductsPage === 0}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <span className="text-sm text-gray-600">
+                  {otherProductsPage + 1} / {Math.max(1, otherProductsPages)}
+                </span>
+                <button 
+                  type="button" 
+                  aria-label="Next Products" 
+                  role="button" 
+                  className={`owl-next p-2 rounded-full border border-gray-300 hover:bg-gray-50 transition-colors ${otherProductsPage >= otherProductsPages - 1 ? 'disabled opacity-50 cursor-not-allowed' : ''}`}
+                  onClick={handleOtherProductsNext}
+                  disabled={otherProductsPage >= otherProductsPages - 1}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {getPaginatedProducts(otherProducts, otherProductsPage).map(product => (
+                <ProductCard key={product._id} product={product} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* No Products Found */}
+        {filteredProducts.length === 0 && (
           <div className="text-center py-12">
             <div className="text-gray-400 text-6xl mb-4">🔍</div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">No products found</h3>
