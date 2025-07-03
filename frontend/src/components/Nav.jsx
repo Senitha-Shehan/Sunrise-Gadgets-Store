@@ -12,7 +12,7 @@ function Nav() {
             <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">SG</span>
             </div>
-            <span className="text-xl font-bold text-gray-900">Sunrise Gadgets</span>
+            <span className="text-xl font-bold text-gray-900">Sunrise Gadgets Store</span>
           </Link>
 
           {/* Mobile menu button */}

@@ -50,16 +50,18 @@ function ProductList() {
     let filtered = products;
 
     // Filter by search term
-    if (searchTerm) {
-      filtered = filtered.filter(product =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.description?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+    if (searchTerm && searchTerm.trim() !== '') {
+      const searchLower = searchTerm.toLowerCase().trim();
+      filtered = filtered.filter(product => {
+        const nameMatch = product.name && product.name.toLowerCase().includes(searchLower);
+        const brandMatch = product.brand && product.brand.toLowerCase().includes(searchLower);
+        const descriptionMatch = product.description && product.description.toLowerCase().includes(searchLower);
+        return nameMatch || brandMatch || descriptionMatch;
+      });
     }
 
     // Filter by category
-    if (selectedCategory) {
+    if (selectedCategory && selectedCategory !== '') {
       filtered = filtered.filter(product => product.category === selectedCategory);
     }
 
@@ -72,6 +74,25 @@ function ProductList() {
     });
 
     setFilteredProducts(filtered);
+    
+    // Reset pagination when search or category changes
+    setNewArrivalsPage(0);
+    setOtherProductsPage(0);
+    
+    // Debug search
+    console.log('Search debug:', {
+      searchTerm,
+      selectedCategory,
+      originalProducts: products.length,
+      filteredProducts: filtered.length,
+      searchResults: searchTerm ? filtered.filter(product => {
+        const searchLower = searchTerm.toLowerCase().trim();
+        const nameMatch = product.name && product.name.toLowerCase().includes(searchLower);
+        const brandMatch = product.brand && product.brand.toLowerCase().includes(searchLower);
+        const descriptionMatch = product.description && product.description.toLowerCase().includes(searchLower);
+        return nameMatch || brandMatch || descriptionMatch;
+      }).length : 0
+    });
   }, [products, searchTerm, selectedCategory]);
 
   // Separate new arrivals and other products

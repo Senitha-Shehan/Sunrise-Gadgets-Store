@@ -47,8 +47,8 @@ function Footer() {
             <div>
               <h4 className="text-lg font-semibold mb-4">Contact</h4>
               <ul className="space-y-2 text-gray-300">
-                <li>📍 123 Business Street, City, State 12345</li>
-                <li>📞 (555) 123-4567</li>
+                <li>📍 No53/A, 6th Ln, Piliyandala 10304</li>
+                <li>📞 071 622 2203</li>
                 <li>✉️ info@sunrisegadgets.com</li>
               </ul>
             </div>
