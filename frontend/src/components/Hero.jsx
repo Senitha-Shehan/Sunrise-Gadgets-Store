@@ -6,7 +6,8 @@ function Hero() {
       <div className="absolute inset-0 bg-black/40" />
       {/* Content */}
       <div className="w-full relative z-10 container mx-auto px-4 py-12 sm:py-16">
-        <div className="text-center">
+        <div className="text-center flex flex-col items-center">
+          
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-4 leading-tight drop-shadow-lg">
             Sunrise Gadgets Store
           </h1>

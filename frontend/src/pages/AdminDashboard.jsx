@@ -70,9 +70,12 @@ function AdminDashboard() {
       <div className="bg-white shadow">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-              <p className="text-gray-600">Manage your products</p>
+            <div className="flex items-center space-x-4">
+              <img src="/logo.jpg" alt="Sunrise Gadgets Store Logo" className="w-12 h-12 rounded-full bg-white object-contain shadow" />
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+                <p className="text-gray-600">Manage your products</p>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
               <button

@@ -9,9 +9,7 @@ function Nav() {
         <div className="flex items-center justify-between flex-wrap">
           {/* Logo/Brand */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">SG</span>
-            </div>
+            <img src="/logo.jpg" alt="Sunrise Gadgets Store Logo" className="w-10 h-10 rounded-full bg-white object-contain shadow" />
             <span className="text-xl font-bold text-gray-900">Sunrise Gadgets Store</span>
           </Link>
 
