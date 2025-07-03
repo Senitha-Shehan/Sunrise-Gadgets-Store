@@ -10,8 +10,8 @@ import Footer from './components/Footer';
 
 function App() {
   return (
-    // Ensure the layout always pushes the footer to the bottom
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    // Ensure the layout always pushes the footer to the bottom and supports safe area
+    <div className="min-h-screen flex flex-col bg-gray-50 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
       <Nav />
       <main className="flex-1">
         <Routes>

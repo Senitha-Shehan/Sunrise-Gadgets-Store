@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import RippleButton from './RippleButton';
 
 const heroImages = [
   '/hero-bg.jpg',
@@ -21,7 +22,7 @@ function Hero() {
   const goNext = () => setCurrent((prev) => (prev + 1) % heroImages.length);
 
   return (
-    <div className="relative text-white min-h-[400px] sm:min-h-[500px] md:min-h-[600px] flex items-center overflow-hidden">
+    <div className="relative text-white min-h-[420px] sm:min-h-[520px] md:min-h-[600px] flex items-center overflow-hidden rounded-b-3xl shadow-lg">
       {/* Slideshow Background */}
       {heroImages.map((img, idx) => (
         <div
@@ -29,42 +30,40 @@ function Hero() {
           className={`absolute inset-0 bg-cover bg-center transition-opacity duration-700 ${idx === current ? 'opacity-100 z-0' : 'opacity-0 z-0'}`}
           style={{ backgroundImage: `url('${img}')` }}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/70" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/80" />
           <div className="absolute inset-0 bg-black/40" />
         </div>
       ))}
       {/* Arrows */}
       <button
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-black/40 hover:bg-black/70 p-2 rounded-full"
+        className="absolute left-2 top-1/2 -translate-y-1/2 z-20 bg-black/50 hover:bg-black/80 p-3 rounded-full shadow-lg"
         onClick={goPrev}
         aria-label="Previous slide"
       >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+        <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
       </button>
       <button
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-black/40 hover:bg-black/70 p-2 rounded-full"
+        className="absolute right-2 top-1/2 -translate-y-1/2 z-20 bg-black/50 hover:bg-black/80 p-3 rounded-full shadow-lg"
         onClick={goNext}
         aria-label="Next slide"
       >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+        <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
       </button>
       {/* Content */}
-      <div className="w-full relative z-10 container mx-auto px-4 py-12 sm:py-16">
-        <div className="text-center flex flex-col items-center">
-          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-4 leading-tight drop-shadow-lg">
-            Sunrise Gadgets Store
-          </h1>
-          <p className="text-lg sm:text-xl md:text-2xl mb-6 sm:mb-8 opacity-90 leading-relaxed drop-shadow">
-            Unbeatable Projector Prices in Sri Lanka Await You! Whether you're looking for high- performance projectors to elevate your entertainment experience.
-          </p>
-          <div className="flex flex-col gap-3 sm:flex-row sm:gap-4 justify-center">
-            <button className="bg-white text-blue-600 px-6 sm:px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors text-base shadow-md">
-              Browse Products
-            </button>
-            <button className="border-2 border-white text-white px-6 sm:px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors text-base shadow-md">
-              Latest Arrivals
-            </button>
-          </div>
+      <div className="w-full relative z-10 container mx-auto px-4 py-16 sm:py-20 flex flex-col items-center justify-center">
+        <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold mb-4 leading-tight drop-shadow-xl text-center tracking-tight">
+          Sunrise Gadgets Store
+        </h1>
+        <p className="text-lg sm:text-2xl md:text-3xl mb-8 opacity-90 leading-relaxed drop-shadow text-center max-w-2xl">
+          Unbeatable Projector Prices in Sri Lanka Await You! Whether you're looking for high-performance projectors to elevate your entertainment experience.
+        </p>
+        <div className="flex flex-col gap-4 sm:flex-row sm:gap-6 justify-center w-full max-w-xs sm:max-w-none">
+          <RippleButton className="bg-blue-600 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-lg hover:bg-blue-700 transition-colors w-full sm:w-auto">
+            Browse Products
+          </RippleButton>
+          <RippleButton className="border-2 border-white text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-lg hover:bg-white hover:text-blue-700 transition-colors w-full sm:w-auto">
+            Latest Arrivals
+          </RippleButton>
         </div>
       </div>
       {/* Dots */}
@@ -72,7 +71,7 @@ function Hero() {
         {heroImages.map((_, idx) => (
           <button
             key={idx}
-            className={`w-3 h-3 rounded-full border-2 ${idx === current ? 'bg-white border-white' : 'bg-transparent border-white/60'}`}
+            className={`w-4 h-4 rounded-full border-2 ${idx === current ? 'bg-white border-white' : 'bg-transparent border-white/60'}`}
             onClick={() => setCurrent(idx)}
             aria-label={`Go to slide ${idx + 1}`}
           />

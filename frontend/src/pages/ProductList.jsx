@@ -4,6 +4,20 @@ import Hero from '../components/Hero';
 import SearchFilter from '../components/SearchFilter';
 import ProductCard from '../components/ProductCard';
 
+function SkeletonCard() {
+  return (
+    <div className="animate-pulse bg-white rounded-3xl shadow-lg border border-gray-100 h-72 flex flex-col">
+      <div className="bg-gray-200 rounded-t-3xl h-32 w-full" />
+      <div className="p-5 flex-1 flex flex-col">
+        <div className="h-5 bg-gray-200 rounded w-2/3 mb-3" />
+        <div className="h-4 bg-gray-200 rounded w-1/2 mb-2" />
+        <div className="h-3 bg-gray-100 rounded w-3/4 mb-4" />
+        <div className="h-6 bg-gray-200 rounded w-1/3 mt-auto" />
+      </div>
+    </div>
+  );
+}
+
 function ProductList() {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -138,7 +152,17 @@ function ProductList() {
     }
   };
 
-  if (loading) return <div className="p-4">Loading...</div>;
+  if (loading) return (
+    <div className="flex flex-col items-center justify-center min-h-[40vh] py-12">
+      <svg className="animate-spin h-12 w-12 text-blue-600 mb-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+      </svg>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8 w-full max-w-6xl px-1 sm:px-0">
+        {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
+      </div>
+    </div>
+  );
   if (error) return <div className="p-4 text-red-500">{error}</div>;
 
   // Debug info
@@ -217,7 +241,7 @@ function ProductList() {
                 </button>
               </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8 px-1 sm:px-0">
               {getPaginatedProducts(newArrivals, newArrivalsPage).map(product => (
                 <ProductCard key={product._id} product={product} />
               ))}
@@ -264,7 +288,7 @@ function ProductList() {
                 </button>
               </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8 px-1 sm:px-0">
               {getPaginatedProducts(otherProducts, otherProductsPage).map(product => (
                 <ProductCard key={product._id} product={product} />
               ))}

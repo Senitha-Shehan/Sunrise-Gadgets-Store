@@ -17,17 +17,17 @@ function ProductCard({ product }) {
   return (
     <Link
       to={`/product/${product._id}`}
-      className="group block h-full"
+      className="group block h-full focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-3xl"
       aria-label={`View details for ${product.name}`}
     >
       <article className={`
-        bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden 
-        hover:shadow-xl hover:border-gray-200 transition-all duration-500 
+        bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden 
+        hover:shadow-2xl hover:border-gray-200 transition-all duration-500 
         transform hover:-translate-y-2 h-full flex flex-col
-        ${product.newArrival ? 'ring-1 ring-emerald-200 shadow-emerald-50' : ''}
+        ${product.newArrival ? 'ring-2 ring-emerald-300 shadow-emerald-100' : ''}
       `}>
         {/* Image Container */}
-        <div className="relative aspect-square overflow-hidden bg-gray-50">
+        <div className="relative aspect-[4/3] overflow-hidden bg-gray-50">
           {product.images && product.images.length > 0 ? (
             <img
               src={`http://localhost:5000${product.images[0].url}`}
@@ -58,17 +58,17 @@ function ProductCard({ product }) {
             {product.newArrival && (
               <span className="
                 bg-gradient-to-r from-emerald-500 to-green-500 text-white 
-                px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg
-                backdrop-blur-sm
-              ">
+                px-4 py-2 rounded-full text-xs font-semibold shadow-lg
+                backdrop-blur-sm"
+              >
                 ✨ New Arrival
               </span>
             )}
             {product.images && product.images.length > 1 && (
               <span className="
-                bg-black/60 backdrop-blur-sm text-white px-2.5 py-1 
-                rounded-full text-xs font-medium
-              ">
+                bg-black/60 backdrop-blur-sm text-white px-3 py-1 
+                rounded-full text-xs font-medium"
+              >
                 +{product.images.length - 1} more
               </span>
             )}
@@ -82,10 +82,10 @@ function ProductCard({ product }) {
         </div>
 
         {/* Product Info */}
-        <div className="p-6 flex-1 flex flex-col">
+        <div className="p-5 sm:p-6 flex-1 flex flex-col">
           {/* Title */}
           <h3 className="
-            text-xl font-bold text-gray-900 mb-3 
+            text-lg sm:text-xl font-bold text-gray-900 mb-2 
             group-hover:text-blue-600 transition-colors duration-300
             line-clamp-2 leading-tight
           ">
@@ -93,7 +93,7 @@ function ProductCard({ product }) {
           </h3>
 
           {/* Brand and Category Tags */}
-          <div className="flex flex-wrap gap-2 mb-4">
+          <div className="flex flex-wrap gap-2 mb-3">
             {product.brand && (
               <span className="
                 bg-blue-50 text-blue-700 px-3 py-1 rounded-full 
@@ -114,15 +114,15 @@ function ProductCard({ product }) {
 
           {/* Description */}
           {product.description && (
-            <p className="text-gray-600 text-sm mb-6 flex-1 leading-relaxed">
-              {truncateDescription(product.description, 120)}
+            <p className="text-gray-600 text-sm mb-5 flex-1 leading-relaxed">
+              {truncateDescription(product.description, 100)}
             </p>
           )}
 
           {/* Price and CTA */}
-          <div className="flex justify-between items-center pt-4 border-t border-gray-50">
+          <div className="flex justify-between items-center pt-4 border-t border-gray-50 mt-auto">
             <div className="flex flex-col">
-              <span className="text-2xl font-bold text-gray-900">
+              <span className="text-xl sm:text-2xl font-bold text-gray-900">
                 {formatPrice(product.price)}
               </span>
               {product.originalPrice && product.originalPrice > product.price && (
@@ -133,12 +133,12 @@ function ProductCard({ product }) {
             </div>
             
             <div className="
-              flex items-center text-blue-600 font-medium text-sm
+              flex items-center text-blue-600 font-medium text-base sm:text-sm
               group-hover:text-blue-700 transition-colors duration-200
             ">
               <span className="mr-2">View Details</span>
               <svg 
-                className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-200" 
+                className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-200" 
                 fill="none" 
                 stroke="currentColor" 
                 viewBox="0 0 24 24"
