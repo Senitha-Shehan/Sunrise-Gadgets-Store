@@ -10,7 +10,8 @@ import Footer from './components/Footer';
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    // Ensure the layout always pushes the footer to the bottom
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <Nav />
       <main className="flex-1">
         <Routes>
