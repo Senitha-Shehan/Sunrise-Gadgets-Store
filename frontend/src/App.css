@@ -1,28 +1,49 @@
+/* Mobile-first approach - base styles for mobile */
 #root {
   width: 100vw;
   min-height: 100vh;
   padding: 0;
+  /* Add mobile-specific improvements */
+  overflow-x: hidden; /* Prevent horizontal scroll on mobile */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }
 
+/* Desktop styles - only add padding on larger screens if needed */
 @media (min-width: 640px) {
   #root {
     padding: 0;
   }
 }
 
+/* Logo optimizations */
 .logo {
-  height: 6em;
-  padding: 1.5em;
+  /* Smaller logo on mobile for better space utilization */
+  height: 4em;
+  padding: 1em;
   will-change: filter;
   transition: filter 300ms;
+  /* Improve touch targets */
+  min-height: 44px;
+  min-width: 44px;
 }
+
+/* Larger logo on desktop */
+@media (min-width: 640px) {
+  .logo {
+    height: 6em;
+    padding: 1.5em;
+  }
+}
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
+/* Reduce animation intensity on mobile to save battery */
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
@@ -32,20 +53,35 @@
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
+/* Only animate on larger screens and when user prefers motion */
+@media (min-width: 640px) and (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
   }
 }
 
+/* Card component - better mobile spacing */
 .card {
-  padding: 2em;
+  padding: 1em; /* Reduced padding on mobile */
+  margin: 0 0.5em; /* Add horizontal margin on mobile */
+}
+
+/* Desktop card spacing */
+@media (min-width: 640px) {
+  .card {
+    padding: 2em;
+    margin: 0;
+  }
 }
 
 .read-the-docs {
   color: #888;
+  /* Improve readability on mobile */
+  font-size: 0.9em;
+  line-height: 1.5;
 }
 
+/* Enhanced ripple effect for better touch feedback */
 .ripple {
   position: absolute;
   border-radius: 50%;
@@ -56,9 +92,63 @@
   z-index: 10;
 }
 
+/* Faster ripple animation on mobile for better touch response */
+@media (max-width: 640px) {
+  .ripple {
+    animation: ripple 400ms ease-out;
+  }
+}
+
 @keyframes ripple {
   to {
     transform: scale(2.5);
     opacity: 0;
+  }
+}
+
+/* Additional mobile optimizations */
+
+/* Improve touch targets */
+button, a, input, textarea {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Better typography for mobile */
+@media (max-width: 640px) {
+  body {
+    font-size: 16px; /* Prevent zoom on iOS */
+    line-height: 1.5;
+  }
+  
+  h1, h2, h3 {
+    line-height: 1.2;
+  }
+}
+
+/* Optimize for mobile viewport */
+@media (max-width: 640px) {
+  * {
+    box-sizing: border-box;
+  }
+  
+  /* Prevent horizontal overflow */
+  img, video, iframe {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Better mobile spacing */
+  .container {
+    padding: 0 1rem;
+  }
+}
+
+/* High DPI display optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .logo {
+    /* Sharper graphics on high-DPI screens */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
   }
 }
