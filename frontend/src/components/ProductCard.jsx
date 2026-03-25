@@ -1,154 +1,219 @@
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 function ProductCard({ product }) {
+  const [hovered, setHovered] = useState(false);
+  const [imgError, setImgError] = useState(false);
+
   const formatPrice = (price) => {
     return new Intl.NumberFormat('si-LK', {
       style: 'currency',
       currency: 'LKR',
-      minimumFractionDigits: 2
+      minimumFractionDigits: 2,
     }).format(price);
   };
 
-  const truncateDescription = (text, maxLength = 100) => {
+  const truncate = (text, max = 90) => {
     if (!text) return '';
-    return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
+    return text.length > max ? `${text.substring(0, max)}...` : text;
   };
 
   return (
     <Link
       to={`/product/${product._id}`}
-      className="group block h-full focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-3xl"
-      aria-label={`View details for ${product.name}`}
+      style={{ textDecoration: 'none', display: 'block', height: '100%' }}
+      aria-label={`View ${product.name}`}
     >
-      <article className={`
-        bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden 
-        hover:shadow-2xl hover:border-gray-200 transition-all duration-500 
-        transform hover:-translate-y-2 h-full flex flex-col
-        ${product.newArrival ? 'ring-2 ring-emerald-300 shadow-emerald-100' : ''}
-      `}>
-        {/* Image Container */}
-        <div className="relative aspect-[4/3] overflow-hidden bg-gray-50">
-          {product.images && product.images.length > 0 ? (
+      <article
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        style={{
+          background: 'white',
+          borderRadius: '20px',
+          border: hovered ? '1.5px solid rgba(249,115,22,0.25)' : '1.5px solid rgba(226,232,240,0.8)',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          boxShadow: hovered
+            ? '0 20px 48px rgba(0,0,0,0.12), 0 4px 12px rgba(249,115,22,0.08)'
+            : '0 4px 16px rgba(0,0,0,0.06)',
+          transform: hovered ? 'translateY(-6px)' : 'translateY(0)',
+          transition: 'all 0.35s cubic-bezier(0.4,0,0.2,1)',
+          cursor: 'pointer',
+          position: 'relative',
+        }}
+      >
+        {/* Image */}
+        <div style={{
+          position: 'relative',
+          aspectRatio: '4/3',
+          overflow: 'hidden',
+          background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)',
+          flexShrink: 0,
+        }}>
+          {product.images && product.images.length > 0 && !imgError ? (
             <img
               src={`http://localhost:5000${product.images[0].url}`}
               alt={product.name}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                transform: hovered ? 'scale(1.07)' : 'scale(1)',
+                transition: 'transform 0.6s cubic-bezier(0.4,0,0.2,1)',
+              }}
               loading="lazy"
+              onError={() => setImgError(true)}
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gray-100">
-              <svg 
-                className="w-16 h-16 text-gray-400" 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={1.5} 
-                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
+            <div style={{
+              width: '100%',
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#94a3b8',
+              fontSize: '3rem',
+            }}>
+              📦
             </div>
           )}
-          
-          {/* Overlay Badges */}
-          <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
+
+          {/* Gradient overlay on hover */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(0deg, rgba(0,0,0,0.25) 0%, transparent 50%)',
+            opacity: hovered ? 1 : 0,
+            transition: 'opacity 0.3s ease',
+          }} />
+
+          {/* Badges */}
+          <div style={{ position: 'absolute', top: '12px', left: '12px', right: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             {product.newArrival && (
-              <span className="
-                bg-gradient-to-r from-emerald-500 to-green-500 text-white 
-                px-4 py-2 rounded-full text-xs font-semibold shadow-lg
-                backdrop-blur-sm"
-              >
+              <span className="badge badge-new" style={{ fontSize: '0.7rem' }}>
                 ✨ New Arrival
               </span>
             )}
             {product.images && product.images.length > 1 && (
-              <span className="
-                bg-black/60 backdrop-blur-sm text-white px-3 py-1 
-                rounded-full text-xs font-medium"
-              >
-                +{product.images.length - 1} more
+              <span style={{
+                marginLeft: 'auto',
+                background: 'rgba(0,0,0,0.55)',
+                backdropFilter: 'blur(4px)',
+                color: 'white',
+                fontSize: '0.7rem',
+                fontWeight: 600,
+                padding: '3px 8px',
+                borderRadius: '999px',
+              }}>
+                +{product.images.length - 1}
               </span>
             )}
           </div>
-
-          {/* Hover Overlay */}
-          <div className="
-            absolute inset-0 bg-black/0 group-hover:bg-black/5 
-            transition-all duration-300 pointer-events-none
-          " />
         </div>
 
-        {/* Product Info */}
-        <div className="p-5 sm:p-6 flex-1 flex flex-col">
-          {/* Title */}
-          <h3 className="
-            text-lg sm:text-xl font-bold text-gray-900 mb-2 
-            group-hover:text-blue-600 transition-colors duration-300
-            line-clamp-2 leading-tight
-          ">
-            {product.name}
-          </h3>
-
-          {/* Brand and Category Tags */}
-          <div className="flex flex-wrap gap-2 mb-3">
+        {/* Content */}
+        <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+          {/* Tags */}
+          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '10px' }}>
             {product.brand && (
-              <span className="
-                bg-blue-50 text-blue-700 px-3 py-1 rounded-full 
-                text-xs font-medium border border-blue-100
-              ">
+              <span style={{
+                background: 'rgba(249,115,22,0.08)',
+                color: 'var(--brand-600)',
+                border: '1px solid rgba(249,115,22,0.2)',
+                padding: '2px 10px',
+                borderRadius: '999px',
+                fontSize: '0.7rem',
+                fontWeight: 600,
+                letterSpacing: '0.02em',
+              }}>
                 {product.brand}
               </span>
             )}
             {product.category && (
-              <span className="
-                bg-gray-50 text-gray-700 px-3 py-1 rounded-full 
-                text-xs font-medium border border-gray-100
-              ">
+              <span style={{
+                background: 'var(--surface-50)',
+                color: '#64748b',
+                border: '1px solid var(--surface-200)',
+                padding: '2px 10px',
+                borderRadius: '999px',
+                fontSize: '0.7rem',
+                fontWeight: 500,
+              }}>
                 {product.category}
               </span>
             )}
           </div>
 
+          {/* Name */}
+          <h3 style={{
+            fontFamily: 'var(--font-display)',
+            fontWeight: 700,
+            fontSize: '1rem',
+            color: hovered ? 'var(--brand-600)' : 'var(--surface-900)',
+            lineHeight: 1.35,
+            marginBottom: '8px',
+            transition: 'color 0.2s',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+          }}>
+            {product.name}
+          </h3>
+
           {/* Description */}
           {product.description && (
-            <p className="text-gray-600 text-sm mb-5 flex-1 leading-relaxed">
-              {truncateDescription(product.description, 100)}
+            <p style={{
+              color: '#64748b',
+              fontSize: '0.8rem',
+              lineHeight: 1.6,
+              flex: 1,
+              marginBottom: '16px',
+            }}>
+              {truncate(product.description)}
             </p>
           )}
 
-          {/* Price and CTA */}
-          <div className="flex justify-between items-center pt-4 border-t border-gray-50 mt-auto">
-            <div className="flex flex-col">
-              <span className="text-xl sm:text-2xl font-bold text-gray-900">
+          {/* Price + CTA */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingTop: '14px',
+            borderTop: '1px solid var(--surface-100)',
+            marginTop: 'auto',
+          }}>
+            <div>
+              <div style={{
+                fontFamily: 'var(--font-display)',
+                fontWeight: 800,
+                fontSize: '1.1rem',
+                color: 'var(--surface-900)',
+                letterSpacing: '-0.02em',
+              }}>
                 {formatPrice(product.price)}
-              </span>
+              </div>
               {product.originalPrice && product.originalPrice > product.price && (
-                <span className="text-sm text-gray-400 line-through">
+                <div style={{ fontSize: '0.75rem', color: '#94a3b8', textDecoration: 'line-through' }}>
                   {formatPrice(product.originalPrice)}
-                </span>
+                </div>
               )}
             </div>
-            
-            <div className="
-              flex items-center text-blue-600 font-medium text-base sm:text-sm
-              group-hover:text-blue-700 transition-colors duration-200
-            ">
-              <span className="mr-2">View Details</span>
-              <svg 
-                className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-200" 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M9 5l7 7-7 7"
-                />
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              color: 'var(--brand-500)',
+              fontWeight: 600,
+              fontSize: '0.8rem',
+              transition: 'gap 0.2s, color 0.2s',
+            }}>
+              <span>View</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                style={{ transform: hovered ? 'translateX(3px)' : 'translateX(0)', transition: 'transform 0.2s' }}>
+                <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
             </div>
           </div>

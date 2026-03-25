@@ -1,37 +1,47 @@
 import { useRef } from 'react';
 
-function RippleButton({ children, className = '', onClick, ...props }) {
+function RippleButton({ children, onClick, style = {}, className = '', disabled = false, type = 'button' }) {
   const btnRef = useRef(null);
 
-  const createRipple = (event) => {
-    const button = btnRef.current;
-    const circle = document.createElement('span');
-    const diameter = Math.max(button.clientWidth, button.clientHeight);
-    const radius = diameter / 2;
-    circle.style.width = circle.style.height = `${diameter}px`;
-    circle.style.left = `${event.clientX - button.getBoundingClientRect().left - radius}px`;
-    circle.style.top = `${event.clientY - button.getBoundingClientRect().top - radius}px`;
-    circle.classList.add('ripple');
-    const ripple = button.getElementsByClassName('ripple')[0];
-    if (ripple) {
-      ripple.remove();
-    }
-    button.appendChild(circle);
+  const handleClick = (e) => {
+    const btn = btnRef.current;
+    if (!btn) return;
+
+    const rect = btn.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height) * 2;
+    const x = e.clientX - rect.left - size / 2;
+    const y = e.clientY - rect.top - size / 2;
+
+    const ripple = document.createElement('span');
+    ripple.className = 'ripple';
+    ripple.style.cssText = `
+      width: ${size}px;
+      height: ${size}px;
+      left: ${x}px;
+      top: ${y}px;
+    `;
+    btn.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 650);
+
+    if (onClick) onClick(e);
   };
 
   return (
     <button
       ref={btnRef}
-      className={`relative overflow-hidden ${className}`}
-      onClick={(e) => {
-        createRipple(e);
-        if (onClick) onClick(e);
+      type={type}
+      onClick={handleClick}
+      disabled={disabled}
+      className={className}
+      style={{
+        position: 'relative',
+        overflow: 'hidden',
+        ...style,
       }}
-      {...props}
     >
       {children}
     </button>
   );
 }
 
-export default RippleButton; 
+export default RippleButton;

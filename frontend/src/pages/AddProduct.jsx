@@ -2,6 +2,47 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+const CATEGORIES = [
+  "4K Projectors", "HD/Full HD Projectors", "Laser Projectors",
+  "Mini/Portable Projectors", "Outdoor Projectors", "Accessories",
+  "Digital Smart Boards", "Smart Projectors", "Digital Cinema Projectors",
+  "Mapping Projectors", "Gobo Projectors", "Audio Systems",
+  "Used Products", "Projector Screens", "Uncategorized"
+];
+
+const inputStyle = (hasError) => ({
+  width: '100%',
+  padding: '11px 16px',
+  background: 'rgba(255,255,255,0.05)',
+  border: hasError ? '1.5px solid rgba(239,68,68,0.4)' : '1.5px solid rgba(255,255,255,0.1)',
+  borderRadius: '10px',
+  color: 'white',
+  fontFamily: 'var(--font-sans)',
+  fontSize: '0.9rem',
+  outline: 'none',
+  boxSizing: 'border-box',
+  transition: 'all 0.2s',
+});
+
+const labelStyle = {
+  display: 'block',
+  fontSize: '0.75rem',
+  fontWeight: 600,
+  color: 'rgba(255,255,255,0.45)',
+  textTransform: 'uppercase',
+  letterSpacing: '0.06em',
+  marginBottom: '7px',
+};
+
+function FieldGroup({ label, children }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <label style={labelStyle}>{label}</label>
+      {children}
+    </div>
+  );
+}
+
 function AddProduct({ editingProduct, onSuccess }) {
   const [name, setName] = useState('');
   const [brand, setBrand] = useState('');
@@ -13,28 +54,8 @@ function AddProduct({ editingProduct, onSuccess }) {
   const [included, setIncluded] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
 
-  const categories = [
-    "4K Projectors",
-    "HD/Full HD Projectors",
-    "Laser Projectors",
-    "Mini/Portable Projectors",
-    "Outdoor Projectors",
-    "Accessories",
-    "Digital Smart Boards",
-    "Smart Projectors",
-    "Digital Cinema Projectors",
-    "Mapping Projectors",
-    "Gobo Projectors",
-    "Audio Systems",
-    "Used Products",
-    "Projector Screens",
-    "Uncategorized"
-  ];
-
-  // Populate form if editing
   useEffect(() => {
     if (editingProduct) {
       setName(editingProduct.name || '');
@@ -47,17 +68,10 @@ function AddProduct({ editingProduct, onSuccess }) {
     }
   }, [editingProduct]);
 
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    setImages(files);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    setSuccess(false);
-
     try {
       const formData = new FormData();
       formData.append('name', name);
@@ -67,174 +81,187 @@ function AddProduct({ editingProduct, onSuccess }) {
       formData.append('price', parseFloat(price));
       formData.append('newArrival', newArrival);
       formData.append('included', included);
+      images.forEach(img => formData.append('images', img));
 
-      // Append multiple images
-      images.forEach((image, index) => {
-        formData.append('images', image);
-      });
-
-      let response;
       if (editingProduct) {
-        // Update existing product
-        response = await axios.put(`http://localhost:5000/products/${editingProduct._id}`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
+        await axios.put(`http://localhost:5000/products/${editingProduct._id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
       } else {
-        // Add new product
-        response = await axios.post('http://localhost:5000/products', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
+        await axios.post('http://localhost:5000/products', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
       }
-      
-      setSuccess(true);
       setLoading(false);
-      
-      if (onSuccess) {
-        onSuccess();
-      } else {
-        navigate('/');
-      }
+      if (onSuccess) onSuccess(); else navigate('/');
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to save product');
       setLoading(false);
     }
   };
 
+  const focusStyle = (e) => {
+    e.target.style.borderColor = 'rgba(249,115,22,0.5)';
+    e.target.style.boxShadow = '0 0 0 3px rgba(249,115,22,0.1)';
+    e.target.style.background = 'rgba(255,255,255,0.08)';
+  };
+  const blurStyle = (e) => {
+    e.target.style.borderColor = 'rgba(255,255,255,0.1)';
+    e.target.style.boxShadow = 'none';
+    e.target.style.background = 'rgba(255,255,255,0.05)';
+  };
+
   return (
-    <div className="p-4 max-w-lg mx-auto">
-      <h2 className="text-2xl font-bold mb-4">
-        {editingProduct ? 'Edit Product' : 'Add Product'}
-      </h2>
-      <form onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded shadow">
-        <div>
-          <label className="block font-semibold mb-1">Name</label>
-          <input 
-            type="text" 
-            className="w-full border rounded px-3 py-2" 
-            value={name} 
-            onChange={e => setName(e.target.value)} 
-            required 
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+      {/* Row: Name + Brand */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+        <FieldGroup label="Product Name *">
+          <input type="text" value={name} onChange={e => setName(e.target.value)} required placeholder="e.g. Epson EB-S41" style={inputStyle()} onFocus={focusStyle} onBlur={blurStyle} />
+        </FieldGroup>
+        <FieldGroup label="Brand *">
+          <input type="text" value={brand} onChange={e => setBrand(e.target.value)} required placeholder="e.g. Epson" style={inputStyle()} onFocus={focusStyle} onBlur={blurStyle} />
+        </FieldGroup>
+      </div>
+
+      {/* Category */}
+      <FieldGroup label="Category *">
+        <select value={category} onChange={e => setCategory(e.target.value)} required
+          style={{ ...inputStyle(), appearance: 'none', cursor: 'pointer' }}
+          onFocus={focusStyle} onBlur={blurStyle}
+        >
+          <option value="" style={{ background: '#1e293b' }}>Select a category...</option>
+          {CATEGORIES.map(cat => (
+            <option key={cat} value={cat} style={{ background: '#1e293b' }}>{cat}</option>
+          ))}
+        </select>
+      </FieldGroup>
+
+      {/* Description */}
+      <FieldGroup label="Description">
+        <textarea value={description} onChange={e => setDescription(e.target.value)} placeholder="Describe the product features and specifications..." rows={4}
+          style={{ ...inputStyle(), resize: 'vertical', lineHeight: 1.6 }}
+          onFocus={focusStyle} onBlur={blurStyle}
+        />
+      </FieldGroup>
+
+      {/* Price */}
+      <FieldGroup label="Price (LKR) *">
+        <div style={{ position: 'relative' }}>
+          <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.35)', fontSize: '0.85rem', fontWeight: 600 }}>Rs.</span>
+          <input type="number" value={price} onChange={e => setPrice(e.target.value)} required min="0" step="0.01" placeholder="0.00"
+            style={{ ...inputStyle(), paddingLeft: '44px' }}
+            onFocus={focusStyle} onBlur={blurStyle}
           />
         </div>
-        
-        <div>
-          <label className="block font-semibold mb-1">Brand</label>
-          <input 
-            type="text" 
-            className="w-full border rounded px-3 py-2" 
-            value={brand} 
-            onChange={e => setBrand(e.target.value)} 
-            required 
-          />
-        </div>
-        
-        <div>
-          <label className="block font-semibold mb-1">Category</label>
-          <select 
-            className="w-full border rounded px-3 py-2" 
-            value={category} 
-            onChange={e => setCategory(e.target.value)} 
-            required
-          >
-            <option value="">Select a category</option>
-            {categories.map(cat => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
-        </div>
-        
-        <div>
-          <label className="block font-semibold mb-1">Description</label>
-          <textarea 
-            className="w-full border rounded px-3 py-2" 
-            value={description} 
-            onChange={e => setDescription(e.target.value)} 
-          />
-        </div>
-        
-        <div>
-          <label className="block font-semibold mb-1">Price</label>
-          <input 
-            type="number" 
-            className="w-full border rounded px-3 py-2" 
-            value={price} 
-            onChange={e => setPrice(e.target.value)} 
-            required 
-            min="0" 
-            step="0.01" 
-          />
-        </div>
-        
-        <div>
-          <label className="block font-semibold mb-1">
-            Images {editingProduct ? '(Optional - only upload new images)' : '(Max 5)'}
-          </label>
-          <input 
-            type="file" 
-            multiple 
+      </FieldGroup>
+
+      {/* Images */}
+      <FieldGroup label={editingProduct ? 'Images (optional — only if replacing)' : 'Product Images * (max 5)'}>
+        <div style={{
+          border: '2px dashed rgba(255,255,255,0.12)',
+          borderRadius: '12px',
+          padding: '20px',
+          textAlign: 'center',
+          background: 'rgba(255,255,255,0.02)',
+          cursor: 'pointer',
+          transition: 'all 0.2s',
+          position: 'relative',
+        }}>
+          <input
+            type="file"
+            multiple
             accept="image/*"
-            className="w-full border rounded px-3 py-2" 
-            onChange={handleImageChange} 
+            onChange={e => setImages(Array.from(e.target.files))}
             required={!editingProduct}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              opacity: 0,
+              cursor: 'pointer',
+              width: '100%',
+              height: '100%',
+              minHeight: 'auto',
+            }}
           />
-          <p className="text-sm text-gray-500 mt-1">
-            Selected: {images.length} image(s)
-          </p>
+          <div style={{ fontSize: '2rem', marginBottom: '8px' }}>🖼️</div>
+          <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem' }}>
+            {images.length > 0 ? (
+              <span style={{ color: 'var(--brand-400)', fontWeight: 600 }}>{images.length} file(s) selected</span>
+            ) : (
+              <>Click to upload or drag & drop<br /><span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.25)' }}>PNG, JPG, WEBP (max 5)</span></>
+            )}
+          </div>
         </div>
-        
-        <div className="flex items-center">
-          <input 
-            type="checkbox" 
-            id="newArrival"
-            className="mr-2" 
-            checked={newArrival} 
-            onChange={e => setNewArrival(e.target.checked)} 
-          />
-          <label htmlFor="newArrival" className="font-semibold">New Arrival</label>
+      </FieldGroup>
+
+      {/* New Arrival Toggle */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px' }}>
+        <input
+          type="checkbox"
+          id="newArrivalCheck"
+          checked={newArrival}
+          onChange={e => setNewArrival(e.target.checked)}
+          style={{ width: '18px', height: '18px', accentColor: 'var(--brand-500)', cursor: 'pointer', minHeight: 'auto', minWidth: 'auto' }}
+        />
+        <label htmlFor="newArrivalCheck" style={{ color: 'rgba(255,255,255,0.6)', fontWeight: 500, fontSize: '0.9rem', cursor: 'pointer', margin: 0 }}>
+          Mark as <span style={{ color: 'var(--brand-400)', fontWeight: 700 }}>New Arrival</span> ✨
+        </label>
+      </div>
+
+      {/* What's Included */}
+      <FieldGroup label="What's Included in the Box">
+        <textarea value={included} onChange={e => setIncluded(e.target.value)} rows={3}
+          placeholder="Product, Remote, Manual, Power Cable, Warranty Card (comma-separated)"
+          style={{ ...inputStyle(), resize: 'vertical', lineHeight: 1.6 }}
+          onFocus={focusStyle} onBlur={blurStyle}
+        />
+        <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.25)', marginTop: '4px' }}>Separate items with commas</span>
+      </FieldGroup>
+
+      {/* Error */}
+      {error && (
+        <div style={{
+          padding: '12px 16px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)',
+          borderRadius: '10px', color: '#fca5a5', fontSize: '0.875rem', display: 'flex', gap: '8px', alignItems: 'center',
+        }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          {error}
         </div>
-        
-        <div>
-          <label className="block font-semibold mb-1">What's Included in the Box</label>
-          <textarea 
-            className="w-full border rounded px-3 py-2" 
-            value={included} 
-            onChange={e => setIncluded(e.target.value)} 
-            placeholder="Enter items separated by commas or new lines (e.g., Product, Manual, Charger, Warranty Card)"
-            rows="3"
-          />
-          <p className="text-sm text-gray-500 mt-1">
-            List all items that come with the product
-          </p>
-        </div>
-        
-        {error && <div className="text-red-500">{error}</div>}
-        
-        <div className="flex gap-4">
-          <button 
-            type="submit" 
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex-1" 
-            disabled={loading}
-          >
-            {loading ? 'Saving...' : (editingProduct ? 'Update Product' : 'Add Product')}
-          </button>
-          
-          {onSuccess && (
-            <button 
-              type="button"
-              onClick={onSuccess}
-              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-            >
-              Cancel
-            </button>
+      )}
+
+      {/* Buttons */}
+      <div style={{ display: 'flex', gap: '12px', marginTop: '4px' }}>
+        <button
+          type="submit"
+          disabled={loading}
+          className="btn-brand"
+          style={{ flex: 1, padding: '13px', fontSize: '0.95rem', opacity: loading ? 0.7 : 1 }}
+        >
+          {loading ? (
+            <>
+              <div style={{ width: '16px', height: '16px', border: '2px solid rgba(255,255,255,0.3)', borderTop: '2px solid white', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+              Saving...
+            </>
+          ) : (
+            <>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              {editingProduct ? 'Update Product' : 'Add Product'}
+            </>
           )}
-        </div>
-      </form>
-    </div>
+        </button>
+        {onSuccess && (
+          <button type="button" onClick={onSuccess}
+            style={{
+              padding: '13px 24px', background: 'rgba(255,255,255,0.06)',
+              border: '1.5px solid rgba(255,255,255,0.1)', borderRadius: '999px',
+              color: 'rgba(255,255,255,0.6)', cursor: 'pointer', fontWeight: 600,
+              fontSize: '0.9rem', fontFamily: 'var(--font-sans)', transition: 'all 0.2s',
+            }}
+            onMouseEnter={e => e.currentTarget.style.background='rgba(255,255,255,0.1)'}
+            onMouseLeave={e => e.currentTarget.style.background='rgba(255,255,255,0.06)'}
+          >
+            Cancel
+          </button>
+        )}
+      </div>
+    </form>
   );
 }
 
-export default AddProduct; 
+export default AddProduct;

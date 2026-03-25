@@ -10,10 +10,9 @@ import Footer from './components/Footer';
 
 function App() {
   return (
-    // Ensure the layout always pushes the footer to the bottom and supports safe area
-    <div className="min-h-screen flex flex-col bg-gray-50 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+    <div className="app-shell">
       <Nav />
-      <main className="flex-1">
+      <main style={{ flex: 1 }}>
         <Routes>
           <Route path="/" element={<ProductList />} />
           <Route path="/add" element={<AddProduct />} />

@@ -1,49 +1,152 @@
 function SearchFilter({ searchTerm, setSearchTerm, selectedCategory, setSelectedCategory, categories }) {
   return (
-    <div className="bg-white p-4 sm:p-6 rounded-lg shadow mb-6">
-      <div className="flex flex-col gap-4 sm:flex-row">
+    <div style={{
+      background: 'white',
+      borderRadius: '20px',
+      border: '1.5px solid rgba(226,232,240,0.8)',
+      boxShadow: '0 4px 24px rgba(0,0,0,0.06)',
+      padding: '20px 24px',
+      marginBottom: '32px',
+    }}>
+      <div style={{
+        display: 'flex',
+        gap: '16px',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+      }}>
         {/* Search Bar */}
-        <div className="flex-1">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search products..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
-            />
-            <svg
-              className="absolute left-3 top-3 sm:top-2.5 h-5 w-5 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </div>
+        <div style={{ flex: 1, minWidth: '200px', position: 'relative' }}>
+          <svg
+            style={{
+              position: 'absolute',
+              left: '14px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              width: '18px',
+              height: '18px',
+              color: '#94a3b8',
+              pointerEvents: 'none',
+            }}
+            fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Search projectors, brands, models..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '12px 16px 12px 44px',
+              background: 'var(--surface-50)',
+              border: '1.5px solid var(--surface-200)',
+              borderRadius: '12px',
+              fontFamily: 'var(--font-sans)',
+              fontSize: '0.9rem',
+              color: 'var(--surface-900)',
+              outline: 'none',
+              transition: 'all 0.2s ease',
+              boxSizing: 'border-box',
+            }}
+            onFocus={e => {
+              e.target.style.borderColor = 'var(--brand-500)';
+              e.target.style.boxShadow = '0 0 0 3px rgba(249,115,22,0.1)';
+              e.target.style.background = 'white';
+            }}
+            onBlur={e => {
+              e.target.style.borderColor = 'var(--surface-200)';
+              e.target.style.boxShadow = 'none';
+              e.target.style.background = 'var(--surface-50)';
+            }}
+          />
         </div>
 
-        {/* Category Filter */}
-        <div className="w-full sm:w-64">
+        {/* Category Dropdown */}
+        <div style={{ width: '220px', flexShrink: 0, position: 'relative' }}>
+          <svg
+            style={{
+              position: 'absolute',
+              right: '14px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              width: '16px',
+              height: '16px',
+              color: '#94a3b8',
+              pointerEvents: 'none',
+            }}
+            fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="w-full px-4 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
+            style={{
+              width: '100%',
+              padding: '12px 40px 12px 16px',
+              background: 'var(--surface-50)',
+              border: '1.5px solid var(--surface-200)',
+              borderRadius: '12px',
+              fontFamily: 'var(--font-sans)',
+              fontSize: '0.9rem',
+              color: selectedCategory ? 'var(--surface-900)' : '#94a3b8',
+              outline: 'none',
+              appearance: 'none',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              boxSizing: 'border-box',
+            }}
+            onFocus={e => {
+              e.target.style.borderColor = 'var(--brand-500)';
+              e.target.style.boxShadow = '0 0 0 3px rgba(249,115,22,0.1)';
+              e.target.style.background = 'white';
+            }}
+            onBlur={e => {
+              e.target.style.borderColor = 'var(--surface-200)';
+              e.target.style.boxShadow = 'none';
+              e.target.style.background = 'var(--surface-50)';
+            }}
           >
             <option value="">All Categories</option>
-            {categories.map(category => (
-              <option key={category} value={category}>{category}</option>
+            {categories.map(cat => (
+              <option key={cat} value={cat}>{cat}</option>
             ))}
           </select>
         </div>
+
+        {/* Clear Filter Button */}
+        {(searchTerm || selectedCategory) && (
+          <button
+            onClick={() => { setSearchTerm(''); setSelectedCategory(''); }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '11px 18px',
+              background: 'rgba(249,115,22,0.08)',
+              border: '1.5px solid rgba(249,115,22,0.2)',
+              borderRadius: '12px',
+              color: 'var(--brand-600)',
+              fontWeight: 600,
+              fontSize: '0.85rem',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              fontFamily: 'var(--font-sans)',
+              whiteSpace: 'nowrap',
+            }}
+            onMouseEnter={e => e.currentTarget.style.background='rgba(249,115,22,0.15)'}
+            onMouseLeave={e => e.currentTarget.style.background='rgba(249,115,22,0.08)'}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+            Clear
+          </button>
+        )}
       </div>
     </div>
   );
 }
 
-export default SearchFilter; 
+export default SearchFilter;
