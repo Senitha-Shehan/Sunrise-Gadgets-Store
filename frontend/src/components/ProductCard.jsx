@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { useCart } from '../context/CartContext';
+import { API_URL } from '../config';
 
 function ProductCard({ product }) {
   const [hovered, setHovered] = useState(false);
@@ -22,150 +23,112 @@ function ProductCard({ product }) {
   };
 
   return (
-    <div
-      style={{ display: 'block', height: '100%', textDecoration: 'none' }}
-    >
+    <div style={{ display: 'block', height: '100%', textDecoration: 'none' }}>
       <article
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         style={{
           background: 'white',
-          borderRadius: '20px',
-          border: hovered ? '1.5px solid rgba(249,115,22,0.25)' : '1.5px solid rgba(226,232,240,0.8)',
-          overflow: 'hidden',
+          borderRadius: '24px',
+          padding: '12px',
           display: 'flex',
           flexDirection: 'column',
           height: '100%',
           boxShadow: hovered
-            ? '0 20px 48px rgba(0,0,0,0.12), 0 4px 12px rgba(249,115,22,0.08)'
-            : '0 4px 16px rgba(0,0,0,0.06)',
-          transform: hovered ? 'translateY(-6px)' : 'translateY(0)',
-          transition: 'all 0.35s cubic-bezier(0.4,0,0.2,1)',
+            ? '0 24px 48px rgba(0,0,0,0.08), 0 8px 16px rgba(0,0,0,0.03)'
+            : '0 4px 20px rgba(0,0,0,0.03)',
+          border: '1px solid',
+          borderColor: hovered ? 'rgba(249,115,22,0.15)' : 'rgba(0,0,0,0.04)',
+          transform: hovered ? 'translateY(-4px)' : 'translateY(0)',
+          transition: 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)',
           cursor: 'pointer',
           position: 'relative',
         }}
       >
-        {/* Image */}
-        <div className="product-card-img" style={{
+        {/* Inset Image Frame */}
+        <div style={{
           position: 'relative',
           aspectRatio: '4/3',
+          borderRadius: '16px',
           overflow: 'hidden',
-          background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)',
+          background: 'var(--surface-50)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
           flexShrink: 0,
         }}>
           {product.images && product.images.length > 0 && !imgError ? (
             <img
-              src={`http://localhost:5000${product.images[0].url}`}
+              src={`${API_URL}${product.images[0].url}`}
               alt={product.name}
               style={{
                 width: '100%',
                 height: '100%',
-                objectFit: 'cover',
-                transform: hovered ? 'scale(1.07)' : 'scale(1)',
-                transition: 'transform 0.6s cubic-bezier(0.4,0,0.2,1)',
+                objectFit: 'contain',
+                padding: '16px',
+                transform: hovered ? 'scale(1.08)' : 'scale(1)',
+                transition: 'transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)',
               }}
               loading="lazy"
               onError={() => setImgError(true)}
             />
           ) : (
-            <div style={{
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#94a3b8',
-              fontSize: '3rem',
-            }}>
-              📦
-            </div>
+            <div style={{ color: '#cbd5e1', fontSize: '3rem' }}>📦</div>
           )}
 
-          {/* Gradient overlay on hover */}
-          <div style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'linear-gradient(0deg, rgba(0,0,0,0.25) 0%, transparent 50%)',
-            opacity: hovered ? 1 : 0,
-            transition: 'opacity 0.3s ease',
-          }} />
-
-          {/* Badges */}
-          <div style={{ position: 'absolute', top: '12px', left: '12px', right: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          {/* Premium Glassmorphism Badges */}
+          <div style={{ position: 'absolute', top: '12px', left: '12px', right: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', zIndex: 2 }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               {product.newArrival && (
-                <span className="badge badge-new" style={{ fontSize: '0.7rem' }}>
-                  ✨ New Arrival
+                <span style={{
+                  background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(8px)',
+                  color: 'var(--brand-600)', border: '1px solid rgba(255,255,255,0.4)',
+                  padding: '4px 10px', borderRadius: '999px', fontSize: '0.65rem',
+                  fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
+                }}>
+                  ✨ New
                 </span>
               )}
               {product.inStock === false && (
-                <span className="badge" style={{ fontSize: '0.7rem', background: '#ef4444', color: 'white', boxShadow: '0 2px 8px rgba(239,68,68,0.4)' }}>
+                <span style={{
+                  background: 'rgba(239,68,68,0.9)', backdropFilter: 'blur(8px)',
+                  color: 'white', border: '1px solid rgba(255,255,255,0.2)',
+                  padding: '4px 10px', borderRadius: '999px', fontSize: '0.65rem',
+                  fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase',
+                  boxShadow: '0 4px 12px rgba(239,68,68,0.2)'
+                }}>
                   Out of Stock
                 </span>
               )}
             </div>
-            {product.images && product.images.length > 1 && (
-              <span style={{
-                marginLeft: 'auto',
-                background: 'rgba(0,0,0,0.55)',
-                backdropFilter: 'blur(4px)',
-                color: 'white',
-                fontSize: '0.7rem',
-                fontWeight: 600,
-                padding: '3px 8px',
-                borderRadius: '999px',
-              }}>
-                +{product.images.length - 1}
-              </span>
-            )}
           </div>
         </div>
 
-        {/* Link overlay to handle navigation without wrapping the buttons */}
+        {/* Link overlay */}
         <Link to={`/product/${product._id}`} style={{ position: 'absolute', inset: 0, zIndex: 1 }} aria-label={`View ${product.name}`} />
 
-        {/* Content */}
-        <div className="product-card-body" style={{ padding: '16px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-          {/* Tags */}
-          <div className="product-card-tags" style={{ display: 'flex', gap: '5px', flexWrap: 'wrap', marginBottom: '8px' }}>
-            {product.brand && (
-              <span style={{
-                background: 'rgba(249,115,22,0.08)',
-                color: 'var(--brand-600)',
-                border: '1px solid rgba(249,115,22,0.2)',
-                padding: '2px 10px',
-                borderRadius: '999px',
-                fontSize: '0.7rem',
-                fontWeight: 600,
-                letterSpacing: '0.02em',
-              }}>
-                {product.brand}
-              </span>
-            )}
-            {product.category && (
-              <span style={{
-                background: 'var(--surface-50)',
-                color: '#64748b',
-                border: '1px solid var(--surface-200)',
-                padding: '2px 10px',
-                borderRadius: '999px',
-                fontSize: '0.7rem',
-                fontWeight: 500,
-              }}>
-                {product.category}
+        {/* Content Body */}
+        <div style={{ padding: '16px 8px 8px 8px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+          
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+            <span style={{ color: '#94a3b8', fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+              {product.brand || product.category || 'Gadget'}
+            </span>
+            {product.originalPrice && product.originalPrice > product.price && (
+              <span style={{ color: '#ef4444', fontSize: '0.7rem', fontWeight: 700, background: 'rgba(239,68,68,0.1)', padding: '2px 6px', borderRadius: '4px' }}>
+                -{Math.round((1 - product.price / product.originalPrice) * 100)}%
               </span>
             )}
           </div>
 
-          {/* Name */}
-          <h3 className="product-card-name" style={{
+          <h3 style={{
             fontFamily: 'var(--font-display)',
             fontWeight: 700,
-            fontSize: '0.95rem',
-            color: hovered ? 'var(--brand-600)' : 'var(--surface-900)',
-            lineHeight: 1.35,
-            marginBottom: '6px',
-            transition: 'color 0.2s',
+            fontSize: '1rem',
+            color: 'var(--surface-900)',
+            lineHeight: 1.3,
+            marginBottom: '4px',
             display: '-webkit-box',
             WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical',
@@ -174,80 +137,60 @@ function ProductCard({ product }) {
             {product.name}
           </h3>
 
-          {/* Description */}
-          {product.description && (
-            <p className="product-card-desc" style={{
-              color: '#64748b',
-              fontSize: '0.78rem',
-              lineHeight: 1.55,
-              flex: 1,
-              marginBottom: '12px',
-            }}>
-              {truncate(product.description, 75)}
-            </p>
-          )}
+          <p style={{ color: '#64748b', fontSize: '0.8rem', lineHeight: 1.5, flex: 1, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+            {product.description}
+          </p>
 
-          {/* Price + CTA */}
-          <div className="product-card-footer" style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            paddingTop: '10px',
-            borderTop: '1px solid var(--surface-100)',
-            marginTop: 'auto',
-            gap: '6px',
+          {/* Footer: Price & Minimal CTA */}
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            marginTop: '16px', paddingTop: '16px', borderTop: '1px solid var(--surface-50)'
           }}>
-            <div>
-              <div style={{
-                fontFamily: 'var(--font-display)',
-                fontWeight: 800,
-                fontSize: '1.1rem',
-                color: 'var(--surface-900)',
-                letterSpacing: '-0.02em',
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              {product.originalPrice && product.originalPrice > product.price && (
+                <span style={{ fontSize: '0.75rem', color: '#94a3b8', textDecoration: 'line-through', lineHeight: 1 }}>
+                  {formatPrice(product.originalPrice)}
+                </span>
+              )}
+              <span style={{
+                fontFamily: 'var(--font-display)', fontWeight: 800,
+                fontSize: '1.15rem', color: 'var(--surface-900)',
+                letterSpacing: '-0.02em', lineHeight: 1.2
               }}>
                 {formatPrice(product.price)}
-              </div>
-              {product.originalPrice && product.originalPrice > product.price && (
-                <div style={{ fontSize: '0.75rem', color: '#94a3b8', textDecoration: 'line-through' }}>
-                  {formatPrice(product.originalPrice)}
-                </div>
-              )}
+              </span>
             </div>
+
             <button 
-              style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
-                background: justAdded ? '#10b981' : (hovered ? 'var(--brand-500)' : 'var(--surface-50)'),
-                color: justAdded ? 'white' : (hovered ? 'white' : 'var(--brand-600)'), // Always use orange icon except on hover
-                border: hovered || justAdded ? 'none' : '1px solid var(--surface-200)',
-                padding: '8px 14px', borderRadius: '10px',
-                fontWeight: 600, fontSize: '0.8rem', fontFamily: 'var(--font-sans)',
-                cursor: product.inStock === false ? 'not-allowed' : 'pointer',
-                transition: 'all 0.2s cubic-bezier(0.4,0,0.2,1)',
-                zIndex: 2, position: 'relative',
-                opacity: product.inStock === false ? 0.5 : 1,
-              }}
               disabled={product.inStock === false}
               onClick={(e) => {
-                e.preventDefault(); // Stop click from bubbling to Link
-                e.stopPropagation();
+                e.preventDefault(); e.stopPropagation();
                 if (product.inStock === false) return;
                 addToCart(product);
                 setJustAdded(true);
                 setTimeout(() => setJustAdded(false), 2000);
               }}
+              style={{
+                width: '40px', height: '40px', borderRadius: '50%',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                background: justAdded ? '#10b981' : (hovered ? 'var(--brand-500)' : 'var(--surface-50)'),
+                color: justAdded ? 'white' : (hovered ? 'white' : 'var(--brand-500)'),
+                border: 'none',
+                boxShadow: hovered && !justAdded ? '0 8px 16px rgba(249,115,22,0.25)' : 'none',
+                cursor: product.inStock === false ? 'not-allowed' : 'pointer',
+                transition: 'all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)',
+                zIndex: 2, position: 'relative',
+                opacity: product.inStock === false ? 0.3 : 1,
+                transform: hovered && product.inStock !== false ? 'scale(1.05)' : 'scale(1)',
+              }}
+              aria-label="Add to cart"
             >
               {justAdded ? (
-                <>✓ Added</>
-              ) : product.inStock === false ? (
-                <>Out of Stock</>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
               ) : (
-                <>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/>
-                  </svg>
-                  Add <span style={{ display: 'none' }} className="hidden-mobile">to Cart</span>
-                </>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
               )}
             </button>
           </div>

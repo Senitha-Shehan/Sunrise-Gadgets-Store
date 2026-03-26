@@ -1,5 +1,6 @@
 const Product = require('../models/Product');
 const upload = require('../middleware/upload');
+const { uploadStream, deleteFromCloudinary } = require('../utils/cloudinary');
 
 // Get all products sorted by latest first
 const getProducts = async (req, res) => {
@@ -34,10 +35,13 @@ const addProduct = async (req, res) => {
       return res.status(400).json({ error: 'Please upload at least one image file' });
     }
     
-    // Process multiple images
-    const images = req.files.map(file => ({
-      url: `/uploads/${file.filename}`,
-      public_id: file.filename
+    // Process multiple images - upload to Cloudinary
+    const uploadPromises = req.files.map(file => uploadStream(file.buffer));
+    const uploadResults = await Promise.all(uploadPromises);
+    
+    const images = uploadResults.map(result => ({
+      url: result.secure_url,
+      public_id: result.public_id
     }));
     
     // Process included items (split by comma if it's a string)
@@ -107,13 +111,46 @@ const updateProduct = async (req, res) => {
       updateData.included = includedItems;
     }
 
-    // Handle image uploads if new images are provided
+    // Handle images: Merge existing ones with new uploads
+    let finalImages = [];
+    
+    // 1. Get existing images from request body (sent as JSON string from client)
+    if (req.body.existingImages) {
+      try {
+        finalImages = JSON.parse(req.body.existingImages);
+      } catch (e) {
+        console.error('Error parsing existingImages:', e);
+      }
+    } else if (!req.files || req.files.length === 0) {
+      // Fallback: If no instruction provided and no new files, keep current images
+      const currentProduct = await Product.findById(req.params.id);
+      if (currentProduct) finalImages = currentProduct.images;
+    }
+
+    // 2. Add new uploads - upload to Cloudinary
     if (req.files && req.files.length > 0) {
-      const images = req.files.map(file => ({
-        url: `/uploads/${file.filename}`,
-        public_id: file.filename
+      const uploadPromises = req.files.map(file => uploadStream(file.buffer));
+      const uploadResults = await Promise.all(uploadPromises);
+      
+      const newImages = uploadResults.map(result => ({
+        url: result.secure_url,
+        public_id: result.public_id
       }));
-      updateData.images = images;
+      finalImages = [...finalImages, ...newImages];
+    }
+
+    updateData.images = finalImages.slice(0, 5); // Enforce max 5 limit
+
+    // 3. Cleanup: Find images that were in the product but aren't in finalImages anymore
+    const oldProduct = await Product.findById(req.params.id);
+    if (oldProduct) {
+      const imagesToRemove = oldProduct.images.filter(
+        oldImg => !finalImages.some(newImg => newImg.public_id === oldImg.public_id)
+      );
+      
+      imagesToRemove.forEach(img => {
+        deleteFromCloudinary(img.public_id);
+      });
     }
 
     const updatedProduct = await Product.findByIdAndUpdate(
@@ -143,6 +180,13 @@ const deleteProduct = async (req, res) => {
     
     if (!product) {
       return res.status(404).json({ error: 'Product not found' });
+    }
+
+    // Delete actual files from Cloudinary
+    if (product.images && product.images.length > 0) {
+      product.images.forEach(img => {
+        deleteFromCloudinary(img.public_id);
+      });
     }
 
     res.json({ message: 'Product deleted successfully' });

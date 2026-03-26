@@ -8,7 +8,7 @@ dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // No longer needed with Cloudinary
 
 
 // Connect to MongoDB
@@ -25,6 +25,10 @@ const categoryRoutes = require('./routes/categoryRoutes');
 app.use('/products', productRoutes);
 app.use('/categories', categoryRoutes);
 
-// Start server
+// Start server (Only if running directly, not in Vercel)
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+if (require.main === module) {
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
+
+module.exports = app;

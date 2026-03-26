@@ -3,14 +3,10 @@ import axios from 'axios';
 import Hero from '../components/Hero';
 import SearchFilter from '../components/SearchFilter';
 import ProductCarousel from '../components/ProductCarousel';
+import PromoBanner from '../components/PromoBanner';
+import { API_URL } from '../config';
 
-const categories = [
-  "4K Projectors", "HD/Full HD Projectors", "Laser Projectors",
-  "Mini/Portable Projectors", "Outdoor Projectors", "Accessories",
-  "Digital Smart Boards", "Smart Projectors", "Digital Cinema Projectors",
-  "Mapping Projectors", "Gobo Projectors", "Audio Systems",
-  "Used Products", "Projector Screens", "Uncategorized"
-];
+// Categories are now fetched dynamically from the backend
 
 function SkeletonCard() {
   return (
@@ -53,10 +49,18 @@ function ProductList() {
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
 
+  const [categories, setCategories] = useState([]);
+
   useEffect(() => {
-    axios.get('http://localhost:5000/products')
+    // Fetch products
+    axios.get(`${API_URL}/products`)
       .then(res => { setProducts(res.data); setFilteredProducts(res.data); setLoading(false); })
       .catch(() => { setError('Failed to fetch products'); setLoading(false); });
+      
+    // Fetch categories
+    axios.get(`${API_URL}/categories`)
+      .then(res => { setCategories(res.data.map(cat => cat.name)); })
+      .catch(err => console.error('Failed to load categories', err));
   }, []);
 
   useEffect(() => {
@@ -91,11 +95,26 @@ function ProductList() {
   const newArrivals = filteredProducts.filter(p => p.newArrival);
   const otherProducts = filteredProducts.filter(p => !p.newArrival);
 
+  // Group filtered products by category dynamically
+  const productsByCategory = categories.reduce((acc, category) => {
+    const categoryProducts = filteredProducts.filter(p => p.category === category);
+    if (categoryProducts.length > 0) {
+      acc[category] = categoryProducts;
+    }
+    return acc;
+  }, {});
+
+  // Handle any products that might have a category not in the main categories list (e.g. Uncategorized)
+  const uncategorizedProducts = filteredProducts.filter(p => !categories.includes(p.category));
+  if (uncategorizedProducts.length > 0) {
+    productsByCategory['Other Products'] = uncategorizedProducts;
+  }
+
   if (loading) return (
     <div>
       <div style={{ minHeight: '260px', background: 'var(--surface-950)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ width: '40px', height: '40px', border: '3px solid rgba(249,115,22,0.3)', borderTop: '3px solid var(--brand-500)', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
+          <img src={`${API_URL}${product.images[0].url}`} alt={product.name} style={{ width: '40px', height: '40px', border: '3px solid rgba(249,115,22,0.3)', borderTop: '3px solid var(--brand-500)', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
           <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.875rem' }}>Loading products...</p>
         </div>
       </div>
@@ -169,6 +188,17 @@ function ProductList() {
             <ProductCarousel products={otherProducts} sectionId="all-products-carousel" />
           </section>
         )}
+
+        {/* Mid-page Lifestyle Banner */}
+        <PromoBanner />
+
+        {/* Category Sections — dynamically looped */}
+        {Object.entries(productsByCategory).map(([categoryName, categoryProducts]) => (
+          <section key={categoryName} style={{ marginBottom: '56px' }}>
+            <SectionHeader title={categoryName} count={categoryProducts.length} />
+            <ProductCarousel products={categoryProducts} sectionId={`carousel-${categoryName.replace(/\s+/g, '-').toLowerCase()}`} />
+          </section>
+        ))}
 
         {/* Empty state */}
         {filteredProducts.length === 0 && (

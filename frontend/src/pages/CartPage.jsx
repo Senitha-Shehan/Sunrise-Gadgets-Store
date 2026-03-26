@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { API_URL } from '../config';
 
 const WA_NUMBER = '94702005088';
 
@@ -105,7 +106,7 @@ function CartPage() {
                 {/* Image */}
                 <div style={{ width: '72px', height: '72px', borderRadius: '10px', overflow: 'hidden', background: 'var(--surface-50)', flexShrink: 0, border: '1px solid var(--surface-100)' }}>
                   {item.images?.length > 0 ? (
-                    <img src={`http://localhost:5000${item.images[0].url}`} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src={`${API_URL}${item.images[0].url}`} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
                     <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>📦</div>
                   )}

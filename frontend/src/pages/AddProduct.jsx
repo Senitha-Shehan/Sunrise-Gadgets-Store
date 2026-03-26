@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../config';
 
 
 
@@ -46,7 +47,8 @@ function AddProduct({ editingProduct, onSuccess }) {
   const [originalPrice, setOriginalPrice] = useState('');
   const [inStock, setInStock] = useState(true);
   const [specs, setSpecs] = useState([]);
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState([]); // Selected files for upload
+  const [existingImages, setExistingImages] = useState([]); // Currently stored images
   const [newArrival, setNewArrival] = useState(false);
   const [included, setIncluded] = useState('');
   const [loading, setLoading] = useState(false);
@@ -56,7 +58,7 @@ function AddProduct({ editingProduct, onSuccess }) {
 
   useEffect(() => {
     // Fetch dynamic categories from the backend
-    axios.get('http://localhost:5000/categories')
+    axios.get(`${API_URL}/categories`)
       .then(res => setCategoriesList(res.data))
       .catch(err => console.error('Failed to load categories', err));
   }, []);
@@ -72,8 +74,27 @@ function AddProduct({ editingProduct, onSuccess }) {
       setSpecs(editingProduct.specs || []);
       setNewArrival(editingProduct.newArrival || false);
       setIncluded(editingProduct.included?.join(', ') || '');
+      setExistingImages(editingProduct.images || []);
     }
   }, [editingProduct]);
+
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    const totalAllowed = 5 - existingImages.length;
+    if (files.length > totalAllowed) {
+      alert(`Limit exceeded. You can only pick ${totalAllowed} more image(s).`);
+      return;
+    }
+    setImages(prev => [...prev, ...files]);
+  };
+
+  const removeExistingImage = (public_id) => {
+    setExistingImages(existingImages.filter(img => img.public_id !== public_id));
+  };
+
+  const removeSelectedFile = (index) => {
+    setImages(images.filter((_, i) => i !== index));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -91,12 +112,17 @@ function AddProduct({ editingProduct, onSuccess }) {
       formData.append('newArrival', newArrival);
       formData.append('included', included);
       formData.append('specs', JSON.stringify(specs));
+      
+      // Send remaining existing image references as JSON
+      formData.append('existingImages', JSON.stringify(existingImages));
+      
+      // Append new files
       images.forEach(img => formData.append('images', img));
 
       if (editingProduct) {
-        await axios.put(`http://localhost:5000/products/${editingProduct._id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+        await axios.put(`${API_URL}/products/${editingProduct._id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
       } else {
-        await axios.post('http://localhost:5000/products', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+        await axios.post(`${API_URL}/products`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
       }
       setLoading(false);
       if (onSuccess) onSuccess(); else navigate('/');
@@ -172,43 +198,61 @@ function AddProduct({ editingProduct, onSuccess }) {
         </FieldGroup>
       </div>
 
-      {/* Images */}
-      <FieldGroup label={editingProduct ? 'Images (optional — only if replacing)' : 'Product Images * (max 5)'}>
-        <div style={{
-          border: '2px dashed rgba(255,255,255,0.12)',
-          borderRadius: '12px',
-          padding: '20px',
-          textAlign: 'center',
-          background: 'rgba(255,255,255,0.02)',
-          cursor: 'pointer',
-          transition: 'all 0.2s',
-          position: 'relative',
-        }}>
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={e => setImages(Array.from(e.target.files))}
-            required={!editingProduct}
-            style={{
-              position: 'absolute',
-              inset: 0,
-              opacity: 0,
-              cursor: 'pointer',
-              width: '100%',
-              height: '100%',
-              minHeight: 'auto',
-            }}
-          />
-          <div style={{ fontSize: '2rem', marginBottom: '8px' }}>🖼️</div>
-          <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem' }}>
-            {images.length > 0 ? (
-              <span style={{ color: 'var(--brand-400)', fontWeight: 600 }}>{images.length} file(s) selected</span>
-            ) : (
-              <>Click to upload or drag & drop<br /><span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.25)' }}>PNG, JPG, WEBP (max 5)</span></>
-            )}
-          </div>
+      {/* Images Section */}
+      <FieldGroup label="Product Gallery (Max 5 Total)">
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '14px' }}>
+          
+          {/* Existing Images Thumbnails */}
+          {existingImages.map((img) => (
+            <div key={img.public_id} style={{ position: 'relative', width: '100px', height: '100px', borderRadius: '12px', overflow: 'hidden', border: '1.5px solid rgba(255,255,255,0.1)' }}>
+              <img src={`${API_URL}${img.url}`} alt="Product" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <button 
+                type="button" 
+                onClick={() => removeExistingImage(img.public_id)}
+                style={{ position: 'absolute', top: '4px', right: '4px', background: 'rgba(239,68,68,0.9)', border: 'none', borderRadius: '6px', width: '22px', height: '22px', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'transform 0.2s', minHeight: 'auto' }}
+                onMouseEnter={e => e.currentTarget.style.transform='scale(1.1)'}
+                onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+              <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'rgba(0,0,0,0.5)', color: 'white', fontSize: '10px', padding: '2px', textAlign: 'center' }}>Stored</div>
+            </div>
+          ))}
+
+          {/* New Selected Files Preview */}
+          {images.map((file, idx) => (
+            <div key={idx} style={{ position: 'relative', width: '100px', height: '100px', borderRadius: '12px', overflow: 'hidden', border: '1.5px solid var(--brand-500)', boxShadow: '0 0 10px rgba(249,115,22,0.2)' }}>
+              <img src={URL.createObjectURL(file)} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <button 
+                type="button" 
+                onClick={() => removeSelectedFile(idx)}
+                style={{ position: 'absolute', top: '4px', right: '4px', background: 'rgba(239,68,68,0.9)', border: 'none', borderRadius: '6px', width: '22px', height: '22px', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', minHeight: 'auto' }}
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+              <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'var(--brand-600)', color: 'white', fontSize: '10px', padding: '2px', textAlign: 'center' }}>New</div>
+            </div>
+          ))}
+
+          {/* Add More Button (hidden if limit reached) */}
+          {(existingImages.length + images.length) < 5 && (
+            <div style={{
+              width: '100px', height: '100px', borderRadius: '12px', border: '1.5px dashed rgba(255,255,255,0.2)',
+              display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '4px',
+              cursor: 'pointer', background: 'rgba(255,255,255,0.02)', position: 'relative', overflow: 'hidden'
+            }} onMouseEnter={e => e.currentTarget.style.borderColor='var(--brand-500)'} onMouseLeave={e => e.currentTarget.style.borderColor='rgba(255,255,255,0.2)'}>
+              <input type="file" multiple accept="image/*" onChange={handleFileChange} style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer', width: '100%', height: '100%', minHeight: 'auto' }} />
+              <div style={{ fontSize: '1.2rem' }}>➕</div>
+              <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', fontWeight: 700 }}>Add More</div>
+            </div>
+          )}
         </div>
+        
+        {(existingImages.length + images.length) === 0 && (
+          <div style={{ padding: '24px', border: '1.5px dashed rgba(255,255,255,0.1)', borderRadius: '16px', textAlign: 'center', background: 'rgba(255,255,255,0.02)' }}>
+            <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.875rem', margin: 0 }}>No images yet. Click "Add More" to start.</p>
+          </div>
+        )}
       </FieldGroup>
 
       {/* Settings Toggles (New Arrival & Stock) */}

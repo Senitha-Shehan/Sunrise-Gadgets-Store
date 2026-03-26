@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import './App.css';
 import ProductList from './pages/ProductList';
 import AddProduct from './pages/AddProduct';
@@ -17,7 +17,7 @@ function App() {
     <CartProvider>
       <div className="app-shell">
         <Nav />
-        <main style={{ flex: 1 }}>
+        <main style={{ flex: 1 }} className="page-transition" key={location.pathname}>
           <Routes>
             <Route path="/" element={<ProductList />} />
             <Route path="/products" element={<ProductList />} />
