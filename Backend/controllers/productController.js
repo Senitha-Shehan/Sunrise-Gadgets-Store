@@ -27,7 +27,7 @@ const getProductById = async (req, res) => {
 // Add a new product with multiple image uploads
 const addProduct = async (req, res) => {
   try {
-    const { name, brand, category, description, price, newArrival, included } = req.body;
+    const { name, brand, category, description, price, originalPrice, inStock, newArrival, included, specs } = req.body;
     
     // Check if files were uploaded
     if (!req.files || req.files.length === 0) {
@@ -45,15 +45,25 @@ const addProduct = async (req, res) => {
       included.split(',').map(item => item.trim()).filter(item => item) : 
       (Array.isArray(included) ? included : []);
     
+    // Process specs (parse JSON string from FormData)
+    let parsedSpecs = [];
+    if (specs) {
+      try { parsedSpecs = JSON.parse(specs); } 
+      catch (e) { console.error('Error parsing specs:', e); }
+    }
+    
     const newProduct = new Product({ 
       name, 
       brand,
       category,
       description, 
       price,
+      originalPrice: originalPrice ? parseFloat(originalPrice) : undefined,
       images,
+      inStock: inStock === 'true' || inStock === true,
       newArrival: newArrival === 'true' || newArrival === true,
-      included: includedItems
+      included: includedItems,
+      specs: parsedSpecs
     });
     
     await newProduct.save();
@@ -70,7 +80,7 @@ const addProduct = async (req, res) => {
 // Update a product
 const updateProduct = async (req, res) => {
   try {
-    const { name, brand, category, description, price, newArrival, included } = req.body;
+    const { name, brand, category, description, price, originalPrice, inStock, newArrival, included, specs } = req.body;
     
     let updateData = {
       name,
@@ -78,8 +88,16 @@ const updateProduct = async (req, res) => {
       category,
       description,
       price,
+      originalPrice: originalPrice ? parseFloat(originalPrice) : undefined,
+      inStock: inStock === 'true' || inStock === true,
       newArrival: newArrival === 'true' || newArrival === true
     };
+
+    // Process specs (parse JSON string from FormData)
+    if (specs) {
+      try { updateData.specs = JSON.parse(specs); } 
+      catch (e) { console.error('Error parsing specs:', e); }
+    }
 
     // Process included items
     if (included) {

@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
+import { useCart } from '../context/CartContext';
 
 function ProductCard({ product }) {
   const [hovered, setHovered] = useState(false);
   const [imgError, setImgError] = useState(false);
+  const [justAdded, setJustAdded] = useState(false);
+  const { addToCart } = useCart();
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('si-LK', {
@@ -19,10 +22,8 @@ function ProductCard({ product }) {
   };
 
   return (
-    <Link
-      to={`/product/${product._id}`}
-      style={{ textDecoration: 'none', display: 'block', height: '100%' }}
-      aria-label={`View ${product.name}`}
+    <div
+      style={{ display: 'block', height: '100%', textDecoration: 'none' }}
     >
       <article
         onMouseEnter={() => setHovered(true)}
@@ -91,11 +92,18 @@ function ProductCard({ product }) {
 
           {/* Badges */}
           <div style={{ position: 'absolute', top: '12px', left: '12px', right: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            {product.newArrival && (
-              <span className="badge badge-new" style={{ fontSize: '0.7rem' }}>
-                ✨ New Arrival
-              </span>
-            )}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              {product.newArrival && (
+                <span className="badge badge-new" style={{ fontSize: '0.7rem' }}>
+                  ✨ New Arrival
+                </span>
+              )}
+              {product.inStock === false && (
+                <span className="badge" style={{ fontSize: '0.7rem', background: '#ef4444', color: 'white', boxShadow: '0 2px 8px rgba(239,68,68,0.4)' }}>
+                  Out of Stock
+                </span>
+              )}
+            </div>
             {product.images && product.images.length > 1 && (
               <span style={{
                 marginLeft: 'auto',
@@ -112,6 +120,9 @@ function ProductCard({ product }) {
             )}
           </div>
         </div>
+
+        {/* Link overlay to handle navigation without wrapping the buttons */}
+        <Link to={`/product/${product._id}`} style={{ position: 'absolute', inset: 0, zIndex: 1 }} aria-label={`View ${product.name}`} />
 
         {/* Content */}
         <div className="product-card-body" style={{ padding: '16px', flex: 1, display: 'flex', flexDirection: 'column' }}>
@@ -202,25 +213,47 @@ function ProductCard({ product }) {
                 </div>
               )}
             </div>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-              color: 'var(--brand-500)',
-              fontWeight: 600,
-              fontSize: '0.8rem',
-              transition: 'gap 0.2s, color 0.2s',
-            }}>
-              <span>View</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-                style={{ transform: hovered ? 'translateX(3px)' : 'translateX(0)', transition: 'transform 0.2s' }}>
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </div>
+            <button 
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+                background: justAdded ? '#10b981' : (hovered ? 'var(--brand-500)' : 'var(--surface-50)'),
+                color: justAdded ? 'white' : (hovered ? 'white' : 'var(--brand-600)'), // Always use orange icon except on hover
+                border: hovered || justAdded ? 'none' : '1px solid var(--surface-200)',
+                padding: '8px 14px', borderRadius: '10px',
+                fontWeight: 600, fontSize: '0.8rem', fontFamily: 'var(--font-sans)',
+                cursor: product.inStock === false ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s cubic-bezier(0.4,0,0.2,1)',
+                zIndex: 2, position: 'relative',
+                opacity: product.inStock === false ? 0.5 : 1,
+              }}
+              disabled={product.inStock === false}
+              onClick={(e) => {
+                e.preventDefault(); // Stop click from bubbling to Link
+                e.stopPropagation();
+                if (product.inStock === false) return;
+                addToCart(product);
+                setJustAdded(true);
+                setTimeout(() => setJustAdded(false), 2000);
+              }}
+            >
+              {justAdded ? (
+                <>✓ Added</>
+              ) : product.inStock === false ? (
+                <>Out of Stock</>
+              ) : (
+                <>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/>
+                  </svg>
+                  Add <span style={{ display: 'none' }} className="hidden-mobile">to Cart</span>
+                </>
+              )}
+            </button>
           </div>
         </div>
       </article>
-    </Link>
+    </div>
   );
 }
 

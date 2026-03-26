@@ -1,5 +1,6 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { useCart } from '../context/CartContext';
 
 const navLinks = [
   { to: '/', label: 'Products' },
@@ -17,6 +18,8 @@ function Nav() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { cartCount } = useCart();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -127,30 +130,62 @@ function Nav() {
 
 
 
-            {/* Hamburger */}
-            <button
-              onClick={() => setMenuOpen(true)}
-              aria-label="Open menu"
-              className="nav-hamburger"
-              style={{
-                background: 'rgba(255,255,255,0.08)',
-                border: '1px solid rgba(255,255,255,0.12)',
-                borderRadius: '10px',
-                padding: '8px',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'white',
-                transition: 'all 0.2s',
-              }}
-            >
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <line x1="3" y1="12" x2="21" y2="12" />
-                <line x1="3" y1="18" x2="21" y2="18" />
-              </svg>
-            </button>
+            {/* Cart Icon + Hamburger */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {/* Cart Button */}
+              <button
+                onClick={() => navigate('/cart')}
+                aria-label="Shopping cart"
+                style={{
+                  position: 'relative', background: cartCount > 0 ? 'rgba(249,115,22,0.12)' : 'rgba(255,255,255,0.08)',
+                  border: cartCount > 0 ? '1px solid rgba(249,115,22,0.3)' : '1px solid rgba(255,255,255,0.12)',
+                  borderRadius: '10px', padding: '8px', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: cartCount > 0 ? 'var(--brand-400)' : 'white', transition: 'all 0.2s',
+                }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <path d="M16 10a4 4 0 01-8 0" />
+                </svg>
+                {cartCount > 0 && (
+                  <span style={{
+                    position: 'absolute', top: '-6px', right: '-6px',
+                    background: 'var(--brand-500)', color: 'white',
+                    borderRadius: '999px', minWidth: '18px', height: '18px',
+                    fontSize: '0.65rem', fontWeight: 700, display: 'flex',
+                    alignItems: 'center', justifyContent: 'center', padding: '0 4px',
+                    animation: 'fadeIn 0.2s ease', border: '2px solid rgba(15,23,42,0.9)',
+                  }}>{cartCount > 99 ? '99+' : cartCount}</span>
+                )}
+              </button>
+
+              {/* Hamburger */}
+              <button
+                onClick={() => setMenuOpen(true)}
+                aria-label="Open menu"
+                className="nav-hamburger"
+                style={{
+                  background: 'rgba(255,255,255,0.08)',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                  borderRadius: '10px',
+                  padding: '8px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  transition: 'all 0.2s',
+                }}
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <line x1="3" y1="12" x2="21" y2="12" />
+                  <line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+              </button>
+            </div>{/* end cart+hamburger */}
           </div>
         </div>
       </nav>

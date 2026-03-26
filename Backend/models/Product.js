@@ -10,10 +10,13 @@ const productSchema = new mongoose.Schema({
     url: String
   }],
   price: Number,
+  originalPrice: Number,                    // For showing discounts/savings
+  inStock: { type: Boolean, default: true }, // Availability status
   newArrival: { type: Boolean, default: false },
-  included: [{ type: String }], // What comes with the box
+  included: [{ type: String }],             // What comes with the box
+  specs: [{ key: String, value: String }],  // Flexible product specifications
 }, {
-  timestamps: true // This adds createdAt and updatedAt fields
+  timestamps: true
 });
 
 module.exports = mongoose.model('Product', productSchema);

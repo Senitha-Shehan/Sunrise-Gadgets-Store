@@ -1,4 +1,14 @@
-function SearchFilter({ searchTerm, setSearchTerm, selectedCategory, setSelectedCategory, categories }) {
+import { Link, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { useCart } from '../context/CartContext';
+
+const WA_NUMBER = '94702005088';
+
+function SearchFilter({
+  searchTerm, setSearchTerm,
+  selectedCategory, setSelectedCategory, categories,
+  minPrice, setMinPrice, maxPrice, setMaxPrice,
+}) {
   return (
     <div style={{
       background: 'white',
@@ -70,10 +80,59 @@ function SearchFilter({ searchTerm, setSearchTerm, selectedCategory, setSelected
           </select>
         </div>
 
+        {/* Price Range */}
+        <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexShrink: 0 }}>
+          <input
+            type="number"
+            placeholder="Min (LKR)"
+            value={minPrice}
+            onChange={e => setMinPrice(e.target.value)}
+            min="0"
+            style={{
+              width: '100px',
+              padding: '12px 10px',
+              background: 'var(--surface-50)',
+              border: '1.5px solid var(--surface-200)',
+              borderRadius: '12px',
+              fontFamily: 'var(--font-sans)',
+              fontSize: '0.85rem',
+              color: 'var(--surface-900)',
+              outline: 'none',
+              transition: 'all 0.2s ease',
+              boxSizing: 'border-box',
+            }}
+            onFocus={e => { e.target.style.borderColor = 'var(--brand-500)'; e.target.style.boxShadow = '0 0 0 3px rgba(249,115,22,0.1)'; e.target.style.background = 'white'; }}
+            onBlur={e => { e.target.style.borderColor = 'var(--surface-200)'; e.target.style.boxShadow = 'none'; e.target.style.background = 'var(--surface-50)'; }}
+          />
+          <span style={{ color: '#94a3b8', fontSize: '0.8rem', flexShrink: 0 }}>–</span>
+          <input
+            type="number"
+            placeholder="Max (LKR)"
+            value={maxPrice}
+            onChange={e => setMaxPrice(e.target.value)}
+            min="0"
+            style={{
+              width: '100px',
+              padding: '12px 10px',
+              background: 'var(--surface-50)',
+              border: '1.5px solid var(--surface-200)',
+              borderRadius: '12px',
+              fontFamily: 'var(--font-sans)',
+              fontSize: '0.85rem',
+              color: 'var(--surface-900)',
+              outline: 'none',
+              transition: 'all 0.2s ease',
+              boxSizing: 'border-box',
+            }}
+            onFocus={e => { e.target.style.borderColor = 'var(--brand-500)'; e.target.style.boxShadow = '0 0 0 3px rgba(249,115,22,0.1)'; e.target.style.background = 'white'; }}
+            onBlur={e => { e.target.style.borderColor = 'var(--surface-200)'; e.target.style.boxShadow = 'none'; e.target.style.background = 'var(--surface-50)'; }}
+          />
+        </div>
+
         {/* Clear */}
-        {(searchTerm || selectedCategory) && (
+        {(searchTerm || selectedCategory || minPrice || maxPrice) && (
           <button
-            onClick={() => { setSearchTerm(''); setSelectedCategory(''); }}
+            onClick={() => { setSearchTerm(''); setSelectedCategory(''); setMinPrice(''); setMaxPrice(''); }}
             style={{
               display: 'flex', alignItems: 'center', gap: '6px',
               padding: '11px 16px',

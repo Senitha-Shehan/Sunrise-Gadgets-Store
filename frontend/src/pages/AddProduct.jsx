@@ -43,6 +43,9 @@ function AddProduct({ editingProduct, onSuccess }) {
   const [category, setCategory] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
+  const [originalPrice, setOriginalPrice] = useState('');
+  const [inStock, setInStock] = useState(true);
+  const [specs, setSpecs] = useState([]);
   const [images, setImages] = useState([]);
   const [newArrival, setNewArrival] = useState(false);
   const [included, setIncluded] = useState('');
@@ -64,6 +67,9 @@ function AddProduct({ editingProduct, onSuccess }) {
       setCategory(editingProduct.category || '');
       setDescription(editingProduct.description || '');
       setPrice(editingProduct.price?.toString() || '');
+      setOriginalPrice(editingProduct.originalPrice?.toString() || '');
+      setInStock(editingProduct.inStock !== false);
+      setSpecs(editingProduct.specs || []);
       setNewArrival(editingProduct.newArrival || false);
       setIncluded(editingProduct.included?.join(', ') || '');
     }
@@ -80,8 +86,11 @@ function AddProduct({ editingProduct, onSuccess }) {
       formData.append('category', category);
       formData.append('description', description);
       formData.append('price', parseFloat(price));
+      if (originalPrice) formData.append('originalPrice', parseFloat(originalPrice));
+      formData.append('inStock', inStock);
       formData.append('newArrival', newArrival);
       formData.append('included', included);
+      formData.append('specs', JSON.stringify(specs));
       images.forEach(img => formData.append('images', img));
 
       if (editingProduct) {
@@ -141,16 +150,27 @@ function AddProduct({ editingProduct, onSuccess }) {
         />
       </FieldGroup>
 
-      {/* Price */}
-      <FieldGroup label="Price (LKR) *">
-        <div style={{ position: 'relative' }}>
-          <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.35)', fontSize: '0.85rem', fontWeight: 600 }}>Rs.</span>
-          <input type="number" value={price} onChange={e => setPrice(e.target.value)} required min="0" step="0.01" placeholder="0.00"
-            style={{ ...inputStyle(), paddingLeft: '44px' }}
-            onFocus={focusStyle} onBlur={blurStyle}
-          />
-        </div>
-      </FieldGroup>
+      {/* Price & Original Price */}
+      <div className="form-row-2">
+        <FieldGroup label="Current Price (LKR) *">
+          <div style={{ position: 'relative' }}>
+            <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.35)', fontSize: '0.85rem', fontWeight: 600 }}>Rs.</span>
+            <input type="number" value={price} onChange={e => setPrice(e.target.value)} required min="0" step="0.01" placeholder="0.00"
+              style={{ ...inputStyle(), paddingLeft: '44px' }}
+              onFocus={focusStyle} onBlur={blurStyle}
+            />
+          </div>
+        </FieldGroup>
+        <FieldGroup label="Original Price (Optional) — Shows discount">
+          <div style={{ position: 'relative' }}>
+            <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.35)', fontSize: '0.85rem', fontWeight: 600 }}>Rs.</span>
+            <input type="number" value={originalPrice} onChange={e => setOriginalPrice(e.target.value)} min="0" step="0.01" placeholder="0.00"
+              style={{ ...inputStyle(), paddingLeft: '44px' }}
+              onFocus={focusStyle} onBlur={blurStyle}
+            />
+          </div>
+        </FieldGroup>
+      </div>
 
       {/* Images */}
       <FieldGroup label={editingProduct ? 'Images (optional — only if replacing)' : 'Product Images * (max 5)'}>
@@ -191,19 +211,74 @@ function AddProduct({ editingProduct, onSuccess }) {
         </div>
       </FieldGroup>
 
-      {/* New Arrival Toggle */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px' }}>
-        <input
-          type="checkbox"
-          id="newArrivalCheck"
-          checked={newArrival}
-          onChange={e => setNewArrival(e.target.checked)}
-          style={{ width: '18px', height: '18px', accentColor: 'var(--brand-500)', cursor: 'pointer', minHeight: 'auto', minWidth: 'auto' }}
-        />
-        <label htmlFor="newArrivalCheck" style={{ color: 'rgba(255,255,255,0.6)', fontWeight: 500, fontSize: '0.9rem', cursor: 'pointer', margin: 0 }}>
-          Mark as <span style={{ color: 'var(--brand-400)', fontWeight: 700 }}>New Arrival</span> ✨
-        </label>
+      {/* Settings Toggles (New Arrival & Stock) */}
+      <div className="form-row-2">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', flex: 1 }}>
+          <input
+            type="checkbox"
+            id="newArrivalCheck"
+            checked={newArrival}
+            onChange={e => setNewArrival(e.target.checked)}
+            style={{ width: '18px', height: '18px', accentColor: 'var(--brand-500)', cursor: 'pointer', minHeight: 'auto', minWidth: 'auto' }}
+          />
+          <label htmlFor="newArrivalCheck" style={{ color: 'rgba(255,255,255,0.6)', fontWeight: 500, fontSize: '0.9rem', cursor: 'pointer', margin: 0 }}>
+            Mark as <span style={{ color: 'var(--brand-400)', fontWeight: 700 }}>New Arrival</span> ✨
+          </label>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', flex: 1 }}>
+          <input
+            type="checkbox"
+            id="inStockCheck"
+            checked={inStock}
+            onChange={e => setInStock(e.target.checked)}
+            style={{ width: '18px', height: '18px', accentColor: '#10b981', cursor: 'pointer', minHeight: 'auto', minWidth: 'auto' }}
+          />
+          <label htmlFor="inStockCheck" style={{ color: 'rgba(255,255,255,0.6)', fontWeight: 500, fontSize: '0.9rem', cursor: 'pointer', margin: 0 }}>
+            Currently <span style={{ color: inStock ? '#10b981' : '#ef4444', fontWeight: 700 }}>{inStock ? 'In Stock' : 'Out of Stock'}</span>
+          </label>
+        </div>
       </div>
+
+      {/* Specifications Builder */}
+      <FieldGroup label="Product Specifications (Optional)">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          {specs.map((spec, index) => (
+            <div key={index} style={{ display: 'flex', gap: '8px' }}>
+              <input type="text" placeholder="e.g. Lumens" value={spec.key} style={{ ...inputStyle(), flex: 1 }} onFocus={focusStyle} onBlur={blurStyle}
+                onChange={e => {
+                  const newSpecs = [...specs];
+                  newSpecs[index].key = e.target.value;
+                  setSpecs(newSpecs);
+                }}
+              />
+              <input type="text" placeholder="e.g. 3300 lm" value={spec.value} style={{ ...inputStyle(), flex: 2 }} onFocus={focusStyle} onBlur={blurStyle}
+                onChange={e => {
+                  const newSpecs = [...specs];
+                  newSpecs[index].value = e.target.value;
+                  setSpecs(newSpecs);
+                }}
+              />
+              <button type="button" onClick={() => setSpecs(specs.filter((_, i) => i !== index))}
+                style={{
+                  background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.2)',
+                  borderRadius: '10px', width: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  cursor: 'pointer', transition: 'all 0.2s'
+                }}
+              >×</button>
+            </div>
+          ))}
+          <button type="button" onClick={() => setSpecs([...specs, { key: '', value: '' }])}
+            style={{
+              padding: '10px', background: 'rgba(255,255,255,0.05)', border: '1px dashed rgba(255,255,255,0.2)',
+              borderRadius: '10px', color: 'white', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'
+            }}
+          >
+            + Add Specification
+          </button>
+        </div>
+      </FieldGroup>
 
       {/* What's Included */}
       <FieldGroup label="What's Included in the Box">

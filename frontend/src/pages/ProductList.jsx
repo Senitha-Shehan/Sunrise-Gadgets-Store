@@ -50,6 +50,8 @@ function ProductList() {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
 
   useEffect(() => {
     axios.get('http://localhost:5000/products')
@@ -68,12 +70,23 @@ function ProductList() {
       );
     }
     if (selectedCategory) filtered = filtered.filter(p => p.category === selectedCategory);
+    
+    // Price filtering
+    if (minPrice) {
+      const min = Number(minPrice);
+      if (!isNaN(min)) filtered = filtered.filter(p => p.price >= min);
+    }
+    if (maxPrice) {
+      const max = Number(maxPrice);
+      if (!isNaN(max)) filtered = filtered.filter(p => p.price <= max);
+    }
+
     filtered = filtered.slice().sort((a, b) => {
       if (a.newArrival !== b.newArrival) return b.newArrival - a.newArrival;
       return new Date(b.createdAt) - new Date(a.createdAt);
     });
     setFilteredProducts(filtered);
-  }, [products, searchTerm, selectedCategory]);
+  }, [products, searchTerm, selectedCategory, minPrice, maxPrice]);
 
   const newArrivals = filteredProducts.filter(p => p.newArrival);
   const otherProducts = filteredProducts.filter(p => !p.newArrival);
@@ -112,11 +125,13 @@ function ProductList() {
         <SearchFilter
           searchTerm={searchTerm} setSearchTerm={setSearchTerm}
           selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory}
+          minPrice={minPrice} setMinPrice={setMinPrice}
+          maxPrice={maxPrice} setMaxPrice={setMaxPrice}
           categories={categories}
         />
 
         {/* Active filter pills */}
-        {(searchTerm || selectedCategory) && (
+        {(searchTerm || selectedCategory || minPrice || maxPrice) && (
           <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
             <span style={{ fontSize: '0.85rem', color: '#64748b' }}>
               <strong style={{ color: 'var(--surface-900)' }}>{filteredProducts.length}</strong> result{filteredProducts.length !== 1 ? 's' : ''}
@@ -129,6 +144,11 @@ function ProductList() {
             {selectedCategory && (
               <span style={{ padding: '2px 10px', background: 'rgba(100,116,139,0.08)', border: '1px solid rgba(100,116,139,0.2)', borderRadius: '999px', color: '#475569', fontSize: '0.78rem', fontWeight: 600 }}>
                 {selectedCategory}
+              </span>
+            )}
+            {(minPrice || maxPrice) && (
+              <span style={{ padding: '2px 10px', background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: '999px', color: '#059669', fontSize: '0.78rem', fontWeight: 600 }}>
+                {minPrice ? `LKR ${minPrice}` : '0'} - {maxPrice ? `LKR ${maxPrice}` : 'Any'}
               </span>
             )}
           </div>
@@ -156,7 +176,7 @@ function ProductList() {
             <div style={{ fontSize: '3rem', marginBottom: '14px' }}>🔍</div>
             <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', color: 'var(--surface-900)', marginBottom: '6px' }}>No products found</h3>
             <p style={{ color: '#64748b', marginBottom: '18px', fontSize: '0.9rem' }}>Try adjusting your search or filter</p>
-            <button onClick={() => { setSearchTerm(''); setSelectedCategory(''); }} className="btn-brand">Clear Filters</button>
+            <button onClick={() => { setSearchTerm(''); setSelectedCategory(''); setMinPrice(''); setMaxPrice(''); }} className="btn-brand">Clear Filters</button>
           </div>
         )}
       </div>
