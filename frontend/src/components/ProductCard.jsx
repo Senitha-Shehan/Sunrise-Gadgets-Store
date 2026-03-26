@@ -45,7 +45,7 @@ function ProductCard({ product }) {
         }}
       >
         {/* Image */}
-        <div style={{
+        <div className="product-card-img" style={{
           position: 'relative',
           aspectRatio: '4/3',
           overflow: 'hidden',
@@ -114,9 +114,9 @@ function ProductCard({ product }) {
         </div>
 
         {/* Content */}
-        <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <div className="product-card-body" style={{ padding: '16px', flex: 1, display: 'flex', flexDirection: 'column' }}>
           {/* Tags */}
-          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '10px' }}>
+          <div className="product-card-tags" style={{ display: 'flex', gap: '5px', flexWrap: 'wrap', marginBottom: '8px' }}>
             {product.brand && (
               <span style={{
                 background: 'rgba(249,115,22,0.08)',
@@ -147,13 +147,13 @@ function ProductCard({ product }) {
           </div>
 
           {/* Name */}
-          <h3 style={{
+          <h3 className="product-card-name" style={{
             fontFamily: 'var(--font-display)',
             fontWeight: 700,
-            fontSize: '1rem',
+            fontSize: '0.95rem',
             color: hovered ? 'var(--brand-600)' : 'var(--surface-900)',
             lineHeight: 1.35,
-            marginBottom: '8px',
+            marginBottom: '6px',
             transition: 'color 0.2s',
             display: '-webkit-box',
             WebkitLineClamp: 2,
@@ -165,25 +165,26 @@ function ProductCard({ product }) {
 
           {/* Description */}
           {product.description && (
-            <p style={{
+            <p className="product-card-desc" style={{
               color: '#64748b',
-              fontSize: '0.8rem',
-              lineHeight: 1.6,
+              fontSize: '0.78rem',
+              lineHeight: 1.55,
               flex: 1,
-              marginBottom: '16px',
+              marginBottom: '12px',
             }}>
-              {truncate(product.description)}
+              {truncate(product.description, 75)}
             </p>
           )}
 
           {/* Price + CTA */}
-          <div style={{
+          <div className="product-card-footer" style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            paddingTop: '14px',
+            paddingTop: '10px',
             borderTop: '1px solid var(--surface-100)',
             marginTop: 'auto',
+            gap: '6px',
           }}>
             <div>
               <div style={{

@@ -1,22 +1,22 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 const navLinks = [
   { to: '/', label: 'Products' },
-  { to: '#', label: 'About' },
-  { to: '#', label: 'Contact' },
+  { to: '/about', label: 'About' },
+  { to: '/contact', label: 'Contact' },
 ];
 
 const mobileLinks = [
   { to: '/', label: '🏠 Products' },
-  { to: '/add', label: '➕ Add Product' },
-  { to: '#', label: 'ℹ️ About' },
-  { to: '#', label: '📞 Contact' },
+  { to: '/about', label: 'ℹ️ About' },
+  { to: '/contact', label: '📞 Contact' },
 ];
 
 function Nav() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -98,7 +98,8 @@ function Nav() {
                   to={link.to}
                   style={{
                     padding: '8px 18px',
-                    color: 'rgba(255,255,255,0.75)',
+                    color: location.pathname === link.to ? 'white' : 'rgba(255,255,255,0.75)',
+                    background: location.pathname === link.to ? 'rgba(249,115,22,0.12)' : 'transparent',
                     fontWeight: 500,
                     fontSize: '0.9rem',
                     textDecoration: 'none',
@@ -107,12 +108,16 @@ function Nav() {
                     letterSpacing: '0.01em',
                   }}
                   onMouseEnter={e => {
-                    e.target.style.color = 'white';
-                    e.target.style.background = 'rgba(249,115,22,0.12)';
+                    if (location.pathname !== link.to) {
+                      e.target.style.color = 'white';
+                      e.target.style.background = 'rgba(249,115,22,0.08)';
+                    }
                   }}
                   onMouseLeave={e => {
-                    e.target.style.color = 'rgba(255,255,255,0.75)';
-                    e.target.style.background = 'transparent';
+                    if (location.pathname !== link.to) {
+                      e.target.style.color = 'rgba(255,255,255,0.75)';
+                      e.target.style.background = 'transparent';
+                    }
                   }}
                 >
                   {link.label}
@@ -229,15 +234,26 @@ function Nav() {
                 display: 'block',
                 padding: '14px 16px',
                 marginBottom: '4px',
-                color: 'rgba(255,255,255,0.75)',
+                color: location.pathname === link.to ? 'white' : 'rgba(255,255,255,0.75)',
+                background: location.pathname === link.to ? 'rgba(249,115,22,0.12)' : 'transparent',
                 fontWeight: 500,
                 fontSize: '0.95rem',
                 textDecoration: 'none',
                 borderRadius: '12px',
                 transition: 'all 0.2s',
               }}
-              onMouseEnter={e => { e.target.style.background='rgba(249,115,22,0.12)'; e.target.style.color='white'; }}
-              onMouseLeave={e => { e.target.style.background='transparent'; e.target.style.color='rgba(255,255,255,0.75)'; }}
+              onMouseEnter={e => {
+                if (location.pathname !== link.to) {
+                  e.target.style.background = 'rgba(249,115,22,0.08)';
+                  e.target.style.color = 'white';
+                }
+              }}
+              onMouseLeave={e => {
+                if (location.pathname !== link.to) {
+                  e.target.style.background = 'transparent';
+                  e.target.style.color = 'rgba(255,255,255,0.75)';
+                }
+              }}
             >
               {link.label}
             </Link>

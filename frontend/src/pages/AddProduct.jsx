@@ -2,13 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const CATEGORIES = [
-  "4K Projectors", "HD/Full HD Projectors", "Laser Projectors",
-  "Mini/Portable Projectors", "Outdoor Projectors", "Accessories",
-  "Digital Smart Boards", "Smart Projectors", "Digital Cinema Projectors",
-  "Mapping Projectors", "Gobo Projectors", "Audio Systems",
-  "Used Products", "Projector Screens", "Uncategorized"
-];
+
 
 const inputStyle = (hasError) => ({
   width: '100%',
@@ -55,7 +49,14 @@ function AddProduct({ editingProduct, onSuccess }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const [categoriesList, setCategoriesList] = useState([]);
 
+  useEffect(() => {
+    // Fetch dynamic categories from the backend
+    axios.get('http://localhost:5000/categories')
+      .then(res => setCategoriesList(res.data))
+      .catch(err => console.error('Failed to load categories', err));
+  }, []);
   useEffect(() => {
     if (editingProduct) {
       setName(editingProduct.name || '');
@@ -110,7 +111,7 @@ function AddProduct({ editingProduct, onSuccess }) {
   return (
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
       {/* Row: Name + Brand */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+      <div className="form-row-2">
         <FieldGroup label="Product Name *">
           <input type="text" value={name} onChange={e => setName(e.target.value)} required placeholder="e.g. Epson EB-S41" style={inputStyle()} onFocus={focusStyle} onBlur={blurStyle} />
         </FieldGroup>
@@ -126,8 +127,8 @@ function AddProduct({ editingProduct, onSuccess }) {
           onFocus={focusStyle} onBlur={blurStyle}
         >
           <option value="" style={{ background: '#1e293b' }}>Select a category...</option>
-          {CATEGORIES.map(cat => (
-            <option key={cat} value={cat} style={{ background: '#1e293b' }}>{cat}</option>
+          {categoriesList.map(cat => (
+            <option key={cat._id} value={cat.name} style={{ background: '#1e293b' }}>{cat.name}</option>
           ))}
         </select>
       </FieldGroup>
