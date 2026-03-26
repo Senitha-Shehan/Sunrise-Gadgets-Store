@@ -1,6 +1,7 @@
 const Product = require('../models/Product');
 const upload = require('../middleware/upload');
-const { uploadStream, deleteFromCloudinary } = require('../utils/cloudinary');
+const fs = require('fs');
+const path = require('path');
 
 // Get all products sorted by latest first
 const getProducts = async (req, res) => {
@@ -35,13 +36,10 @@ const addProduct = async (req, res) => {
       return res.status(400).json({ error: 'Please upload at least one image file' });
     }
     
-    // Process multiple images - upload to Cloudinary
-    const uploadPromises = req.files.map(file => uploadStream(file.buffer));
-    const uploadResults = await Promise.all(uploadPromises);
-    
-    const images = uploadResults.map(result => ({
-      url: result.secure_url,
-      public_id: result.public_id
+    // Process multiple images
+    const images = req.files.map(file => ({
+      url: `/uploads/${file.filename}`,
+      public_id: file.filename
     }));
     
     // Process included items (split by comma if it's a string)
@@ -127,14 +125,11 @@ const updateProduct = async (req, res) => {
       if (currentProduct) finalImages = currentProduct.images;
     }
 
-    // 2. Add new uploads - upload to Cloudinary
+    // 2. Add new uploads
     if (req.files && req.files.length > 0) {
-      const uploadPromises = req.files.map(file => uploadStream(file.buffer));
-      const uploadResults = await Promise.all(uploadPromises);
-      
-      const newImages = uploadResults.map(result => ({
-        url: result.secure_url,
-        public_id: result.public_id
+      const newImages = req.files.map(file => ({
+        url: `/uploads/${file.filename}`,
+        public_id: file.filename
       }));
       finalImages = [...finalImages, ...newImages];
     }
@@ -149,7 +144,11 @@ const updateProduct = async (req, res) => {
       );
       
       imagesToRemove.forEach(img => {
-        deleteFromCloudinary(img.public_id);
+        const filePath = path.join(__dirname, '..', 'uploads', img.public_id);
+        fs.unlink(filePath, (err) => {
+          if (err) console.error(`Failed to delete orphaned file: ${filePath}`, err);
+          else console.log(`Deleted orphaned file: ${filePath}`);
+        });
       });
     }
 
@@ -182,10 +181,13 @@ const deleteProduct = async (req, res) => {
       return res.status(404).json({ error: 'Product not found' });
     }
 
-    // Delete actual files from Cloudinary
+    // Delete actual files from disk
     if (product.images && product.images.length > 0) {
       product.images.forEach(img => {
-        deleteFromCloudinary(img.public_id);
+        const filePath = path.join(__dirname, '..', 'uploads', img.public_id);
+        fs.unlink(filePath, (err) => {
+          if (err) console.error(`Failed to delete file on product delete: ${filePath}`, err);
+        });
       });
     }
 

@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { useCart } from '../context/CartContext';
-import { API_URL } from '../config';
 
 function ProductCard({ product }) {
   const [hovered, setHovered] = useState(false);
@@ -59,7 +58,7 @@ function ProductCard({ product }) {
         }}>
           {product.images && product.images.length > 0 && !imgError ? (
             <img
-              src={`${API_URL}${product.images[0].url}`}
+              src={`http://localhost:5000${product.images[0].url}`}
               alt={product.name}
               style={{
                 width: '100%',

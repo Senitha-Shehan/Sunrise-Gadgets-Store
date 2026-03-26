@@ -4,7 +4,6 @@ import Hero from '../components/Hero';
 import SearchFilter from '../components/SearchFilter';
 import ProductCarousel from '../components/ProductCarousel';
 import PromoBanner from '../components/PromoBanner';
-import { API_URL } from '../config';
 
 // Categories are now fetched dynamically from the backend
 
@@ -53,12 +52,12 @@ function ProductList() {
 
   useEffect(() => {
     // Fetch products
-    axios.get(`${API_URL}/products`)
+    axios.get('http://localhost:5000/products')
       .then(res => { setProducts(res.data); setFilteredProducts(res.data); setLoading(false); })
       .catch(() => { setError('Failed to fetch products'); setLoading(false); });
       
     // Fetch categories
-    axios.get(`${API_URL}/categories`)
+    axios.get('http://localhost:5000/categories')
       .then(res => { setCategories(res.data.map(cat => cat.name)); })
       .catch(err => console.error('Failed to load categories', err));
   }, []);
@@ -114,7 +113,7 @@ function ProductList() {
     <div>
       <div style={{ minHeight: '260px', background: 'var(--surface-950)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ textAlign: 'center' }}>
-          <img src={`${API_URL}${product.images[0].url}`} alt={product.name} style={{ width: '40px', height: '40px', border: '3px solid rgba(249,115,22,0.3)', borderTop: '3px solid var(--brand-500)', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
+          <div style={{ width: '40px', height: '40px', border: '3px solid rgba(249,115,22,0.3)', borderTop: '3px solid var(--brand-500)', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
           <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.875rem' }}>Loading products...</p>
         </div>
       </div>

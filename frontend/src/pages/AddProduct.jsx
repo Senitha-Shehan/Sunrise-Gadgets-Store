@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { API_URL } from '../config';
 
 
 
@@ -58,7 +57,7 @@ function AddProduct({ editingProduct, onSuccess }) {
 
   useEffect(() => {
     // Fetch dynamic categories from the backend
-    axios.get(`${API_URL}/categories`)
+    axios.get('http://localhost:5000/categories')
       .then(res => setCategoriesList(res.data))
       .catch(err => console.error('Failed to load categories', err));
   }, []);
@@ -120,9 +119,9 @@ function AddProduct({ editingProduct, onSuccess }) {
       images.forEach(img => formData.append('images', img));
 
       if (editingProduct) {
-        await axios.put(`${API_URL}/products/${editingProduct._id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+        await axios.put(`http://localhost:5000/products/${editingProduct._id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
       } else {
-        await axios.post(`${API_URL}/products`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+        await axios.post('http://localhost:5000/products', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
       }
       setLoading(false);
       if (onSuccess) onSuccess(); else navigate('/');
@@ -205,7 +204,7 @@ function AddProduct({ editingProduct, onSuccess }) {
           {/* Existing Images Thumbnails */}
           {existingImages.map((img) => (
             <div key={img.public_id} style={{ position: 'relative', width: '100px', height: '100px', borderRadius: '12px', overflow: 'hidden', border: '1.5px solid rgba(255,255,255,0.1)' }}>
-              <img src={`${API_URL}${img.url}`} alt="Product" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <img src={`http://localhost:5000${img.url}`} alt="Product" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               <button 
                 type="button" 
                 onClick={() => removeExistingImage(img.public_id)}

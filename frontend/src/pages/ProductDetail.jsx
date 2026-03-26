@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useCart } from '../context/CartContext';
-import { API_URL } from '../config';
 
 const WA_NUMBER = '94702005088';
 
@@ -37,7 +36,7 @@ function ProductDetail() {
   };
 
   useEffect(() => {
-    axios.get(`${API_URL}/products/${id}`)
+    axios.get(`http://localhost:5000/products/${id}`)
       .then(res => { setProduct(res.data); setLoading(false); })
       .catch(() => { setError('Failed to fetch product details'); setLoading(false); });
   }, [id]);
@@ -111,39 +110,39 @@ function ProductDetail() {
                     onMouseLeave={handleMouseLeave}
                     onMouseEnter={handleMouseMove}
                   >
-                      <img 
-                        src={`${API_URL}${product.images[selectedImage].url}`} 
-                        alt={product.name} 
-                        style={{ 
-                          width: '100%', height: '100%', objectFit: 'contain',
-                          transform: zoomStyle.display === 'block' ? 'scale(2.5)' : 'scale(1)',
-                          transformOrigin: `${zoomStyle.x} ${zoomStyle.y}`,
-                          transition: zoomStyle.display === 'block' ? 'none' : 'transform 0.3s ease-out',
-                          pointerEvents: 'none'
-                        }} 
-                      />
+                    <img 
+                      src={`http://localhost:5000${product.images[selectedImage].url}`} 
+                      alt={product.name} 
+                      style={{ 
+                        width: '100%', height: '100%', objectFit: 'contain',
+                        transform: zoomStyle.display === 'block' ? 'scale(2.5)' : 'scale(1)',
+                        transformOrigin: `${zoomStyle.x} ${zoomStyle.y}`,
+                        transition: zoomStyle.display === 'block' ? 'none' : 'transform 0.3s ease-out',
+                        pointerEvents: 'none'
+                      }} 
+                    />
+                  </div>
+                  {product.images.length > 1 && (
+                    <div style={{ display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '8px', scrollbarWidth: 'none' }}>
+                      {product.images.map((img, i) => (
+                        <button key={i} onClick={() => setSelectedImage(i)}
+                          style={{
+                            flexShrink: 0, width: '72px', height: '72px', borderRadius: '12px', overflow: 'hidden',
+                            border: i === selectedImage ? '2px solid var(--brand-500)' : '2px solid transparent',
+                            boxShadow: i === selectedImage ? '0 4px 12px rgba(249,115,22,0.15)' : '0 2px 6px rgba(0,0,0,0.04)',
+                            opacity: i === selectedImage ? 1 : 0.6,
+                            cursor: 'pointer', transition: 'all 0.2s', background: 'white', padding: '2px', minHeight: 'auto',
+                          }}
+                          onMouseEnter={e => { if (i !== selectedImage) e.currentTarget.style.opacity = '1'; }}
+                          onMouseLeave={e => { if (i !== selectedImage) e.currentTarget.style.opacity = '0.6'; }}
+                        >
+                          <div style={{ width: '100%', height: '100%', borderRadius: '8px', overflow: 'hidden' }}>
+                            <img src={`http://localhost:5000${img.url}`} alt={`View ${i+1}`} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                          </div>
+                        </button>
+                      ))}
                     </div>
-                    {product.images.length > 1 && (
-                      <div style={{ display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '8px', scrollbarWidth: 'none' }}>
-                        {product.images.map((img, i) => (
-                          <button key={i} onClick={() => setSelectedImage(i)}
-                            style={{
-                              flexShrink: 0, width: '72px', height: '72px', borderRadius: '12px', overflow: 'hidden',
-                              border: i === selectedImage ? '2px solid var(--brand-500)' : '2px solid transparent',
-                              boxShadow: i === selectedImage ? '0 4px 12px rgba(249,115,22,0.15)' : '0 2px 6px rgba(0,0,0,0.04)',
-                              opacity: i === selectedImage ? 1 : 0.6,
-                              cursor: 'pointer', transition: 'all 0.2s', background: 'white', padding: '2px', minHeight: 'auto',
-                            }}
-                            onMouseEnter={e => { if (i !== selectedImage) e.currentTarget.style.opacity = '1'; }}
-                            onMouseLeave={e => { if (i !== selectedImage) e.currentTarget.style.opacity = '0.6'; }}
-                          >
-                            <div style={{ width: '100%', height: '100%', borderRadius: '8px', overflow: 'hidden' }}>
-                              <img src={`${API_URL}${img.url}`} alt={`View ${i+1}`} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    )}
+                  )}
                 </div>
               ) : (
                 <div style={{ aspectRatio: '1/1', background: 'var(--surface-50)', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '5rem', color: '#94a3b8' }}>📦</div>

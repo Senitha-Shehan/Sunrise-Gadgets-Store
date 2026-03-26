@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AddProduct from './AddProduct';
-import { API_URL } from '../config';
 
 function AdminDashboard() {
   const [products, setProducts] = useState([]);
@@ -24,8 +23,8 @@ function AdminDashboard() {
   const fetchData = async () => {
     try {
       const [prodRes, catRes] = await Promise.all([
-        axios.get(`${API_URL}/products`),
-        axios.get(`${API_URL}/categories`)
+        axios.get('http://localhost:5000/products'),
+        axios.get('http://localhost:5000/categories')
       ]);
       setProducts(prodRes.data);
       setCategories(catRes.data);
@@ -38,14 +37,14 @@ function AdminDashboard() {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get(`${API_URL}/products`);
+      const res = await axios.get('http://localhost:5000/products');
       setProducts(res.data);
     } catch { alert('Failed to refresh products'); }
   };
 
   const fetchCategories = async () => {
     try {
-      const res = await axios.get(`${API_URL}/categories`);
+      const res = await axios.get('http://localhost:5000/categories');
       setCategories(res.data);
     } catch { alert('Failed to refresh categories'); }
   };
@@ -54,7 +53,7 @@ function AdminDashboard() {
   
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this product?')) return;
-    try { await axios.delete(`${API_URL}/products/${id}`); fetchProducts(); }
+    try { await axios.delete(`http://localhost:5000/products/${id}`); fetchProducts(); }
     catch { alert('Failed to delete product'); }
   };
 
@@ -66,7 +65,7 @@ function AdminDashboard() {
     if (!newCatName.trim()) return;
     setIsAddingCat(true);
     try {
-      await axios.post(`${API_URL}/categories`, { name: newCatName });
+      await axios.post('http://localhost:5000/categories', { name: newCatName });
       setNewCatName('');
       fetchCategories();
     } catch (err) {
@@ -79,7 +78,7 @@ function AdminDashboard() {
   const handleDeleteCategory = async (id) => {
     if (!window.confirm('Delete this category? Products using it might lose their grouping.')) return;
     try {
-      await axios.delete(`${API_URL}/categories/${id}`);
+      await axios.delete(`http://localhost:5000/categories/${id}`);
       fetchCategories();
     } catch {
       alert('Failed to delete category');
@@ -208,7 +207,7 @@ function AdminDashboard() {
                     <td style={{ padding: '12px 16px', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         {product.images?.length > 0 ? (
-                          <img src={`${API_URL}${product.images[0].url}`} alt={product.name} style={{ width: '40px', height: '40px', borderRadius: '8px', objectFit: 'cover', border: '1px solid rgba(255,255,255,0.08)', flexShrink: 0 }} />
+                          <img src={`http://localhost:5000${product.images[0].url}`} alt={product.name} style={{ width: '40px', height: '40px', borderRadius: '8px', objectFit: 'cover', border: '1px solid rgba(255,255,255,0.08)', flexShrink: 0 }} />
                         ) : (
                           <div style={{ width: '40px', height: '40px', borderRadius: '8px', background: 'rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem', flexShrink: 0 }}>📦</div>
                         )}
