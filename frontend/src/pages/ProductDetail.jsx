@@ -36,7 +36,7 @@ function ProductDetail() {
   };
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/products/${id}`)
+    axios.get(`/products/${id}`)
       .then(res => { setProduct(res.data); setLoading(false); })
       .catch(() => { setError('Failed to fetch product details'); setLoading(false); });
   }, [id]);
@@ -111,7 +111,7 @@ function ProductDetail() {
                     onMouseEnter={handleMouseMove}
                   >
                     <img 
-                      src={`http://localhost:5000${product.images[selectedImage].url}`} 
+                      src={`${product.images[selectedImage].url}`} 
                       alt={product.name} 
                       style={{ 
                         width: '100%', height: '100%', objectFit: 'contain',
@@ -137,7 +137,7 @@ function ProductDetail() {
                           onMouseLeave={e => { if (i !== selectedImage) e.currentTarget.style.opacity = '0.6'; }}
                         >
                           <div style={{ width: '100%', height: '100%', borderRadius: '8px', overflow: 'hidden' }}>
-                            <img src={`http://localhost:5000${img.url}`} alt={`View ${i+1}`} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                            <img src={`${img.url}`} alt={`View ${i+1}`} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                           </div>
                         </button>
                       ))}

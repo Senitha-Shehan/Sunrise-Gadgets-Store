@@ -79,7 +79,7 @@ function SortableImage({ item, onRemove, isFirst }) {
     touchAction: 'none'
   };
 
-  const previewUrl = item.type === 'existing' ? `http://localhost:5000${item.data.url}` : URL.createObjectURL(item.data);
+  const previewUrl = item.type === 'existing' ? `${item.data.url}` : URL.createObjectURL(item.data);
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
@@ -120,7 +120,7 @@ function AddProduct({ editingProduct, onSuccess }) {
 
   useEffect(() => {
     // Fetch dynamic categories from the backend
-    axios.get('http://localhost:5000/categories')
+    axios.get('/categories')
       .then(res => setCategoriesList(res.data))
       .catch(err => console.error('Failed to load categories', err));
   }, []);
@@ -211,9 +211,9 @@ function AddProduct({ editingProduct, onSuccess }) {
       newFiles.forEach(img => formData.append('images', img));
 
       if (editingProduct) {
-        await axios.put(`http://localhost:5000/products/${editingProduct._id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+        await axios.put(`/products/${editingProduct._id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
       } else {
-        await axios.post('http://localhost:5000/products', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+        await axios.post('/products', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
       }
       setLoading(false);
       if (onSuccess) onSuccess(); else navigate('/');

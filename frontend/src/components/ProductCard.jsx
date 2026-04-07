@@ -58,7 +58,7 @@ function ProductCard({ product }) {
         }}>
           {product.images && product.images.length > 0 && !imgError ? (
             <img
-              src={`http://localhost:5000${product.images[0].url}`}
+              src={`${product.images[0].url}`}
               alt={product.name}
               style={{
                 width: '100%',
