@@ -52,12 +52,12 @@ function ProductList() {
 
   useEffect(() => {
     // Fetch products
-    axios.get('http://localhost:5000/products')
+    axios.get('/products')
       .then(res => { setProducts(res.data); setFilteredProducts(res.data); setLoading(false); })
       .catch(() => { setError('Failed to fetch products'); setLoading(false); });
       
     // Fetch categories
-    axios.get('http://localhost:5000/categories')
+    axios.get('/categories')
       .then(res => { setCategories(res.data.map(cat => cat.name)); })
       .catch(err => console.error('Failed to load categories', err));
   }, []);

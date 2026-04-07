@@ -113,30 +113,48 @@ const updateProduct = async (req, res) => {
     let finalImages = [];
     
     // 1. Get existing images from request body (sent as JSON string from client)
+    let existingImages = [];
     if (req.body.existingImages) {
       try {
-        finalImages = JSON.parse(req.body.existingImages);
+        existingImages = JSON.parse(req.body.existingImages);
       } catch (e) {
         console.error('Error parsing existingImages:', e);
       }
-    } else if (!req.files || req.files.length === 0) {
-      // Fallback: If no instruction provided and no new files, keep current images
-      const currentProduct = await Product.findById(req.params.id);
-      if (currentProduct) finalImages = currentProduct.images;
+    } else {
+        // Fallback: If no instruction provided, keep current images
+        const currentProduct = await Product.findById(req.params.id);
+        if (currentProduct) existingImages = currentProduct.images;
     }
 
     // 2. Add new uploads
-    if (req.files && req.files.length > 0) {
-      const newImages = req.files.map(file => ({
-        url: `/uploads/${file.filename}`,
-        public_id: file.filename
-      }));
-      finalImages = [...finalImages, ...newImages];
+    const newImages = (req.files && req.files.length > 0) ? req.files.map(file => ({
+      url: `/uploads/${file.filename}`,
+      public_id: file.filename
+    })) : [];
+
+    // 3. Construct final list based on order if provided
+    if (req.body.imageOrder) {
+      try {
+        const order = JSON.parse(req.body.imageOrder);
+        finalImages = order.map(item => {
+          if (item.type === 'existing') {
+            return existingImages.find(img => img.public_id === item.id);
+          } else if (item.type === 'new') {
+            return newImages[item.index];
+          }
+          return null;
+        }).filter(Boolean);
+      } catch (e) {
+        console.error('Error parsing imageOrder:', e);
+        finalImages = [...existingImages, ...newImages];
+      }
+    } else {
+      finalImages = [...existingImages, ...newImages];
     }
 
     updateData.images = finalImages.slice(0, 5); // Enforce max 5 limit
 
-    // 3. Cleanup: Find images that were in the product but aren't in finalImages anymore
+    // 4. Cleanup: Find images that were in the product but aren't in finalImages anymore
     const oldProduct = await Product.findById(req.params.id);
     if (oldProduct) {
       const imagesToRemove = oldProduct.images.filter(

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useCart } from '../context/CartContext';
 
-const WA_NUMBER = '94702005088';
+const WA_NUMBER = '94784488955';
 
 function ProductDetail() {
   const { id } = useParams();

@@ -1,6 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  rectSortingStrategy,
+  useSortable
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 
 
@@ -37,6 +53,54 @@ function FieldGroup({ label, children }) {
   );
 }
 
+function SortableImage({ item, onRemove, isFirst }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging
+  } = useSortable({ id: item.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    position: 'relative',
+    width: '100px',
+    height: '100px',
+    borderRadius: '12px',
+    overflow: 'hidden',
+    border: item.type === 'existing' ? '1.5px solid rgba(255,255,255,0.1)' : '1.5px solid var(--brand-500)',
+    boxShadow: item.type === 'new' ? '0 0 10px rgba(249,115,22,0.2)' : (isDragging ? '0 8px 16px rgba(0,0,0,0.5)' : 'none'),
+    cursor: 'grab',
+    zIndex: isDragging ? 10 : 1,
+    opacity: isDragging ? 0.6 : 1,
+    touchAction: 'none'
+  };
+
+  const previewUrl = item.type === 'existing' ? `http://localhost:5000${item.data.url}` : URL.createObjectURL(item.data);
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      <img src={previewUrl} alt="Product" style={{ width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }} />
+      <button 
+        type="button" 
+        onClick={(e) => { e.stopPropagation(); onRemove(item.id); }}
+        style={{ position: 'absolute', top: '4px', right: '4px', background: 'rgba(239,68,68,0.9)', border: 'none', borderRadius: '6px', width: '22px', height: '22px', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'transform 0.2s', minHeight: 'auto', zIndex: 11 }}
+        onMouseEnter={e => e.currentTarget.style.transform='scale(1.1)'}
+        onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}
+      >
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      {isFirst && (
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, background: 'var(--brand-600)', color: 'white', fontSize: '10px', padding: '2px 0px', textAlign: 'center', fontWeight: 700, letterSpacing: '0.02em', boxShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>FEATURED</div>
+      )}
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: item.type === 'existing' ? 'rgba(0,0,0,0.5)' : 'var(--brand-600)', color: 'white', fontSize: '9px', padding: '2px', textAlign: 'center', textTransform: 'uppercase', fontWeight: 600 }}>{item.type}</div>
+    </div>
+  );
+}
+
 function AddProduct({ editingProduct, onSuccess }) {
   const [name, setName] = useState('');
   const [brand, setBrand] = useState('');
@@ -46,8 +110,7 @@ function AddProduct({ editingProduct, onSuccess }) {
   const [originalPrice, setOriginalPrice] = useState('');
   const [inStock, setInStock] = useState(true);
   const [specs, setSpecs] = useState([]);
-  const [images, setImages] = useState([]); // Selected files for upload
-  const [existingImages, setExistingImages] = useState([]); // Currently stored images
+  const [unifiedImages, setUnifiedImages] = useState([]); // All images (existing and new) in order
   const [newArrival, setNewArrival] = useState(false);
   const [included, setIncluded] = useState('');
   const [loading, setLoading] = useState(false);
@@ -73,26 +136,43 @@ function AddProduct({ editingProduct, onSuccess }) {
       setSpecs(editingProduct.specs || []);
       setNewArrival(editingProduct.newArrival || false);
       setIncluded(editingProduct.included?.join(', ') || '');
-      setExistingImages(editingProduct.images || []);
+      setUnifiedImages(editingProduct.images?.map(img => ({ id: img.public_id, type: 'existing', data: img })) || []);
     }
   }, [editingProduct]);
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleDragEnd = useCallback((event) => {
+    const { active, over } = event;
+    if (active.id !== over?.id) {
+      setUnifiedImages((items) => {
+        const oldIndex = items.findIndex((i) => i.id === active.id);
+        const newIndex = items.findIndex((i) => i.id === over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  }, []);
+
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    const totalAllowed = 5 - existingImages.length;
-    if (files.length > totalAllowed) {
-      alert(`Limit exceeded. You can only pick ${totalAllowed} more image(s).`);
+    const totalCurrent = unifiedImages.length;
+    if (totalCurrent + files.length > 5) {
+      alert(`Limit exceeded. You can only have 5 images total.`);
       return;
     }
-    setImages(prev => [...prev, ...files]);
+    const newItems = files.map(file => ({ 
+      id: Math.random().toString(36).substr(2, 9), 
+      type: 'new', 
+      data: file 
+    }));
+    setUnifiedImages(prev => [...prev, ...newItems]);
   };
 
-  const removeExistingImage = (public_id) => {
-    setExistingImages(existingImages.filter(img => img.public_id !== public_id));
-  };
-
-  const removeSelectedFile = (index) => {
-    setImages(images.filter((_, i) => i !== index));
+  const removeImage = (id) => {
+    setUnifiedImages(unifiedImages.filter(img => img.id !== id));
   };
 
   const handleSubmit = async (e) => {
@@ -112,11 +192,23 @@ function AddProduct({ editingProduct, onSuccess }) {
       formData.append('included', included);
       formData.append('specs', JSON.stringify(specs));
       
-      // Send remaining existing image references as JSON
+      const existingImages = unifiedImages.filter(i => i.type === 'existing').map(i => i.data);
+      const newFiles = unifiedImages.filter(i => i.type === 'new').map(i => i.data);
+      
+      // Image Order interleave info for the server
+      const imageOrder = unifiedImages.map(item => {
+        if (item.type === 'existing') {
+          return { type: 'existing', id: item.id };
+        } else {
+          return { type: 'new', index: newFiles.indexOf(item.data) };
+        }
+      });
+
       formData.append('existingImages', JSON.stringify(existingImages));
+      formData.append('imageOrder', JSON.stringify(imageOrder));
       
       // Append new files
-      images.forEach(img => formData.append('images', img));
+      newFiles.forEach(img => formData.append('images', img));
 
       if (editingProduct) {
         await axios.put(`http://localhost:5000/products/${editingProduct._id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
@@ -197,61 +289,51 @@ function AddProduct({ editingProduct, onSuccess }) {
         </FieldGroup>
       </div>
 
-      {/* Images Section */}
-      <FieldGroup label="Product Gallery (Max 5 Total)">
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '14px' }}>
+      <FieldGroup label="Product Gallery — Drag to reorder (Max 5 Total)">
+        <div style={{ background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '16px', border: '1.5px solid rgba(255,255,255,0.05)' }}>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+              <SortableContext
+                items={unifiedImages.map(i => i.id)}
+                strategy={rectSortingStrategy}
+              >
+                {unifiedImages.map((item, index) => (
+                  <SortableImage 
+                    key={item.id} 
+                    item={item} 
+                    onRemove={removeImage} 
+                    isFirst={index === 0}
+                  />
+                ))}
+              </SortableContext>
+
+              {/* Add More Button (hidden if limit reached) */}
+              {unifiedImages.length < 5 && (
+                <div style={{
+                  width: '100px', height: '100px', borderRadius: '12px', border: '1.5px dashed rgba(255,255,255,0.2)',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '4px',
+                  cursor: 'pointer', background: 'rgba(255,255,255,0.02)', position: 'relative', overflow: 'hidden',
+                  transition: 'all 0.2s'
+                }} onMouseEnter={e => e.currentTarget.style.borderColor='var(--brand-500)'} onMouseLeave={e => e.currentTarget.style.borderColor='rgba(255,255,255,0.2)'}>
+                  <input type="file" multiple accept="image/*" onChange={handleFileChange} style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer', width: '100%', height: '100%', minHeight: 'auto' }} />
+                  <div style={{ fontSize: '1.2rem' }}>➕</div>
+                  <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', fontWeight: 700 }}>Add More</div>
+                </div>
+              )}
+            </div>
+          </DndContext>
           
-          {/* Existing Images Thumbnails */}
-          {existingImages.map((img) => (
-            <div key={img.public_id} style={{ position: 'relative', width: '100px', height: '100px', borderRadius: '12px', overflow: 'hidden', border: '1.5px solid rgba(255,255,255,0.1)' }}>
-              <img src={`http://localhost:5000${img.url}`} alt="Product" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              <button 
-                type="button" 
-                onClick={() => removeExistingImage(img.public_id)}
-                style={{ position: 'absolute', top: '4px', right: '4px', background: 'rgba(239,68,68,0.9)', border: 'none', borderRadius: '6px', width: '22px', height: '22px', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'transform 0.2s', minHeight: 'auto' }}
-                onMouseEnter={e => e.currentTarget.style.transform='scale(1.1)'}
-                onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}
-              >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-              </button>
-              <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'rgba(0,0,0,0.5)', color: 'white', fontSize: '10px', padding: '2px', textAlign: 'center' }}>Stored</div>
-            </div>
-          ))}
-
-          {/* New Selected Files Preview */}
-          {images.map((file, idx) => (
-            <div key={idx} style={{ position: 'relative', width: '100px', height: '100px', borderRadius: '12px', overflow: 'hidden', border: '1.5px solid var(--brand-500)', boxShadow: '0 0 10px rgba(249,115,22,0.2)' }}>
-              <img src={URL.createObjectURL(file)} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              <button 
-                type="button" 
-                onClick={() => removeSelectedFile(idx)}
-                style={{ position: 'absolute', top: '4px', right: '4px', background: 'rgba(239,68,68,0.9)', border: 'none', borderRadius: '6px', width: '22px', height: '22px', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', minHeight: 'auto' }}
-              >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-              </button>
-              <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'var(--brand-600)', color: 'white', fontSize: '10px', padding: '2px', textAlign: 'center' }}>New</div>
-            </div>
-          ))}
-
-          {/* Add More Button (hidden if limit reached) */}
-          {(existingImages.length + images.length) < 5 && (
-            <div style={{
-              width: '100px', height: '100px', borderRadius: '12px', border: '1.5px dashed rgba(255,255,255,0.2)',
-              display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '4px',
-              cursor: 'pointer', background: 'rgba(255,255,255,0.02)', position: 'relative', overflow: 'hidden'
-            }} onMouseEnter={e => e.currentTarget.style.borderColor='var(--brand-500)'} onMouseLeave={e => e.currentTarget.style.borderColor='rgba(255,255,255,0.2)'}>
-              <input type="file" multiple accept="image/*" onChange={handleFileChange} style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer', width: '100%', height: '100%', minHeight: 'auto' }} />
-              <div style={{ fontSize: '1.2rem' }}>➕</div>
-              <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', fontWeight: 700 }}>Add More</div>
+          {unifiedImages.length === 0 && (
+            <div style={{ padding: '24px', textAlign: 'center' }}>
+              <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.875rem', margin: 0 }}>No images yet. Click "Add More" to start.</p>
             </div>
           )}
         </div>
-        
-        {(existingImages.length + images.length) === 0 && (
-          <div style={{ padding: '24px', border: '1.5px dashed rgba(255,255,255,0.1)', borderRadius: '16px', textAlign: 'center', background: 'rgba(255,255,255,0.02)' }}>
-            <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.875rem', margin: 0 }}>No images yet. Click "Add More" to start.</p>
-          </div>
-        )}
+        <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.25)', marginTop: '8px' }}>First image will be the primary featured image.</span>
       </FieldGroup>
 
       {/* Settings Toggles (New Arrival & Stock) */}
