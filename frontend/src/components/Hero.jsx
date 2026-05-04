@@ -30,9 +30,13 @@ function Hero({ slides, primaryCta, secondaryCta, hideStats }) {
   const [animating, setAnimating] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isTinyMobile, setIsTinyMobile] = useState(window.innerWidth < 420);
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+      setIsTinyMobile(window.innerWidth < 420);
+    };
     const handleMouseMove = (e) => {
       if (isMobile) return; // Disable parallax on mobile to save battery/reduce jitter
       setMousePos({
@@ -67,7 +71,7 @@ function Hero({ slides, primaryCta, secondaryCta, hideStats }) {
   return (
     <div style={{
       position: 'relative',
-      minHeight: 'clamp(480px, 88vh, 780px)',
+      minHeight: isTinyMobile ? '320px' : 'clamp(480px, 88vh, 780px)',
       display: 'flex',
       alignItems: 'center',
       overflow: 'hidden',
@@ -160,7 +164,7 @@ function Hero({ slides, primaryCta, secondaryCta, hideStats }) {
             width: isMobile ? '100%' : 'auto',
           }}>
             <a href={primaryCta?.link || "/"} className="btn-brand" style={{ 
-              fontSize: '1.1rem', padding: '16px 36px', textDecoration: 'none', borderRadius: '14px',
+              fontSize: isTinyMobile ? '0.95rem' : '1.1rem', padding: isTinyMobile ? '12px 24px' : '16px 36px', textDecoration: 'none', borderRadius: '14px',
               justifyContent: 'center', width: isMobile ? '100%' : 'auto'
             }}>
               {primaryCta?.text || "Shop Now"}
@@ -169,7 +173,7 @@ function Hero({ slides, primaryCta, secondaryCta, hideStats }) {
               </svg>
             </a>
             <a href={secondaryCta?.link || "/"} className="btn-ghost" style={{ 
-              fontSize: '1.1rem', textDecoration: 'none', color: 'white', border: '1px solid rgba(255,255,255,0.1)',
+              fontSize: isTinyMobile ? '0.95rem' : '1.1rem', padding: isTinyMobile ? '12px 24px' : '16px 36px', textDecoration: 'none', color: 'white', border: '1px solid rgba(255,255,255,0.1)',
               background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(10px)', borderRadius: '14px',
               justifyContent: 'center', width: isMobile ? '100%' : 'auto'
             }}>

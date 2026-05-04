@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useCart } from '../context/CartContext';
+import usePageMetadata from '../hooks/usePageMetadata';
 
 const WA_NUMBER = '94784488955';
 
@@ -16,9 +17,23 @@ function ProductDetail() {
   const [justAdded, setJustAdded] = useState(false);
   const [zoomStyle, setZoomStyle] = useState({ display: 'none', x: '50%', y: '50%' });
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isTinyMobile, setIsTinyMobile] = useState(window.innerWidth < 420);
+
+  const pageTitle = product
+    ? `${product.name} | Sunrise Gadgets Store`
+    : 'Sunrise Gadgets Store — Product Details';
+
+  const pageDescription = product
+    ? `${product.description?.trim().slice(0, 140)}${product.description?.length > 140 ? '...' : ''}`
+    : 'Explore premium projectors, smart boards and electronics by Sunrise Gadgets Store with fast Sri Lanka delivery.';
+
+  usePageMetadata({ title: pageTitle, description: pageDescription });
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+      setIsTinyMobile(window.innerWidth < 420);
+    };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -123,11 +138,11 @@ function ProductDetail() {
                     />
                   </div>
                   {product.images.length > 1 && (
-                    <div style={{ display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '8px', scrollbarWidth: 'none' }}>
+                    <div style={{ display: 'flex', gap: isTinyMobile ? '8px' : '12px', overflowX: 'auto', paddingBottom: '8px', scrollbarWidth: 'none' }}>
                       {product.images.map((img, i) => (
                         <button key={i} onClick={() => setSelectedImage(i)}
                           style={{
-                            flexShrink: 0, width: '72px', height: '72px', borderRadius: '12px', overflow: 'hidden',
+                            flexShrink: 0, width: isTinyMobile ? '56px' : '72px', height: isTinyMobile ? '56px' : '72px', borderRadius: '12px', overflow: 'hidden',
                             border: i === selectedImage ? '2px solid var(--brand-500)' : '2px solid transparent',
                             boxShadow: i === selectedImage ? '0 4px 12px rgba(249,115,22,0.15)' : '0 2px 6px rgba(0,0,0,0.04)',
                             opacity: i === selectedImage ? 1 : 0.6,

@@ -27,6 +27,19 @@ function Nav() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+    const onEscape = (event) => {
+      if (event.key === 'Escape') setMenuOpen(false);
+    };
+    document.addEventListener('keydown', onEscape);
+    return () => document.removeEventListener('keydown', onEscape);
+  }, [menuOpen]);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
+
   return (
     <>
       <nav
@@ -46,7 +59,7 @@ function Nav() {
           boxShadow: scrolled ? '0 4px 32px rgba(0,0,0,0.3)' : 'none',
         }}
       >
-        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px' }}>
+        <div className="nav-shell" style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '68px' }}>
 
             {/* Logo + Brand */}
@@ -76,18 +89,10 @@ function Nav() {
                 />
               </div>
               <div>
-                <span style={{
-                  display: 'block',
-                  fontFamily: 'var(--font-display)',
-                  fontWeight: 800,
-                  fontSize: window.innerWidth < 380 ? '0.95rem' : '1.1rem',
-                  color: 'white',
-                  letterSpacing: '-0.03em',
-                  lineHeight: 1.1,
-                }}>
+                <span className="nav-brand-title">
                   Sunrise <span style={{ color: 'var(--brand-400)' }}>Gadgets</span>
                 </span>
-                <span style={{ display: 'block', fontSize: window.innerWidth < 380 ? '0.55rem' : '0.65rem', color: 'rgba(255,255,255,0.45)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                <span className="nav-brand-subtitle">
                   Premium Tech Store
                 </span>
               </div>
@@ -171,18 +176,22 @@ function Nav() {
               <button
                 onClick={() => setMenuOpen(true)}
                 aria-label="Open menu"
+                aria-expanded={menuOpen}
+                aria-controls="mobile-menu"
                 className="nav-hamburger"
                 style={{
                   background: 'rgba(255,255,255,0.08)',
                   border: '1px solid rgba(255,255,255,0.12)',
                   borderRadius: '10px',
-                  padding: '8px',
+                  padding: '10px',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   color: 'white',
                   transition: 'all 0.2s',
+                  minWidth: '44px',
+                  minHeight: '44px',
                 }}
               >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -213,12 +222,15 @@ function Nav() {
 
       {/* Mobile Drawer */}
       <aside
+        className="nav-drawer"
+        id="mobile-menu"
+        onClick={(event) => event.stopPropagation()}
         style={{
           position: 'fixed',
           top: 0,
           left: 0,
           height: '100dvh',
-          width: '300px',
+          width: 'min(300px, 85vw)',
           zIndex: 60,
           display: 'flex',
           flexDirection: 'column',
@@ -329,6 +341,48 @@ function Nav() {
         @media (min-width: 768px) {
           .nav-desktop { display: flex !important; }
           .nav-hamburger { display: none !important; }
+        }
+
+        .nav-brand-title {
+          display: block;
+          font-family: var(--font-display);
+          font-weight: 800;
+          font-size: 1.1rem;
+          color: white;
+          letter-spacing: -0.03em;
+          line-height: 1.1;
+        }
+
+        .nav-brand-subtitle {
+          display: block;
+          font-size: 0.65rem;
+          color: rgba(255,255,255,0.45);
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+        }
+
+        @media (max-width: 420px) {
+          .nav-brand-title {
+            font-size: 0.95rem;
+          }
+
+          .nav-brand-subtitle {
+            font-size: 0.55rem;
+          }
+        }
+
+        .nav-drawer nav a {
+          min-height: 48px;
+        }
+
+        .nav-shell {
+          padding: 0 20px;
+        }
+
+        @media (max-width: 520px) {
+          .nav-shell {
+            padding: 0 16px;
+          }
         }
       `}</style>
     </>

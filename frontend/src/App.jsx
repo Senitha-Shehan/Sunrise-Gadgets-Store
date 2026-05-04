@@ -13,6 +13,8 @@ import Footer from './components/Footer';
 import { CartProvider } from './context/CartContext';
 
 function App() {
+  const location = useLocation();
+
   return (
     <CartProvider>
       <div className="app-shell">
