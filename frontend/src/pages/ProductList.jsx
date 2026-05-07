@@ -3,18 +3,18 @@ import axios from 'axios';
 import Hero from '../components/Hero';
 import SearchFilter from '../components/SearchFilter';
 import ProductCarousel from '../components/ProductCarousel';
-import PromoBanner from '../components/PromoBanner';
+import ProductCard from '../components/ProductCard';
 
 // Categories are now fetched dynamically from the backend
 
 function SkeletonCard() {
   return (
-    <div style={{ background: 'white', borderRadius: '16px', border: '1.5px solid rgba(226,232,240,0.8)', overflow: 'hidden' }}>
-      <div className="skeleton" style={{ height: '180px', width: '100%' }} />
-      <div style={{ padding: '14px' }}>
-        <div className="skeleton" style={{ height: '10px', width: '45%', borderRadius: '6px', marginBottom: '8px' }} />
-        <div className="skeleton" style={{ height: '13px', width: '80%', borderRadius: '6px', marginBottom: '8px' }} />
-        <div className="skeleton" style={{ height: '14px', width: '38%', borderRadius: '6px' }} />
+    <div style={{ background: 'white', borderRadius: '12px', border: '1px solid var(--surface-100)', padding: '8px' }}>
+      <div className="skeleton" style={{ aspectRatio: '1/1', width: '100%', borderRadius: '8px' }} />
+      <div style={{ padding: '8px 4px' }}>
+        <div className="skeleton" style={{ height: '8px', width: '30%', borderRadius: '4px', marginBottom: '8px' }} />
+        <div className="skeleton" style={{ height: '12px', width: '70%', borderRadius: '4px', marginBottom: '8px' }} />
+        <div className="skeleton" style={{ height: '14px', width: '40%', borderRadius: '4px' }} />
       </div>
     </div>
   );
@@ -22,18 +22,19 @@ function SkeletonCard() {
 
 function SectionHeader({ title, count }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px', flexWrap: 'wrap' }}>
-      <div className="section-rule" />
+    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px', flexWrap: 'wrap' }}>
       <h2 style={{
         fontFamily: 'var(--font-display)', fontWeight: 800,
-        fontSize: 'clamp(1.2rem, 3vw, 1.7rem)', color: 'var(--surface-900)',
+        fontSize: 'clamp(1.4rem, 4vw, 2rem)', color: 'var(--surface-900)',
         letterSpacing: '-0.03em', margin: 0,
       }}>{title}</h2>
-      <span style={{
-        display: 'inline-flex', alignItems: 'center', padding: '3px 10px',
-        background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)',
-        borderRadius: '999px', color: 'var(--brand-600)', fontSize: '0.78rem', fontWeight: 700,
-      }}>{count}</span>
+      {count !== undefined && (
+        <span style={{
+          padding: '2px 8px', background: 'var(--surface-50)', 
+          border: '1px solid var(--surface-100)', borderRadius: '6px',
+          color: '#64748b', fontSize: '0.7rem', fontWeight: 600,
+        }}>{count} items</span>
+      )}
     </div>
   );
 }
@@ -48,6 +49,13 @@ function ProductList() {
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
 
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
@@ -103,21 +111,20 @@ function ProductList() {
     return acc;
   }, {});
 
-  // Handle any products that might have a category not in the main categories list (e.g. Uncategorized)
   const uncategorizedProducts = filteredProducts.filter(p => !categories.includes(p.category));
   if (uncategorizedProducts.length > 0) {
     productsByCategory['Other Products'] = uncategorizedProducts;
   }
 
   if (loading) return (
-    <div>
-      <div style={{ minHeight: '260px', background: 'var(--surface-950)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ background: 'white' }}>
+      <div style={{ minHeight: '300px', background: 'var(--surface-950)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ width: '40px', height: '40px', border: '3px solid rgba(249,115,22,0.3)', borderTop: '3px solid var(--brand-500)', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
-          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.875rem' }}>Loading products...</p>
+          <div style={{ width: '40px', height: '40px', border: '3px solid rgba(6,182,212,0.3)', borderTop: '3px solid var(--brand-500)', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
+          <p style={{ color: 'white', opacity: 0.5, fontSize: '0.875rem' }}>Preparing Boutique...</p>
         </div>
       </div>
-      <div className="page-container">
+      <div className="page-container" style={{ paddingTop: '40px' }}>
         <div className="product-grid">
           {Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)}
         </div>
@@ -136,10 +143,10 @@ function ProductList() {
   );
 
   return (
-    <div id="products">
+    <div id="products" style={{ background: 'white' }}>
       <Hero />
 
-      <div className="page-container">
+      <div className="page-container" style={{ paddingTop: '32px' }}>
         <SearchFilter
           searchTerm={searchTerm} setSearchTerm={setSearchTerm}
           selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory}
@@ -150,52 +157,41 @@ function ProductList() {
 
         {/* Active filter pills */}
         {(searchTerm || selectedCategory || minPrice || maxPrice) && (
-          <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
             <span style={{ fontSize: '0.85rem', color: '#64748b' }}>
-              <strong style={{ color: 'var(--surface-900)' }}>{filteredProducts.length}</strong> result{filteredProducts.length !== 1 ? 's' : ''}
+              Showing <strong style={{ color: 'var(--surface-900)' }}>{filteredProducts.length}</strong> products
             </span>
             {searchTerm && (
-              <span style={{ padding: '2px 10px', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)', borderRadius: '999px', color: 'var(--brand-600)', fontSize: '0.78rem', fontWeight: 600 }}>
+              <span style={{ padding: '4px 12px', background: 'var(--surface-50)', border: '1px solid var(--surface-200)', borderRadius: '8px', color: 'var(--surface-700)', fontSize: '0.75rem', fontWeight: 600 }}>
                 "{searchTerm}"
               </span>
             )}
-            {selectedCategory && (
-              <span style={{ padding: '2px 10px', background: 'rgba(100,116,139,0.08)', border: '1px solid rgba(100,116,139,0.2)', borderRadius: '999px', color: '#475569', fontSize: '0.78rem', fontWeight: 600 }}>
-                {selectedCategory}
-              </span>
-            )}
-            {(minPrice || maxPrice) && (
-              <span style={{ padding: '2px 10px', background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: '999px', color: '#059669', fontSize: '0.78rem', fontWeight: 600 }}>
-                {minPrice ? `LKR ${minPrice}` : '0'} - {maxPrice ? `LKR ${maxPrice}` : 'Any'}
-              </span>
-            )}
+            <button 
+              onClick={() => { setSearchTerm(''); setSelectedCategory(''); setMinPrice(''); setMaxPrice(''); }}
+              style={{ border: 'none', background: 'none', color: 'var(--brand-600)', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer', padding: '4px' }}
+            >Clear All</button>
           </div>
         )}
 
-        {/* New Arrivals — horizontal carousel */}
+        {/* New Arrivals — Always Featured as Carousel */}
         {newArrivals.length > 0 && (
-          <section style={{ marginBottom: '56px' }}>
+          <section style={{ marginBottom: isMobile ? '48px' : '64px' }}>
             <SectionHeader title="New Arrivals" count={newArrivals.length} />
             <ProductCarousel products={newArrivals} sectionId="new-arrivals-carousel" />
           </section>
         )}
 
-        {/* All Products — horizontal carousel */}
-        {otherProducts.length > 0 && (
-          <section style={{ marginBottom: '48px' }}>
-            <SectionHeader title={newArrivals.length > 0 ? 'All Products' : 'Our Products'} count={otherProducts.length} />
-            <ProductCarousel products={otherProducts} sectionId="all-products-carousel" />
-          </section>
-        )}
-
-        {/* Mid-page Lifestyle Banner */}
-        <PromoBanner />
-
-        {/* Category Sections — dynamically looped */}
+        {/* Dynamic Category Sections — Clean boutique grid */}
         {Object.entries(productsByCategory).map(([categoryName, categoryProducts]) => (
-          <section key={categoryName} style={{ marginBottom: '56px' }}>
-            <SectionHeader title={categoryName} count={categoryProducts.length} />
-            <ProductCarousel products={categoryProducts} sectionId={`carousel-${categoryName.replace(/\s+/g, '-').toLowerCase()}`} />
+          <section key={categoryName} style={{ marginBottom: isMobile ? '56px' : '80px' }}>
+            <SectionHeader title={categoryName} />
+            <div className="product-grid">
+              {categoryProducts.map(p => (
+                <div key={p._id}>
+                  <ProductCard product={p} />
+                </div>
+              ))}
+            </div>
           </section>
         ))}
 

@@ -24,7 +24,7 @@ const defaultHeroSlides = [
   },
 ];
 
-function Hero({ slides, primaryCta, secondaryCta, hideStats }) {
+function Hero({ slides, hideStats }) {
   const activeSlides = slides || defaultHeroSlides;
   const [current, setCurrent] = useState(0);
   const [animating, setAnimating] = useState(false);
@@ -53,9 +53,10 @@ function Hero({ slides, primaryCta, secondaryCta, hideStats }) {
   }, [isMobile]);
 
   useEffect(() => {
+    if (animating) return;
     const interval = setInterval(() => goNext(), 8000);
     return () => clearInterval(interval);
-  }, [current]);
+  }, [current, animating]);
 
   const goTo = (idx) => {
     if (idx === current || animating) return;
@@ -69,14 +70,18 @@ function Hero({ slides, primaryCta, secondaryCta, hideStats }) {
   const slide = activeSlides[current];
 
   return (
-    <div style={{
-      position: 'relative',
-      minHeight: isTinyMobile ? '320px' : 'clamp(480px, 88vh, 780px)',
-      display: 'flex',
-      alignItems: 'center',
-      overflow: 'hidden',
-      background: 'var(--surface-950)',
-    }}>
+    <div
+      onMouseEnter={() => setAnimating(true)}
+      onMouseLeave={() => setAnimating(false)}
+      style={{
+        position: 'relative',
+        minHeight: isTinyMobile ? '360px' : (isMobile ? '420px' : 'clamp(500px, 80vh, 700px)'),
+        display: 'flex',
+        alignItems: 'center',
+        overflow: 'hidden',
+        background: 'var(--surface-950)',
+      }}
+    >
       {/* Backgrounds with Parallax */}
       {activeSlides.map((s, idx) => (
         <div key={idx} className="hero-reveal" style={{
@@ -91,25 +96,25 @@ function Hero({ slides, primaryCta, secondaryCta, hideStats }) {
       ))}
       <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(2,6,23,0.95) 0%, rgba(2,6,23,0.7) 50%, rgba(2,6,23,0.4) 100%)', zIndex: 1 }} />
       <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(0deg, rgba(2,6,23,1) 0%, transparent 40%)', zIndex: 1 }} />
-      
+
       {/* Decorative Brand Glow */}
       <div style={{
         position: 'absolute', top: '10%', right: '5%',
         width: '600px', height: '600px', borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(249,115,22,0.12) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(6,182,212,0.12) 0%, transparent 70%)',
         animation: 'pulse-brand 8s ease-in-out infinite', pointerEvents: 'none', zIndex: 1
       }} />
 
       {/* Content */}
-      <div className="hero-content" style={{ position: 'relative', zIndex: 10 }}>
+      <div className="hero-content" style={{ position: 'relative', zIndex: 10, padding: isMobile ? '0 20px' : '0' }}>
         <div style={{ maxWidth: '800px' }}>
           {/* Tag */}
           <div key={`tag-${current}`} style={{
             display: 'inline-flex', alignItems: 'center', gap: '8px',
             padding: '6px 14px', background: 'rgba(255,255,255,0.04)',
             border: '1px solid rgba(255,255,255,0.1)', borderRadius: '999px',
-            color: 'var(--brand-400)', fontSize: '0.75rem', fontWeight: 700,
-            letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '24px',
+            color: 'var(--brand-400)', fontSize: isTinyMobile ? '0.65rem' : '0.75rem', fontWeight: 700,
+            letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '20px',
             opacity: animating ? 0 : 1,
             transform: animating ? 'translateY(10px)' : 'translateY(0)',
             transition: 'all 0.7s cubic-bezier(0.2, 0.8, 0.2, 1)',
@@ -120,71 +125,67 @@ function Hero({ slides, primaryCta, secondaryCta, hideStats }) {
           </div>
 
           {/* Headline */}
-          <div style={{ marginBottom: isMobile ? '16px' : '24px' }}>
+          <div style={{ marginBottom: isMobile ? '12px' : '20px' }}>
             <h1 key={`h1-${current}`} style={{
               fontFamily: 'var(--font-display)',
-              fontSize: isMobile ? 'clamp(2.5rem, 12vw, 3.5rem)' : 'clamp(2.5rem, 8vw, 6rem)',
-              fontWeight: 800, lineHeight: 0.95, letterSpacing: '-0.05em',
-              marginBottom: '4px', color: 'white',
+              fontSize: isMobile ? 'clamp(2rem, 8vw, 2.8rem)' : 'clamp(2.5rem, 6vw, 5rem)',
+              fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.04em',
+              marginBottom: '8px', color: 'white',
+              textShadow: '0 2px 10px rgba(0,0,0,0.3)',
               opacity: animating ? 0 : 1,
-              transform: animating ? 'translateY(20px)' : 'translateY(0)',
-              transition: 'all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s',
+              transform: animating ? 'translateY(10px)' : 'translateY(0)',
+              transition: 'all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)',
             }}>{slide.headline}</h1>
             <h1 key={`h1b-${current}`} style={{
               fontFamily: 'var(--font-display)',
-              fontSize: isMobile ? 'clamp(2.5rem, 12vw, 3.5rem)' : 'clamp(2.5rem, 8vw, 6rem)',
-              fontWeight: 800, lineHeight: 0.95, letterSpacing: '-0.05em',
-              background: 'linear-gradient(to right, #f97316, #fb923c, #f97316)',
+              fontSize: isMobile ? 'clamp(2rem, 8vw, 2.8rem)' : 'clamp(2.5rem, 6vw, 5rem)',
+              fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.04em',
+              background: 'linear-gradient(to right, #0891b2, #0e7490, #0891b2)',
               backgroundSize: '200% auto',
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-              opacity: animating ? 0 : 1,
-              transform: animating ? 'translateY(20px)' : 'translateY(0)',
-              transition: 'all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s',
+              transition: 'all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s',
               animation: 'shimmer 4s linear infinite',
             }}>{slide.sub}</h1>
           </div>
 
           {/* Description */}
           <p key={`desc-${current}`} style={{
-            color: 'rgba(255,255,255,0.55)',
-            fontSize: 'clamp(1rem, 2vw, 1.25rem)',
-            lineHeight: 1.6, maxWidth: '540px', marginBottom: '40px',
+            color: 'rgba(255,255,255,0.7)',
+            fontSize: isMobile ? '0.875rem' : 'clamp(1rem, 1.5vw, 1.15rem)',
+            lineHeight: 1.5, maxWidth: '540px', marginBottom: '32px',
             opacity: animating ? 0 : 1,
             transform: animating ? 'translateY(15px)' : 'translateY(0)',
             transition: 'all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s',
             fontWeight: 400,
           }}>{slide.desc}</p>
 
-          {/* CTA */}
-          <div className="hero-cta" style={{
+          {/* Scroll Indicator */}
+          <div style={{
+            marginTop: '48px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
             opacity: animating ? 0 : 1,
-            transform: animating ? 'translateY(10px)' : 'translateY(0)',
-            transition: 'all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.4s',
-            flexDirection: isMobile ? 'column' : 'row',
-            width: isMobile ? '100%' : 'auto',
+            transition: 'opacity 0.8s ease 0.5s',
           }}>
-            <a href={primaryCta?.link || "/"} className="btn-brand" style={{ 
-              fontSize: isTinyMobile ? '0.95rem' : '1.1rem', padding: isTinyMobile ? '12px 24px' : '16px 36px', textDecoration: 'none', borderRadius: '14px',
-              justifyContent: 'center', width: isMobile ? '100%' : 'auto'
-            }}>
-              {primaryCta?.text || "Shop Now"}
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </a>
-            <a href={secondaryCta?.link || "/"} className="btn-ghost" style={{ 
-              fontSize: isTinyMobile ? '0.95rem' : '1.1rem', padding: isTinyMobile ? '12px 24px' : '16px 36px', textDecoration: 'none', color: 'white', border: '1px solid rgba(255,255,255,0.1)',
-              background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(10px)', borderRadius: '14px',
-              justifyContent: 'center', width: isMobile ? '100%' : 'auto'
-            }}>
-              {secondaryCta?.text || "Explore All"}
-            </a>
+            <div style={{
+              width: '1px',
+              height: '40px',
+              background: 'linear-gradient(to bottom, var(--brand-500), transparent)',
+            }} />
+            <span style={{
+              color: 'rgba(255,255,255,0.4)',
+              fontSize: '0.7rem',
+              fontWeight: 600,
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+            }}>Scroll to explore</span>
           </div>
         </div>
 
         {/* Stats - Minimalist Row */}
         {!hideStats && !isMobile && (
-          <div style={{ 
+          <div style={{
             display: 'flex', gap: '48px', marginTop: '64px',
             opacity: animating ? 0 : 1, transition: 'opacity 1s ease 0.6s'
           }}>
@@ -193,7 +194,7 @@ function Hero({ slides, primaryCta, secondaryCta, hideStats }) {
               { value: '10k+', label: 'Active Users' },
               { value: 'Islandwide', label: 'Express Shipping' },
             ].map(stat => (
-              <div key={stat.label} style={{ borderLeft: '1px solid rgba(249,115,22,0.3)', paddingLeft: '16px' }}>
+              <div key={stat.label} style={{ borderLeft: '1px solid rgba(6,182,212,0.3)', paddingLeft: '16px' }}>
                 <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 800, color: 'white', letterSpacing: '-0.02em', lineHeight: 1.1 }}>{stat.value}</div>
                 <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)', marginTop: '4px', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 700 }}>{stat.label}</div>
               </div>
@@ -202,40 +203,47 @@ function Hero({ slides, primaryCta, secondaryCta, hideStats }) {
         )}
       </div>
 
-      {/* Arrow Controls - Hidden on mobile in favor of swipe/dots */}
+      {/* Arrow Controls - Minimalist Style */}
       {!isMobile && (
-        <>
-          <button className="hero-arrow" style={{ left: '20px', zIndex: 20 }}
-            onClick={goPrev} aria-label="Previous slide"
+        <div style={{ position: 'absolute', bottom: '40px', right: '40px', display: 'flex', gap: '12px', zIndex: 20 }}>
+          <button 
+            onClick={goPrev} 
+            aria-label="Previous slide"
+            style={{
+              background: 'rgba(255,255,255,0.03)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: '50%',
+              width: '44px', height: '44px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'white', cursor: 'pointer', transition: 'all 0.3s ease',
+              backdropFilter: 'blur(10px)'
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'; }}
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
           </button>
-          <button className="hero-arrow" style={{ right: '20px', zIndex: 20 }}
-            onClick={goNext} aria-label="Next slide"
+          <button 
+            onClick={goNext} 
+            aria-label="Next slide"
+            style={{
+              background: 'rgba(255,255,255,0.03)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: '50%',
+              width: '44px', height: '44px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'white', cursor: 'pointer', transition: 'all 0.3s ease',
+              backdropFilter: 'blur(10px)'
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'; }}
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
           </button>
-        </>
+        </div>
       )}
 
-      {/* Dots - Positioned Bottom Center */}
-      <div style={{
-        position: 'absolute', bottom: isMobile ? '20px' : '32px', left: '50%', transform: 'translateX(-50%)',
-        zIndex: 20, display: 'flex', gap: '10px', alignItems: 'center',
-        background: 'rgba(255,255,255,0.05)', padding: '8px 16px', borderRadius: '40px', backdropFilter: 'blur(10px)'
-      }}>
-        {activeSlides.map((_, idx) => (
-          <button key={idx} onClick={() => goTo(idx)}
-            style={{
-              width: idx === current ? '24px' : '8px', height: '8px',
-              borderRadius: '999px', padding: 0, border: 'none', cursor: 'pointer',
-              background: idx === current ? 'var(--brand-500)' : 'rgba(255,255,255,0.2)',
-              transition: 'all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)',
-              boxShadow: idx === current ? '0 0 10px rgba(249,115,22,0.4)' : 'none',
-            }}
-          />
-        ))}
-      </div>
+
     </div>
   );
 }

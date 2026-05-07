@@ -27,7 +27,7 @@ function PromoBanner() {
         <div style={{
           position: 'absolute', top: '50%', left: '-10%', transform: 'translateY(-50%)',
           width: '400px', height: '400px', borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(249,115,22,0.15) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(6,182,212,0.15) 0%, transparent 70%)',
           pointerEvents: 'none',
         }} />
 
