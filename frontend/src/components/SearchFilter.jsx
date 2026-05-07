@@ -1,27 +1,26 @@
+import { Link, useLocation } from 'react-router-dom';
 import { useState } from 'react';
+import { useCart } from '../context/CartContext';
+
+const WA_NUMBER = '94702005088';
 
 function SearchFilter({
   searchTerm, setSearchTerm,
   selectedCategory, setSelectedCategory, categories,
   minPrice, setMinPrice, maxPrice, setMaxPrice,
 }) {
-  const [filtersOpen, setFiltersOpen] = useState(false);
-  const hasActiveFilters = selectedCategory || minPrice || maxPrice;
-  const activeCount = [selectedCategory, minPrice, maxPrice].filter(Boolean).length;
-
   return (
     <div style={{
       background: 'white',
       borderRadius: '20px',
       border: '1.5px solid rgba(226,232,240,0.8)',
       boxShadow: '0 4px 24px rgba(0,0,0,0.06)',
+      padding: '18px 20px',
       marginBottom: '28px',
-      overflow: 'hidden',
     }}>
-      {/* Top Row: Search + Filter Toggle */}
-      <div style={{ padding: '14px 16px', display: 'flex', gap: '10px', alignItems: 'center' }}>
+      <div className="search-row">
         {/* Search */}
-        <div style={{ flex: 1, position: 'relative' }}>
+        <div style={{ flex: 1, minWidth: 0, position: 'relative' }}>
           <svg style={{
             position: 'absolute', left: '13px', top: '50%',
             transform: 'translateY(-50%)', width: '17px', height: '17px',
@@ -30,192 +29,128 @@ function SearchFilter({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
           <input
-            type="search"
-            placeholder="Search products, brands..."
+            type="text"
+            placeholder="Search projectors, brands, models..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
             style={{
               width: '100%',
-              padding: '13px 36px 13px 42px',
+              padding: '12px 14px 12px 42px',
               background: 'var(--surface-50)',
               border: '1.5px solid var(--surface-200)',
               borderRadius: '12px',
               fontFamily: 'var(--font-sans)',
-              fontSize: '16px',
+              fontSize: '0.9rem',
               color: 'var(--surface-900)',
               outline: 'none',
               transition: 'all 0.2s ease',
               boxSizing: 'border-box',
-              WebkitAppearance: 'none',
             }}
-            onFocus={e => { e.target.style.borderColor = 'var(--brand-500)'; e.target.style.boxShadow = '0 0 0 3px rgba(6,182,212,0.1)'; e.target.style.background = 'white'; }}
+            onFocus={e => { e.target.style.borderColor = 'var(--brand-500)'; e.target.style.boxShadow = '0 0 0 3px rgba(249,115,22,0.1)'; e.target.style.background = 'white'; }}
             onBlur={e => { e.target.style.borderColor = 'var(--surface-200)'; e.target.style.boxShadow = 'none'; e.target.style.background = 'var(--surface-50)'; }}
           />
-          {searchTerm && (
-            <button
-              onClick={() => setSearchTerm('')}
-              style={{
-                position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)',
-                background: 'var(--surface-200)', border: 'none', borderRadius: '50%',
-                width: '20px', height: '20px', minHeight: 'unset', cursor: 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b',
-              }}
-            >
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
-                <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            </button>
-          )}
         </div>
 
-        {/* Filter Toggle */}
-        <button
-          onClick={() => setFiltersOpen(o => !o)}
-          style={{
-            display: 'flex', alignItems: 'center', gap: '6px',
-            padding: '13px 14px',
-            background: filtersOpen || hasActiveFilters ? 'rgba(6,182,212,0.08)' : 'var(--surface-50)',
-            border: `1.5px solid ${filtersOpen || hasActiveFilters ? 'rgba(6,182,212,0.3)' : 'var(--surface-200)'}`,
-            borderRadius: '12px',
-            color: filtersOpen || hasActiveFilters ? 'var(--brand-600)' : '#64748b',
-            fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer',
-            transition: 'all 0.2s', fontFamily: 'var(--font-sans)',
-            whiteSpace: 'nowrap', flexShrink: 0, position: 'relative',
-          }}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/>
+        {/* Category */}
+        <div className="category-select-wrap">
+          <svg style={{ position: 'absolute', right: '13px', top: '50%', transform: 'translateY(-50%)', width: '15px', height: '15px', color: '#94a3b8', pointerEvents: 'none' }}
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
-          <span className="sf-filter-label">Filters</span>
-          {activeCount > 0 && (
-            <span style={{
-              position: 'absolute', top: '-6px', right: '-6px',
-              background: 'var(--brand-500)', color: 'white',
-              borderRadius: '999px', minWidth: '18px', height: '18px',
-              fontSize: '0.65rem', fontWeight: 700,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              padding: '0 4px', border: '2px solid white',
-            }}>{activeCount}</span>
-          )}
-        </button>
+          <select
+            value={selectedCategory}
+            onChange={e => setSelectedCategory(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '12px 38px 12px 14px',
+              background: 'var(--surface-50)',
+              border: '1.5px solid var(--surface-200)',
+              borderRadius: '12px',
+              fontFamily: 'var(--font-sans)',
+              fontSize: '0.9rem',
+              color: selectedCategory ? 'var(--surface-900)' : '#94a3b8',
+              outline: 'none', appearance: 'none', cursor: 'pointer',
+              transition: 'all 0.2s ease', boxSizing: 'border-box',
+            }}
+            onFocus={e => { e.target.style.borderColor = 'var(--brand-500)'; e.target.style.boxShadow = '0 0 0 3px rgba(249,115,22,0.1)'; e.target.style.background = 'white'; }}
+            onBlur={e => { e.target.style.borderColor = 'var(--surface-200)'; e.target.style.boxShadow = 'none'; e.target.style.background = 'var(--surface-50)'; }}
+          >
+            <option value="">All Categories</option>
+            {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+          </select>
+        </div>
 
-        {(searchTerm || hasActiveFilters) && (
+        {/* Price Range */}
+        <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexShrink: 0 }}>
+          <input
+            type="number"
+            placeholder="Min (LKR)"
+            value={minPrice}
+            onChange={e => setMinPrice(e.target.value)}
+            min="0"
+            style={{
+              width: '100px',
+              padding: '12px 10px',
+              background: 'var(--surface-50)',
+              border: '1.5px solid var(--surface-200)',
+              borderRadius: '12px',
+              fontFamily: 'var(--font-sans)',
+              fontSize: '0.85rem',
+              color: 'var(--surface-900)',
+              outline: 'none',
+              transition: 'all 0.2s ease',
+              boxSizing: 'border-box',
+            }}
+            onFocus={e => { e.target.style.borderColor = 'var(--brand-500)'; e.target.style.boxShadow = '0 0 0 3px rgba(249,115,22,0.1)'; e.target.style.background = 'white'; }}
+            onBlur={e => { e.target.style.borderColor = 'var(--surface-200)'; e.target.style.boxShadow = 'none'; e.target.style.background = 'var(--surface-50)'; }}
+          />
+          <span style={{ color: '#94a3b8', fontSize: '0.8rem', flexShrink: 0 }}>–</span>
+          <input
+            type="number"
+            placeholder="Max (LKR)"
+            value={maxPrice}
+            onChange={e => setMaxPrice(e.target.value)}
+            min="0"
+            style={{
+              width: '100px',
+              padding: '12px 10px',
+              background: 'var(--surface-50)',
+              border: '1.5px solid var(--surface-200)',
+              borderRadius: '12px',
+              fontFamily: 'var(--font-sans)',
+              fontSize: '0.85rem',
+              color: 'var(--surface-900)',
+              outline: 'none',
+              transition: 'all 0.2s ease',
+              boxSizing: 'border-box',
+            }}
+            onFocus={e => { e.target.style.borderColor = 'var(--brand-500)'; e.target.style.boxShadow = '0 0 0 3px rgba(249,115,22,0.1)'; e.target.style.background = 'white'; }}
+            onBlur={e => { e.target.style.borderColor = 'var(--surface-200)'; e.target.style.boxShadow = 'none'; e.target.style.background = 'var(--surface-50)'; }}
+          />
+        </div>
+
+        {/* Clear */}
+        {(searchTerm || selectedCategory || minPrice || maxPrice) && (
           <button
             onClick={() => { setSearchTerm(''); setSelectedCategory(''); setMinPrice(''); setMaxPrice(''); }}
             style={{
-              padding: '12px', background: 'none',
-              border: '1.5px solid rgba(239,68,68,0.2)', borderRadius: '12px',
-              color: '#ef4444', fontWeight: 600, fontSize: '0.8rem',
-              cursor: 'pointer', transition: 'all 0.2s', fontFamily: 'var(--font-sans)',
-              display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0,
+              display: 'flex', alignItems: 'center', gap: '6px',
+              padding: '11px 16px',
+              background: 'rgba(249,115,22,0.08)', border: '1.5px solid rgba(249,115,22,0.2)',
+              borderRadius: '12px', color: 'var(--brand-600)', fontWeight: 600,
+              fontSize: '0.85rem', cursor: 'pointer', transition: 'all 0.2s',
+              fontFamily: 'var(--font-sans)', whiteSpace: 'nowrap', flexShrink: 0,
             }}
+            onMouseEnter={e => e.currentTarget.style.background = 'rgba(249,115,22,0.15)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'rgba(249,115,22,0.08)'}
           >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
               <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
             </svg>
-            <span className="sf-clear-label">Clear</span>
+            Clear
           </button>
         )}
       </div>
-
-      {/* Expandable Filter Panel */}
-      <div style={{
-        maxHeight: filtersOpen ? '320px' : '0',
-        overflow: 'hidden',
-        transition: 'max-height 0.35s cubic-bezier(0.4,0,0.2,1)',
-      }}>
-        <div style={{
-          padding: '16px',
-          borderTop: '1px solid var(--surface-100)',
-          display: 'flex', flexDirection: 'column', gap: '16px',
-        }}>
-          {/* Category Pills */}
-          <div>
-            <label style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '8px' }}>
-              Category
-            </label>
-            <div className="category-scroll scroll-hide" style={{ display: 'flex', gap: '8px', flexWrap: 'nowrap', overflowX: 'auto', paddingBottom: '4px' }}>
-              {['', ...categories].map(cat => (
-                <button
-                  key={cat || 'all'}
-                  onClick={() => setSelectedCategory(cat)}
-                  style={{
-                    padding: '8px 16px', borderRadius: '999px', border: '1.5px solid',
-                    borderColor: selectedCategory === cat ? 'var(--brand-500)' : 'var(--surface-200)',
-                    background: selectedCategory === cat ? 'rgba(6,182,212,0.08)' : 'var(--surface-50)',
-                    color: selectedCategory === cat ? 'var(--brand-600)' : '#64748b',
-                    fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer',
-                    transition: 'all 0.2s', fontFamily: 'var(--font-sans)',
-                    minHeight: '36px',
-                    whiteSpace: 'nowrap',
-                  }}
-                >{cat || 'All'}</button>
-              ))}
-            </div>
-          </div>
-
-          {/* Price Range */}
-          <div>
-            <label style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '8px' }}>
-              Price Range (LKR)
-            </label>
-            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-              <input
-                type="number"
-                placeholder="Min"
-                value={minPrice}
-                onChange={e => setMinPrice(e.target.value)}
-                min="0"
-                inputMode="numeric"
-                style={{
-                  flex: 1, padding: '12px 12px',
-                  background: 'var(--surface-50)',
-                  border: '1.5px solid var(--surface-200)',
-                  borderRadius: '10px',
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: '16px',
-                  color: 'var(--surface-900)',
-                  outline: 'none', transition: 'all 0.2s ease',
-                  boxSizing: 'border-box',
-                }}
-                onFocus={e => { e.target.style.borderColor = 'var(--brand-500)'; e.target.style.background = 'white'; }}
-                onBlur={e => { e.target.style.borderColor = 'var(--surface-200)'; e.target.style.background = 'var(--surface-50)'; }}
-              />
-              <span style={{ color: '#94a3b8', fontSize: '0.9rem', flexShrink: 0, fontWeight: 500 }}>–</span>
-              <input
-                type="number"
-                placeholder="Max"
-                value={maxPrice}
-                onChange={e => setMaxPrice(e.target.value)}
-                min="0"
-                inputMode="numeric"
-                style={{
-                  flex: 1, padding: '12px 12px',
-                  background: 'var(--surface-50)',
-                  border: '1.5px solid var(--surface-200)',
-                  borderRadius: '10px',
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: '16px',
-                  color: 'var(--surface-900)',
-                  outline: 'none', transition: 'all 0.2s ease',
-                  boxSizing: 'border-box',
-                }}
-                onFocus={e => { e.target.style.borderColor = 'var(--brand-500)'; e.target.style.background = 'white'; }}
-                onBlur={e => { e.target.style.borderColor = 'var(--surface-200)'; e.target.style.background = 'var(--surface-50)'; }}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <style>{`
-        @media (max-width: 480px) {
-          .sf-filter-label { display: none; }
-        }
-        @media (max-width: 360px) {
-          .sf-clear-label { display: none; }
-        }
-      `}</style>
     </div>
   );
 }

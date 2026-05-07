@@ -42,7 +42,7 @@ function AdminLogin() {
         top: '-200px', right: '-200px',
         width: '600px', height: '600px',
         borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(6,182,212,0.12) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(249,115,22,0.12) 0%, transparent 70%)',
         pointerEvents: 'none',
       }} />
       <div style={{
@@ -50,7 +50,7 @@ function AdminLogin() {
         bottom: '-200px', left: '-200px',
         width: '500px', height: '500px',
         borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(23,37,84,0.08) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(234,88,12,0.08) 0%, transparent 70%)',
         pointerEvents: 'none',
       }} />
 
@@ -61,7 +61,7 @@ function AdminLogin() {
         background: 'rgba(30,41,59,0.85)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
-        border: '1px solid rgba(6,182,212,0.15)',
+        border: '1px solid rgba(249,115,22,0.15)',
         borderRadius: '28px',
         padding: '48px 40px',
         boxShadow: '0 32px 80px rgba(0,0,0,0.6)',
@@ -76,8 +76,8 @@ function AdminLogin() {
             height: '72px',
             borderRadius: '50%',
             overflow: 'hidden',
-            border: '2.5px solid rgba(6,182,212,0.5)',
-            boxShadow: '0 0 24px rgba(6,182,212,0.25)',
+            border: '2.5px solid rgba(249,115,22,0.5)',
+            boxShadow: '0 0 24px rgba(249,115,22,0.25)',
             margin: '0 auto 20px',
           }}>
             <img src="/logo.jpg" alt="Sunrise Gadgets" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -133,8 +133,8 @@ function AdminLogin() {
                   transition: 'all 0.2s',
                 }}
                 onFocus={e => {
-                  e.target.style.borderColor = 'rgba(6,182,212,0.5)';
-                  e.target.style.boxShadow = '0 0 0 3px rgba(6,182,212,0.12)';
+                  e.target.style.borderColor = 'rgba(249,115,22,0.5)';
+                  e.target.style.boxShadow = '0 0 0 3px rgba(249,115,22,0.12)';
                   e.target.style.background = 'rgba(255,255,255,0.09)';
                 }}
                 onBlur={e => {

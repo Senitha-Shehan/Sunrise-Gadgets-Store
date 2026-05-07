@@ -3,7 +3,7 @@ import ProductCard from './ProductCard';
 
 /* ─── Constants ───────────────────────────────────────────── */
 // Gap between cards in px — must match CSS variable --carousel-gap
-const GAP = 16;
+const GAP = 20;
 
 /**
  * ProductCarousel

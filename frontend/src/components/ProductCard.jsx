@@ -1,26 +1,24 @@
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useCart } from '../context/CartContext';
 
 function ProductCard({ product }) {
   const [hovered, setHovered] = useState(false);
   const [imgError, setImgError] = useState(false);
   const [justAdded, setJustAdded] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const { addToCart } = useCart();
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('si-LK', {
       style: 'currency',
       currency: 'LKR',
-      minimumFractionDigits: 0,
+      minimumFractionDigits: 2,
     }).format(price);
+  };
+
+  const truncate = (text, max = 90) => {
+    if (!text) return '';
+    return text.length > max ? `${text.substring(0, max)}...` : text;
   };
 
   return (
@@ -30,38 +28,34 @@ function ProductCard({ product }) {
         onMouseLeave={() => setHovered(false)}
         style={{
           background: 'white',
-          borderRadius: '12px',
-          padding: '10px',
+          borderRadius: '24px',
+          padding: '12px',
           display: 'flex',
           flexDirection: 'column',
           height: '100%',
           boxShadow: hovered
-            ? '0 12px 32px rgba(24, 95, 165, 0.1)'
-            : '0 4px 12px rgba(0,0,0,0.03)',
+            ? '0 24px 48px rgba(0,0,0,0.08), 0 8px 16px rgba(0,0,0,0.03)'
+            : '0 4px 20px rgba(0,0,0,0.03)',
           border: '1px solid',
-          borderColor: hovered ? 'rgba(25, 110, 86, 0.1)' : 'rgba(0,0,0,0.04)',
-          transform: (hovered && !isMobile) ? 'translateY(-4px)' : 'translateY(0)',
-          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          borderColor: hovered ? 'rgba(249,115,22,0.15)' : 'rgba(0,0,0,0.04)',
+          transform: hovered ? 'translateY(-4px)' : 'translateY(0)',
+          transition: 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)',
           cursor: 'pointer',
           position: 'relative',
-          overflow: 'hidden',
         }}
       >
-        {/* Image Container */}
-        <div
-          style={{
-            position: 'relative',
-            aspectRatio: '1/1',
-            borderRadius: '8px',
-            overflow: 'hidden',
-            background: 'var(--surface-50)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-            marginBottom: '12px'
-          }}
-        >
+        {/* Inset Image Frame */}
+        <div style={{
+          position: 'relative',
+          aspectRatio: '4/3',
+          borderRadius: '16px',
+          overflow: 'hidden',
+          background: 'var(--surface-50)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0,
+        }}>
           {product.images && product.images.length > 0 && !imgError ? (
             <img
               src={`${product.images[0].url}`}
@@ -70,63 +64,67 @@ function ProductCard({ product }) {
                 width: '100%',
                 height: '100%',
                 objectFit: 'contain',
-                padding: '12px',
+                padding: '16px',
                 transform: hovered ? 'scale(1.08)' : 'scale(1)',
-                transition: 'transform 0.5s ease',
+                transition: 'transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)',
               }}
               loading="lazy"
               onError={() => setImgError(true)}
             />
           ) : (
-            <div style={{ fontSize: '2.5rem' }}>🔌</div>
+            <div style={{ color: '#cbd5e1', fontSize: '3rem' }}>📦</div>
           )}
 
-          {/* Badges */}
-          <div style={{ position: 'absolute', top: '8px', left: '8px', zIndex: 2, display: 'flex', gap: '4px' }}>
-            {product.newArrival && (
-              <span style={{
-                background: 'var(--brand-600)', /* Teal */
-                color: 'white',
-                padding: '4px 8px',
-                borderRadius: '6px',
-                fontSize: '0.65rem',
-                fontWeight: 800,
-                textTransform: 'uppercase',
-                letterSpacing: '0.02em',
-                boxShadow: '0 4px 12px rgba(15, 110, 86, 0.2)'
-              }}>New</span>
-            )}
-          </div>
-          
-          {product.inStock === false && (
-            <div style={{ 
-              position: 'absolute', inset: 0, background: 'rgba(255,255,255,0.7)', 
-              display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 3,
-              backdropFilter: 'blur(2px)'
-            }}>
-              <span style={{ 
-                background: 'var(--surface-900)', color: 'white', padding: '6px 12px', 
-                borderRadius: '8px', fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase' 
-              }}>Out of Stock</span>
+          {/* Premium Glassmorphism Badges */}
+          <div style={{ position: 'absolute', top: '12px', left: '12px', right: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', zIndex: 2 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              {product.newArrival && (
+                <span style={{
+                  background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(8px)',
+                  color: 'var(--brand-600)', border: '1px solid rgba(255,255,255,0.4)',
+                  padding: '4px 10px', borderRadius: '999px', fontSize: '0.65rem',
+                  fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
+                }}>
+                  ✨ New
+                </span>
+              )}
+              {product.inStock === false && (
+                <span style={{
+                  background: 'rgba(239,68,68,0.9)', backdropFilter: 'blur(8px)',
+                  color: 'white', border: '1px solid rgba(255,255,255,0.2)',
+                  padding: '4px 10px', borderRadius: '999px', fontSize: '0.65rem',
+                  fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase',
+                  boxShadow: '0 4px 12px rgba(239,68,68,0.2)'
+                }}>
+                  Out of Stock
+                </span>
+              )}
             </div>
-          )}
+          </div>
         </div>
 
         {/* Content Body */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-          <div style={{ marginBottom: '4px' }}>
-            <span style={{ color: 'var(--brand-700)', fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              {product.brand || 'Premium Accessory'}
+        <div style={{ padding: '16px 8px 8px 8px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+          
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+            <span style={{ color: '#94a3b8', fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+              {product.brand || product.category || 'Gadget'}
             </span>
+            {product.originalPrice && product.originalPrice > product.price && (
+              <span style={{ color: '#ef4444', fontSize: '0.7rem', fontWeight: 700, background: 'rgba(239,68,68,0.1)', padding: '2px 6px', borderRadius: '4px' }}>
+                -{Math.round((1 - product.price / product.originalPrice) * 100)}%
+              </span>
+            )}
           </div>
 
           <h3 style={{
             fontFamily: 'var(--font-display)',
             fontWeight: 700,
-            fontSize: '0.9rem',
-            color: 'var(--brand-500)', /* Dark Blue */
+            fontSize: '1rem',
+            color: 'var(--surface-900)',
             lineHeight: 1.3,
-            marginBottom: '10px',
+            marginBottom: '4px',
             display: '-webkit-box',
             WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical',
@@ -135,38 +133,31 @@ function ProductCard({ product }) {
             {product.name}
           </h3>
 
-          {/* Rating placeholder */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '2px', marginBottom: '12px' }}>
-            {[1,2,3,4,5].map(i => (
-              <svg key={i} width="12" height="12" viewBox="0 0 24 24" fill={i <= 4 ? "var(--brand-700)" : "rgba(0,0,0,0.1)"}><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-            ))}
-            <span style={{ fontSize: '0.65rem', color: 'var(--surface-400)', marginLeft: '4px' }}>(24)</span>
-          </div>
+          <p style={{ color: '#64748b', fontSize: '0.8rem', lineHeight: 1.5, flex: 1, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+            {product.description}
+          </p>
 
-          <div style={{ flex: 1 }} />
-
-          {/* Footer */}
+          {/* Footer: Price & Minimal CTA */}
           <div style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '4px'
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            marginTop: '16px', paddingTop: '16px', borderTop: '1px solid var(--surface-50)'
           }}>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{
-                fontFamily: 'var(--font-display)', 
-                fontWeight: 800,
-                fontSize: '1.1rem',
-                letterSpacing: '-0.02em', 
-                color: 'var(--surface-900)'
-              }}>
-                {formatPrice(product.price)}
-              </span>
               {product.originalPrice && product.originalPrice > product.price && (
-                <span style={{ fontSize: '0.7rem', color: 'var(--surface-400)', textDecoration: 'line-through' }}>
+                <span style={{ fontSize: '0.75rem', color: '#94a3b8', textDecoration: 'line-through', lineHeight: 1 }}>
                   {formatPrice(product.originalPrice)}
                 </span>
               )}
+              <span style={{
+                fontFamily: 'var(--font-display)', fontWeight: 800,
+                fontSize: '1.15rem', color: 'var(--surface-900)',
+                letterSpacing: '-0.02em', lineHeight: 1.2
+              }}>
+                {formatPrice(product.price)}
+              </span>
             </div>
 
-            <button
+            <button 
               disabled={product.inStock === false}
               onClick={(e) => {
                 e.preventDefault(); 
@@ -177,11 +168,12 @@ function ProductCard({ product }) {
                 setTimeout(() => setJustAdded(false), 2000);
               }}
               style={{
-                padding: '10px 14px',
-                borderRadius: '10px',
-                background: justAdded ? '#10b981' : (hovered ? 'var(--brand-600)' : 'var(--brand-500)'),
-                color: 'white',
+                width: '40px', height: '40px', borderRadius: '50%',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                background: justAdded ? '#10b981' : (hovered ? 'var(--brand-500)' : 'var(--surface-50)'),
+                color: justAdded ? 'white' : (hovered ? 'white' : 'var(--brand-500)'),
                 border: 'none',
+<<<<<<< HEAD
                 cursor: product.inStock === false ? 'not-allowed' : 'pointer',
                 transition: 'all 0.3s ease',
                 zIndex: 2, 
@@ -193,22 +185,33 @@ function ProductCard({ product }) {
                 textTransform: 'uppercase',
                 boxShadow: hovered ? '0 4px 12px rgba(24, 95, 165, 0.2)' : 'none',
                 opacity: product.inStock === false ? 0.5 : 1,
+=======
+                boxShadow: hovered && !justAdded ? '0 8px 16px rgba(249,115,22,0.25)' : 'none',
+                cursor: product.inStock === false ? 'not-allowed' : 'pointer',
+                transition: 'all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)',
+                zIndex: 2, position: 'relative',
+                opacity: product.inStock === false ? 0.3 : 1,
+                transform: hovered && product.inStock !== false ? 'scale(1.05)' : 'scale(1)',
+>>>>>>> parent of 04a16a2 (Update the UI)
               }}
               aria-label="Add to cart"
             >
               {justAdded ? (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
               ) : (
-                <>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
-                  <span>Add</span>
-                </>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
               )}
             </button>
           </div>
         </div>
       </article>
+<<<<<<< HEAD
     </Link>
+=======
+    </div>
+>>>>>>> parent of 04a16a2 (Update the UI)
   );
 }
 
