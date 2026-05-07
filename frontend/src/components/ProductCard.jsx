@@ -24,7 +24,7 @@ function ProductCard({ product }) {
   };
 
   return (
-    <div style={{ display: 'block', height: '100%', textDecoration: 'none' }}>
+    <Link to={`/product/${product._id}`} style={{ display: 'block', height: '100%', textDecoration: 'none' }} aria-label={`View ${product.name}`}>
       <article
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
@@ -112,9 +112,6 @@ function ProductCard({ product }) {
           )}
         </div>
 
-        {/* Link overlay */}
-        <Link to={`/product/${product._id}`} style={{ position: 'absolute', inset: 0, zIndex: 1 }} aria-label={`View ${product.name}`} />
-
         {/* Content Body */}
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
           <div style={{ marginBottom: '4px' }}>
@@ -172,7 +169,8 @@ function ProductCard({ product }) {
             <button
               disabled={product.inStock === false}
               onClick={(e) => {
-                e.preventDefault(); e.stopPropagation();
+                e.preventDefault(); 
+                e.stopPropagation();
                 if (product.inStock === false) return;
                 addToCart(product);
                 setJustAdded(true);
@@ -184,7 +182,7 @@ function ProductCard({ product }) {
                 background: justAdded ? '#10b981' : (hovered ? 'var(--brand-600)' : 'var(--brand-500)'),
                 color: 'white',
                 border: 'none',
-                cursor: 'pointer',
+                cursor: product.inStock === false ? 'not-allowed' : 'pointer',
                 transition: 'all 0.3s ease',
                 zIndex: 2, 
                 display: 'flex',
@@ -194,6 +192,7 @@ function ProductCard({ product }) {
                 fontSize: '0.7rem',
                 textTransform: 'uppercase',
                 boxShadow: hovered ? '0 4px 12px rgba(24, 95, 165, 0.2)' : 'none',
+                opacity: product.inStock === false ? 0.5 : 1,
               }}
               aria-label="Add to cart"
             >
@@ -209,11 +208,8 @@ function ProductCard({ product }) {
           </div>
         </div>
       </article>
-    </div>
-      </article>
-    </div>
+    </Link>
   );
 }
 
 export default ProductCard;
-

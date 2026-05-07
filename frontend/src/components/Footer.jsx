@@ -39,10 +39,10 @@ function Footer() {
               </div>
               <div>
                 <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1.1rem', color: 'white', letterSpacing: '-0.02em' }}>
-                  Sunrise <span style={{ color: 'var(--brand-700)' }}>Gadgets</span>
+                  Sunrise Gadgets Store
                 </div>
                 <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600 }}>
-                  Sri Lanka's Premium Tech Hub
+                  Expect more Pay less
                 </div>
               </div>
             </div>

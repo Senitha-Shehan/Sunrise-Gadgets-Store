@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const productSchema = nse.Schema({
+const productSchema = mongoose.Schema({
   name: { type: String, required: true },
   brand: { type: String, required: true },
   category: { type: String, required: true },
