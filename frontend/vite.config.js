@@ -9,6 +9,7 @@ export default defineConfig({
     proxy: {
       '/products': 'http://localhost:5000',
       '/categories': 'http://localhost:5000',
+      '/orders': 'http://localhost:5000',
       '/uploads': 'http://localhost:5000',
     }
   }

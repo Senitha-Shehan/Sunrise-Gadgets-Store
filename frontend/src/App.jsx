@@ -8,6 +8,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import AboutUs from './pages/AboutUs';
 import ContactUs from './pages/ContactUs';
 import CartPage from './pages/CartPage';
+import Checkout from './pages/Checkout';
 import Nav from './components/Nav';
 import Footer from './components/Footer';
 import { CartProvider } from './context/CartContext';
@@ -28,6 +29,7 @@ function App() {
             <Route path="/add" element={<AddProduct />} />
             <Route path="/product/:id" element={<ProductDetail />} />
             <Route path="/cart" element={<CartPage />} />
+            <Route path="/checkout" element={<Checkout />} />
             <Route path="/admin" element={<AdminLogin />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
           </Routes>
