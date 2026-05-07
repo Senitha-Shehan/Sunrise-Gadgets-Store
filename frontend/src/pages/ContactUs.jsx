@@ -65,7 +65,7 @@ function ContactUs() {
     transition: 'all 0.2s',
   };
 
-  const focusCss = (e) => { e.target.style.borderColor='var(--brand-500)'; e.target.style.boxShadow='0 0 0 3px rgba(6,182,212,0.1)'; e.target.style.background='white'; };
+  const focusCss = (e) => { e.target.style.borderColor='var(--brand-500)'; e.target.style.boxShadow='0 0 0 3px rgba(249,115,22,0.1)'; e.target.style.background='white'; };
   const blurCss  = (e) => { e.target.style.borderColor='var(--surface-200)'; e.target.style.boxShadow='none'; e.target.style.background='var(--surface-50)'; };
 
   return (
@@ -73,9 +73,9 @@ function ContactUs() {
 
       {/* ── Hero Banner ─────────────────────────────── */}
       <div style={{ background: 'var(--surface-950)', position: 'relative', overflow: 'hidden', padding: 'clamp(60px, 12vw, 110px) 24px', textAlign: 'center' }}>
-        <div style={{ position: 'absolute', top: '-80px', left: '50%', transform: 'translateX(-50%)', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(6,182,212,0.12) 0%, transparent 70%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', top: '-80px', left: '50%', transform: 'translateX(-50%)', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(249,115,22,0.12) 0%, transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ position: 'relative', zIndex: 2 }}>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 18px', background: 'rgba(6,182,212,0.15)', border: '1px solid rgba(6,182,212,0.3)', borderRadius: '999px', color: 'var(--brand-400)', fontSize: '0.8rem', fontWeight: 600, letterSpacing: '0.05em', marginBottom: '20px' }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 18px', background: 'rgba(249,115,22,0.15)', border: '1px solid rgba(249,115,22,0.3)', borderRadius: '999px', color: 'var(--brand-400)', fontSize: '0.8rem', fontWeight: 600, letterSpacing: '0.05em', marginBottom: '20px' }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
             We'd love to hear from you
           </span>
@@ -110,7 +110,7 @@ function ContactUs() {
               flexDirection: 'column',
               alignItems: isMobile ? 'center' : 'flex-start'
             }}
-              onMouseEnter={e => { e.currentTarget.style.transform='translateY(-3px)'; e.currentTarget.style.borderColor='rgba(6,182,212,0.2)'; e.currentTarget.style.boxShadow='0 12px 32px rgba(0,0,0,0.1)'; }}
+              onMouseEnter={e => { e.currentTarget.style.transform='translateY(-3px)'; e.currentTarget.style.borderColor='rgba(249,115,22,0.2)'; e.currentTarget.style.boxShadow='0 12px 32px rgba(0,0,0,0.1)'; }}
               onMouseLeave={e => { e.currentTarget.style.transform=''; e.currentTarget.style.borderColor='var(--surface-100)'; e.currentTarget.style.boxShadow='0 4px 16px rgba(0,0,0,0.05)'; }}
             >
               <div style={{ color: 'var(--brand-500)', marginBottom: isMobile ? '8px' : '12px', display: 'flex' }}>{c.icon}</div>
@@ -248,7 +248,7 @@ function ContactUs() {
             {faqs.map(faq => (
               <div key={faq.q} style={{ background: 'white', borderRadius: '16px', padding: '24px', border: '1.5px solid var(--surface-100)', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
                 <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                  <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: 'rgba(6,182,212,0.1)', border: '1px solid rgba(6,182,212,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--brand-600)', fontWeight: 800, fontSize: '0.9rem', flexShrink: 0 }}>Q</div>
+                  <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--brand-600)', fontWeight: 800, fontSize: '0.9rem', flexShrink: 0 }}>Q</div>
                   <div>
                     <p style={{ fontWeight: 700, color: 'var(--surface-900)', fontSize: '0.9rem', margin: '0 0 8px', lineHeight: 1.4 }}>{faq.q}</p>
                     <p style={{ color: '#64748b', fontSize: '0.875rem', lineHeight: 1.7, margin: 0 }}>{faq.a}</p>

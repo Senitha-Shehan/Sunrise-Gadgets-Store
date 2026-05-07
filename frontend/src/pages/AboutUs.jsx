@@ -53,7 +53,7 @@ function AboutUs() {
               display: 'inline-block', padding: '12px 32px', textDecoration: 'none',
               background: 'white', color: 'var(--brand-600)', border: '1.5px solid var(--brand-400)',
               borderRadius: '12px', fontWeight: 600, transition: 'all 0.2s',
-              boxShadow: '0 4px 12px rgba(6,182,212,0.08)'
+              boxShadow: '0 4px 12px rgba(249,115,22,0.08)'
             }}
             onMouseEnter={e => { e.currentTarget.style.background='var(--brand-50)'; e.currentTarget.style.borderColor='var(--brand-500)'; }}
             onMouseLeave={e => { e.currentTarget.style.background='white'; e.currentTarget.style.borderColor='var(--brand-400)'; }}>
@@ -65,7 +65,7 @@ function AboutUs() {
       </section>
 
       {/* What We Sell Section */}
-      <section className="about-section bg-[#2D2D44]" style={{ borderTop: '1px solid var(--surface-200)', borderBottom: '1px solid var(--surface-200)' }}>
+      <section className="about-section bg-white" style={{ borderTop: '1px solid var(--surface-200)', borderBottom: '1px solid var(--surface-200)' }}>
         <div className="about-container">
           
           <div style={{ textAlign: 'center', marginBottom: '48px', padding: '0 24px' }}>
@@ -152,7 +152,7 @@ function AboutUs() {
                 textAlign: 'left',
                 display: 'block'
               }}
-              onMouseEnter={e => { e.currentTarget.style.background='rgba(255,255,255,0.1)'; e.currentTarget.style.borderColor='rgba(6,182,212,0.4)'; e.currentTarget.style.transform='translateY(-6px)'; }}
+              onMouseEnter={e => { e.currentTarget.style.background='rgba(255,255,255,0.1)'; e.currentTarget.style.borderColor='rgba(249,115,22,0.4)'; e.currentTarget.style.transform='translateY(-6px)'; }}
               onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,0.06)'; e.currentTarget.style.borderColor='rgba(255,255,255,0.15)'; e.currentTarget.style.transform='none'; }}>
                 <h3 style={{ fontSize: '1.2rem', marginBottom: '12px', color: 'white' }}>{item.title}</h3>
                 <p style={{ fontSize: '0.95rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 }}>{item.desc}</p>
@@ -166,7 +166,7 @@ function AboutUs() {
       {/* Closing CTA - Full Width */}
       <section style={{ 
         width: '100%', 
-        background: 'linear-gradient(135deg, rgba(6,182,212,0.06) 0%, rgba(6,182,212,0.12) 100%)', 
+        background: 'linear-gradient(135deg, rgba(249,115,22,0.06) 0%, rgba(249,115,22,0.12) 100%)', 
         padding: 'clamp(80px, 10vw, 120px) 24px', 
         textAlign: 'center'
       }}>
@@ -185,7 +185,7 @@ function AboutUs() {
                 padding: '16px 40px', 
                 fontSize: '1.1rem', 
                 textDecoration: 'none', 
-                boxShadow: '0 8px 32px rgba(6,182,212,0.25)',
+                boxShadow: '0 8px 32px rgba(249,115,22,0.25)',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px'
