@@ -60,7 +60,7 @@ function ProductDetail() {
     new Intl.NumberFormat('si-LK', { style: 'currency', currency: 'LKR', minimumFractionDigits: 2 }).format(price);
 
   const spinner = (
-    <div style={{ width: '44px', height: '44px', border: '3px solid rgba(249,115,22,0.2)', borderTop: '3px solid var(--brand-500)', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 14px' }} />
+    <div style={{ width: '44px', height: '44px', border: '3px solid rgba(6,182,212,0.2)', borderTop: '3px solid var(--brand-500)', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 14px' }} />
   );
 
   if (loading) return (
@@ -144,7 +144,7 @@ function ProductDetail() {
                           style={{
                             flexShrink: 0, width: isTinyMobile ? '56px' : '72px', height: isTinyMobile ? '56px' : '72px', borderRadius: '12px', overflow: 'hidden',
                             border: i === selectedImage ? '2px solid var(--brand-500)' : '2px solid transparent',
-                            boxShadow: i === selectedImage ? '0 4px 12px rgba(249,115,22,0.15)' : '0 2px 6px rgba(0,0,0,0.04)',
+                            boxShadow: i === selectedImage ? '0 4px 12px rgba(6,182,212,0.15)' : '0 2px 6px rgba(0,0,0,0.04)',
                             opacity: i === selectedImage ? 1 : 0.6,
                             cursor: 'pointer', transition: 'all 0.2s', background: 'white', padding: '2px', minHeight: 'auto',
                           }}
@@ -171,7 +171,7 @@ function ProductDetail() {
                 {product.newArrival && <span className="badge badge-new">✨ New Arrival</span>}
                 {product.inStock === false && <span className="badge" style={{ background: '#ef4444', color: 'white', boxShadow: '0 2px 8px rgba(239,68,68,0.4)' }}>Out of Stock</span>}
                 {product.inStock !== false && <span className="badge" style={{ background: '#10b981', color: 'white', boxShadow: '0 2px 8px rgba(16,185,129,0.3)' }}>In Stock</span>}
-                {product.brand && <span style={{ padding: '4px 14px', borderRadius: '999px', fontSize: '0.75rem', fontWeight: 600, background: 'rgba(249,115,22,0.08)', color: 'var(--brand-600)', border: '1px solid rgba(249,115,22,0.2)' }}>{product.brand}</span>}
+                {product.brand && <span style={{ padding: '4px 14px', borderRadius: '999px', fontSize: '0.75rem', fontWeight: 600, background: 'rgba(6,182,212,0.08)', color: 'var(--brand-600)', border: '1px solid rgba(6,182,212,0.2)' }}>{product.brand}</span>}
                 {product.category && <span style={{ padding: '4px 14px', borderRadius: '999px', fontSize: '0.75rem', fontWeight: 500, background: 'var(--surface-50)', color: '#475569', border: '1px solid var(--surface-200)' }}>{product.category}</span>}
               </div>
 
@@ -217,11 +217,11 @@ function ProductDetail() {
                     fontWeight: 700, fontSize: '1rem', fontFamily: 'var(--font-display)',
                     cursor: product.inStock === false ? 'not-allowed' : 'pointer',
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                    boxShadow: product.inStock === false || justAdded ? 'none' : '0 4px 14px rgba(249,115,22,0.4)',
+                    boxShadow: product.inStock === false || justAdded ? 'none' : '0 4px 14px rgba(6,182,212,0.4)',
                     transition: 'all 0.2s cubic-bezier(0.4,0,0.2,1)',
                   }}
-                  onMouseEnter={e => { if (product.inStock !== false && !justAdded) { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(249,115,22,0.5)'; } }}
-                  onMouseLeave={e => { if (product.inStock !== false && !justAdded) { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 14px rgba(249,115,22,0.4)'; } }}
+                  onMouseEnter={e => { if (product.inStock !== false && !justAdded) { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(6,182,212,0.5)'; } }}
+                  onMouseLeave={e => { if (product.inStock !== false && !justAdded) { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 14px rgba(6,182,212,0.4)'; } }}
                 >
                   {justAdded ? (
                     '✓ Added to Cart'
@@ -272,7 +272,7 @@ function ProductDetail() {
 
               {/* Included */}
               {product.included && product.included.length > 0 && (
-                <div style={{ background: 'linear-gradient(135deg, rgba(249,115,22,0.04), rgba(234,88,12,0.06))', borderRadius: '14px', padding: '18px', border: '1px solid rgba(249,115,22,0.15)' }}>
+                <div style={{ background: 'linear-gradient(135deg, rgba(6,182,212,0.04), rgba(23,37,84,0.06))', borderRadius: '14px', padding: '18px', border: '1px solid rgba(6,182,212,0.15)' }}>
                   <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '0.8rem', color: 'var(--brand-600)', textTransform: 'uppercase', letterSpacing: '0.06em', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     What's Included

@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
 
-<<<<<<< HEAD
 const productSchema = mongoose.Schema({
-=======
-const productSchema = new mongoose.Schema({
->>>>>>> parent of 04a16a2 (Update the UI)
   name: { type: String, required: true },
   brand: { type: String, required: true },
   category: { type: String, required: true },

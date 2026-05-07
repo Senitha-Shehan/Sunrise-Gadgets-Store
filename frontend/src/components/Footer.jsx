@@ -19,65 +19,55 @@ function Footer() {
   return (
     <footer style={{
       background: 'var(--surface-950)',
-      borderTop: '1px solid rgba(249,115,22,0.12)',
-      paddingTop: '56px',
-      paddingBottom: '28px',
+      borderTop: '1px solid rgba(25, 110, 86, 0.2)',
+      paddingTop: '64px',
+      paddingBottom: '32px',
       fontFamily: 'var(--font-sans)',
     }}>
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px' }}>
 
-        {/* Responsive grid via CSS class */}
         <div className="footer-grid">
 
-          {/* Brand Column — spans 2 cols on tablet */}
+          {/* Brand Column */}
           <div className="footer-brand-col">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px' }}>
               <div style={{
-                width: '44px', height: '44px', borderRadius: '50%', overflow: 'hidden',
-                border: '2px solid rgba(249,115,22,0.4)', boxShadow: '0 0 12px rgba(249,115,22,0.25)', flexShrink: 0,
+                width: '48px', height: '48px', borderRadius: '14px', overflow: 'hidden',
+                border: '2px solid var(--brand-700)', boxShadow: '0 4px 12px rgba(0,0,0,0.2)', flexShrink: 0,
               }}>
                 <img src="/logo.jpg" alt="Sunrise Gadgets" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
               <div>
-<<<<<<< HEAD
                 <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1.1rem', color: 'white', letterSpacing: '-0.02em' }}>
                   Sunrise Gadgets Store
                 </div>
                 <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600 }}>
                   Expect more Pay less
-=======
-                <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1rem', color: 'white' }}>
-                  Sunrise <span style={{ color: 'var(--brand-400)' }}>Gadgets</span>
-                </div>
-                <div className="nav-tagline" style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.35)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-                  Premium Tech Store
->>>>>>> parent of 04a16a2 (Update the UI)
                 </div>
               </div>
             </div>
-            <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.85rem', lineHeight: 1.75, marginBottom: '24px', maxWidth: '260px' }}>
-              Your trusted source for premium projectors, smart boards, and audio systems in Sri Lanka.
+            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', lineHeight: 1.8, marginBottom: '28px', maxWidth: '280px' }}>
+              Leading provider of high-end gadgets, professional audio systems, and smart office solutions in Sri Lanka.
             </p>
-            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '12px' }}>
               {socialLinks.map(s => (
                 <a key={s.label} href={s.href} aria-label={s.label}
                   style={{
-                    width: '38px', height: '38px', borderRadius: '10px',
+                    width: '40px', height: '40px', borderRadius: '12px',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)',
-                    color: 'rgba(255,255,255,0.5)', fontSize: '1rem', textDecoration: 'none',
-                    transition: 'all 0.2s ease', minHeight: 'auto',
+                    background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+                    color: 'rgba(255,255,255,0.6)', transition: 'all 0.3s ease',
                   }}
                   onMouseEnter={e => {
-                    e.currentTarget.style.background = s.color + '22';
-                    e.currentTarget.style.borderColor = s.color + '55';
-                    e.currentTarget.style.color = s.color;
-                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.background = 'var(--brand-700)';
+                    e.currentTarget.style.borderColor = 'var(--brand-700)';
+                    e.currentTarget.style.color = 'white';
+                    e.currentTarget.style.transform = 'translateY(-3px)';
                   }}
                   onMouseLeave={e => {
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
-                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
-                    e.currentTarget.style.color = 'rgba(255,255,255,0.5)';
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
+                    e.currentTarget.style.color = 'rgba(255,255,255,0.6)';
                     e.currentTarget.style.transform = 'none';
                   }}
                 >{s.icon}</a>
@@ -87,86 +77,71 @@ function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '0.8rem', color: 'white', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '16px' }}>
-              Quick Links
+            <h4 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '0.85rem', color: 'white', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '24px' }}>
+              Navigation
             </h4>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '2px' }}>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {[{ to: '/', label: 'Home' }, { to: '/about', label: 'About Us' }, { to: '/contact', label: 'Contact' }].map(l => (
                 <li key={l.label}>
-                  <Link to={l.to} style={{ color: 'rgba(255,255,255,0.45)', textDecoration: 'none', fontSize: '0.85rem', display: 'block', padding: '5px 0', transition: 'color 0.2s' }}
-                    onMouseEnter={e => e.target.style.color = 'var(--brand-400)'}
-                    onMouseLeave={e => e.target.style.color = 'rgba(255,255,255,0.45)'}
-                  >→ {l.label}</Link>
+                  <Link to={l.to} style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'none', fontSize: '0.9rem', transition: 'all 0.2s', display: 'inline-block' }}
+                    onMouseEnter={e => { e.target.style.color = 'var(--brand-700)'; e.target.style.transform = 'translateX(4px)'; }}
+                    onMouseLeave={e => { e.target.style.color = 'rgba(255,255,255,0.5)'; e.target.style.transform = 'none'; }}
+                  >{l.label}</Link>
                 </li>
               ))}
             </ul>
           </div>
 
-
-
-          {/* Contact */}
+          {/* Contact Details */}
           <div>
-            <h4 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '0.8rem', color: 'white', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '16px' }}>
-              Contact Us
+            <h4 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '0.85rem', color: 'white', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '24px' }}>
+              Get In Touch
             </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '28px' }}>
               {[
-                { 
-                  icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>, 
-                  text: '123 Business Street, City, State 12345' 
-                },
-                { 
-                  icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l2.27-2.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>, 
-                  text: '(555) 123-4567' 
-                },
-                { 
-                  icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>, 
-                  text: 'info@sunrisegadgets.com' 
-                },
+                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>, text: '123 Tech Avenue, Colombo, Sri Lanka' },
+                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l2.27-2.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>, text: '+94 70 200 5088' },
+                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>, text: 'sales@sunrisegadgets.lk' },
               ].map(c => (
-                <div key={c.text} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                  <span style={{ color: 'var(--brand-500)', flexShrink: 0, marginTop: '2px' }}>{c.icon}</span>
-                  <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.85rem', lineHeight: 1.5 }}>{c.text}</span>
+                <div key={c.text} style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
+                  <span style={{ color: 'var(--brand-700)', flexShrink: 0, marginTop: '2px' }}>{c.icon}</span>
+                  <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', lineHeight: 1.5 }}>{c.text}</span>
                 </div>
               ))}
             </div>
-            {/* Newsletter */}
-            <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.35)', marginBottom: '8px' }}>Stay updated:</div>
+            
             <div style={{ display: 'flex', gap: '8px' }}>
-              <input type="email" placeholder="your@email.com"
+              <input type="email" placeholder="Email Updates"
                 style={{
-                  flex: 1, padding: '10px 12px', background: 'rgba(255,255,255,0.06)',
-                  border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px',
+                  flex: 1, padding: '12px 16px', background: 'rgba(255,255,255,0.05)',
+                  border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px',
                   color: 'white', fontSize: '0.85rem', outline: 'none',
-                  fontFamily: 'var(--font-sans)', minWidth: 0,
                 }}
               />
               <button
                 style={{
-                  padding: '10px 14px', background: 'var(--gradient-brand)',
-                  border: 'none', borderRadius: '8px', color: 'white',
-                  fontWeight: 600, fontSize: '0.8rem', cursor: 'pointer',
-                  whiteSpace: 'nowrap', transition: 'opacity 0.2s', flexShrink: 0,
+                  padding: '12px 20px', background: 'var(--brand-700)',
+                  border: 'none', borderRadius: '10px', color: 'white',
+                  fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer',
+                  transition: 'all 0.2s',
                 }}
-                onMouseEnter={e => e.target.style.opacity = '0.85'}
+                onMouseEnter={e => e.target.style.opacity = '0.9'}
                 onMouseLeave={e => e.target.style.opacity = '1'}
-              >Subscribe</button>
+              >Join</button>
             </div>
           </div>
         </div>
 
-        {/* Divider */}
-        <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(249,115,22,0.3), transparent)', marginBottom: '24px' }} />
+        <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)', margin: '40px 0 24px' }} />
 
-        {/* Bottom */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
           <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.8rem', margin: 0 }}>
-            © 2024 Sunrise Gadgets Store. All rights reserved.
+            © 2024 Sunrise Gadgets. High-Performance Technology Solutions.
           </p>
-          <div style={{ display: 'flex', gap: '20px' }}>
-            {['Privacy Policy', 'Terms of Service'].map(l => (
+          <div style={{ display: 'flex', gap: '24px' }}>
+            {['Privacy', 'Terms', 'Warranty'].map(l => (
               <a key={l} href="#" style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.8rem', textDecoration: 'none', transition: 'color 0.2s' }}
-                onMouseEnter={e => e.target.style.color = 'var(--brand-400)'}
+                onMouseEnter={e => e.target.style.color = 'white'}
                 onMouseLeave={e => e.target.style.color = 'rgba(255,255,255,0.3)'}
               >{l}</a>
             ))}
