@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 
 const navLinks = [
@@ -17,7 +17,6 @@ const mobileLinks = [
 function Nav() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const drawerRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
   const { cartCount } = useCart();
@@ -43,7 +42,7 @@ function Nav() {
 
   return (
     <>
-      <nav role="navigation" aria-label="Main navigation"
+      <nav
         style={{
           position: 'sticky',
           top: 0,
@@ -87,12 +86,12 @@ function Nav() {
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
               </div>
-              <div className="block">
+              <div className="hidden sm:block">
                 <span className="nav-brand-title">
-                  Sunrise Gadgets Store</span>
-
+                  Sunrise Gadgets <span style={{ color: 'var(--brand-700)' }}>Store</span>
+                </span>
                 <span className="nav-brand-subtitle">
-                 Expect more Pay less
+                  Sri Lanka's Premium Tech
                 </span>
               </div>
             </Link>
@@ -110,7 +109,7 @@ function Nav() {
             </div>
 
             {/* Desktop Links */}
-            <div className="nav-desktop">
+            <div style={{ display: 'none', gap: '4px' }} className="nav-desktop">
               {navLinks.map(link => (
                 <Link
                   key={link.label}
@@ -229,10 +228,8 @@ function Nav() {
 
       {/* Mobile Drawer */}
       <aside
-        ref={drawerRef}
         className="nav-drawer"
         id="mobile-menu"
-        tabIndex="-1"
         onClick={(event) => event.stopPropagation()}
         style={{
           position: 'fixed',
