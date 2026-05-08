@@ -82,7 +82,7 @@ function Hero({ slides, hideStats }) {
       onMouseLeave={() => setAnimating(false)}
       style={{
         position: 'relative',
-        minHeight: isTinyMobile ? (isLandscape ? '280px' : '380px') : (isMobilePhone ? '420px' : (isTablet ? 'clamp(480px, 70vh, 550px)' : 'clamp(500px, 80vh, 700px)')),
+        minHeight: isTinyMobile ? (isLandscape ? '240px' : '320px') : (isMobilePhone ? '360px' : (isTablet ? 'clamp(440px, 65vh, 520px)' : 'clamp(500px, 80vh, 700px)')),
         display: 'flex',
         alignItems: 'center',
         overflow: 'hidden',
@@ -115,15 +115,15 @@ function Hero({ slides, hideStats }) {
       )}
 
       {/* Content */}
-      <div className="hero-content" style={{ position: 'relative', zIndex: 10, padding: isTinyMobile ? '0 16px' : (isMobilePhone ? '0 24px' : (isTablet ? '0 40px' : '0')) }}>  
-        <div style={{ maxWidth: '800px' }}>
+      <div className="hero-content" style={{ position: 'relative', zIndex: 10, padding: isTinyMobile ? '0 14px' : (isMobilePhone ? '0 18px' : (isTablet ? '0 40px' : '0')) }}>  
+        <div style={{ maxWidth: isMobile ? '520px' : '800px' }}>
           {/* Tag */}
           <div key={`tag-${current}`} style={{
             display: 'inline-flex', alignItems: 'center', gap: '8px',
-            padding: '6px 14px', background: 'rgba(255,255,255,0.04)',
+            padding: isTinyMobile ? '5px 10px' : '6px 14px', background: 'rgba(255,255,255,0.04)',
             border: '1px solid rgba(255,255,255,0.1)', borderRadius: '999px',
-            color: 'var(--brand-400)', fontSize: 'clamp(0.65rem, 2vw, 0.85rem)', fontWeight: 700,
-            letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: isTinyMobile ? '12px' : (isMobilePhone ? '16px' : '20px'),
+            color: 'var(--brand-400)', fontSize: isTinyMobile ? '0.6rem' : 'clamp(0.65rem, 2vw, 0.85rem)', fontWeight: 700,
+            letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: isTinyMobile ? '10px' : (isMobilePhone ? '12px' : '20px'),
             opacity: animating ? 0 : 1,
             transform: animating ? 'translateY(10px)' : 'translateY(0)',
             transition: 'all 0.7s cubic-bezier(0.2, 0.8, 0.2, 1)',
@@ -134,12 +134,12 @@ function Hero({ slides, hideStats }) {
           </div>
 
           {/* Headline */}
-          <div style={{ marginBottom: isTinyMobile ? '8px' : (isMobilePhone ? '12px' : '20px') }}>
+          <div style={{ marginBottom: isTinyMobile ? '6px' : (isMobilePhone ? '10px' : '20px') }}>
             <h1 key={`h1-${current}`} style={{
               fontFamily: 'var(--font-display)',
-              fontSize: isMobile ? 'clamp(2rem, 8vw, 2.8rem)' : 'clamp(2.5rem, 6vw, 5rem)',
-              fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.04em',
-              marginBottom: '8px', color: 'white',
+              fontSize: isTinyMobile ? 'clamp(1.45rem, 8vw, 2rem)' : (isMobilePhone ? 'clamp(1.7rem, 7vw, 2.35rem)' : (isMobile ? 'clamp(2rem, 8vw, 2.8rem)' : 'clamp(2.5rem, 6vw, 5rem)')),
+              fontWeight: 800, lineHeight: 1.05, letterSpacing: '-0.04em',
+              marginBottom: isTinyMobile ? '4px' : '8px', color: 'white',
               textShadow: '0 2px 10px rgba(0,0,0,0.3)',
               opacity: animating ? 0 : 1,
               transform: animating ? 'translateY(10px)' : 'translateY(0)',
@@ -147,8 +147,8 @@ function Hero({ slides, hideStats }) {
             }}>{slide.headline}</h1>
             <h1 key={`h1b-${current}`} style={{
               fontFamily: 'var(--font-display)',
-              fontSize: isMobile ? 'clamp(2rem, 8vw, 2.8rem)' : 'clamp(2.5rem, 6vw, 5rem)',
-              fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.04em',
+              fontSize: isTinyMobile ? 'clamp(1.45rem, 8vw, 2rem)' : (isMobilePhone ? 'clamp(1.7rem, 7vw, 2.35rem)' : (isMobile ? 'clamp(2rem, 8vw, 2.8rem)' : 'clamp(2.5rem, 6vw, 5rem)')),
+              fontWeight: 800, lineHeight: 1.05, letterSpacing: '-0.04em',
               background: 'linear-gradient(to right, #0891b2, #0e7490, #0891b2)',
               backgroundSize: '200% auto',
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
@@ -160,8 +160,8 @@ function Hero({ slides, hideStats }) {
           {/* Description */}
           <p key={`desc-${current}`} style={{
             color: 'rgba(255,255,255,0.7)',
-            fontSize: 'clamp(0.875rem, 2.5vw, 1.15rem)',
-            lineHeight: 1.5, maxWidth: '540px', marginBottom: isTinyMobile ? '16px' : (isMobilePhone ? '20px' : (isTablet ? '28px' : '32px')),
+            fontSize: isTinyMobile ? '0.8rem' : 'clamp(0.875rem, 2.5vw, 1.15rem)',
+            lineHeight: 1.45, maxWidth: '540px', marginBottom: isTinyMobile ? '12px' : (isMobilePhone ? '16px' : (isTablet ? '28px' : '32px')),
             opacity: animating ? 0 : 1,
             transform: animating ? 'translateY(15px)' : 'translateY(0)',
             transition: 'all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s',
@@ -217,7 +217,7 @@ function Hero({ slides, hideStats }) {
       {/* Navigation Dots - Responsive */}
       <div style={{ 
         position: 'absolute', 
-        bottom: isTinyMobile ? '12px' : (isMobilePhone ? '16px' : (isTablet ? '20px' : '40px')), 
+        bottom: isTinyMobile ? '10px' : (isMobilePhone ? '12px' : (isTablet ? '20px' : '40px')), 
         left: '50%', 
         transform: 'translateX(-50%)',
         display: 'flex', 

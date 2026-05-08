@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Hero from '../components/Hero';
 import SearchFilter from '../components/SearchFilter';
-import ProductCarousel from '../components/ProductCarousel';
 import ProductCard from '../components/ProductCard';
 
 // ============================================================================
@@ -401,7 +400,7 @@ function ProductList() {
           </div>
         )}
 
-        {/* NEW ARRIVALS SECTION - Carousel Format with Collapse */}
+        {/* NEW ARRIVALS SECTION - Grid Format with Collapse */}
         {newArrivals.length > 0 && (
           <section style={{ marginBottom: isMobile ? '48px' : '64px' }}>
             <SectionHeader
@@ -411,10 +410,13 @@ function ProductList() {
               onToggle={() => toggleCategory('New Arrivals')}
             />
             {expandedCategories['New Arrivals'] !== false && (
-              <ProductCarousel
-                products={newArrivals}
-                sectionId="new-arrivals-carousel"
-              />
+              <div className="product-grid">
+                {newArrivals.map(p => (
+                  <div key={p._id}>
+                    <ProductCard product={p} />
+                  </div>
+                ))}
+              </div>
             )}
           </section>
         )}

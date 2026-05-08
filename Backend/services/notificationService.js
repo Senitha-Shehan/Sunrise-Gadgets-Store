@@ -1,14 +1,27 @@
 const nodemailer = require('nodemailer');
 
+const mailUser = (process.env.EMAIL_USER || '').trim();
+const mailPass = (process.env.EMAIL_PASS || '').replace(/\s+/g, '');
+const mailPort = Number(process.env.EMAIL_PORT) || 587;
+const isGmail = (process.env.EMAIL_HOST || '').toLowerCase().includes('gmail');
+
 // Configure SMTP Transporter
 const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST,
-  port: process.env.EMAIL_PORT,
-  secure: process.env.EMAIL_PORT == 465, // true for 465, false for other ports
+  host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+  service: isGmail ? 'gmail' : undefined,
+  port: mailPort,
+  secure: mailPort === 465,
+  requireTLS: mailPort !== 465,
+  tls: {
+    minVersion: 'TLSv1.2',
+  },
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
+    user: mailUser,
+    pass: mailPass
+  },
+  connectionTimeout: 15000,
+  greetingTimeout: 15000,
+  socketTimeout: 20000,
 });
 
 /**
@@ -102,7 +115,7 @@ const sendCustomerInvoice = async (order) => {
     `;
 
     await transporter.sendMail({
-      from: `"Sunrise Gadgets" <${process.env.EMAIL_USER}>`,
+      from: `"Sunrise Gadgets" <${mailUser}>`,
       to: customer.email,
       subject: `Order Confirmation #${orderId} - Sunrise Gadgets`,
       html: emailHtml
@@ -137,8 +150,8 @@ const sendAdminNotification = async (order) => {
     `;
 
     await transporter.sendMail({
-      from: `"Store Alerts" <${process.env.EMAIL_USER}>`,
-      to: process.env.ADMIN_EMAIL,
+      from: `"Store Alerts" <${mailUser}>`,
+      to: (process.env.ADMIN_EMAIL || '').trim(),
       subject: `🚨 NEW ORDER #${orderId}: ${customer.name}`,
       html: adminEmailHtml
     });

@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useCart } from '../context/CartContext';
 import usePageMetadata from '../hooks/usePageMetadata';
 
-const WA_NUMBER = '94784488955';
+const WA_NUMBER = '94702005088';
 
 function ProductDetail() {
   const { id } = useParams();
