@@ -28,7 +28,7 @@ const getProductById = async (req, res) => {
 // Add a new product with multiple image uploads
 const addProduct = async (req, res) => {
   try {
-    const { name, brand, category, description, price, originalPrice, inStock, newArrival, included, specs } = req.body;
+    const { name, brand, category, description, price, originalPrice, quantity, inStock, newArrival, included, specs } = req.body;
     
     // Check if files were uploaded
     if (!req.files || req.files.length === 0) {
@@ -60,6 +60,7 @@ const addProduct = async (req, res) => {
       description, 
       price,
       originalPrice: originalPrice ? parseFloat(originalPrice) : undefined,
+      quantity: parseInt(quantity) || 0,
       images,
       inStock: inStock === 'true' || inStock === true,
       newArrival: newArrival === 'true' || newArrival === true,
@@ -81,7 +82,7 @@ const addProduct = async (req, res) => {
 // Update a product
 const updateProduct = async (req, res) => {
   try {
-    const { name, brand, category, description, price, originalPrice, inStock, newArrival, included, specs } = req.body;
+    const { name, brand, category, description, price, originalPrice, quantity, inStock, newArrival, included, specs } = req.body;
     
     let updateData = {
       name,
@@ -90,6 +91,7 @@ const updateProduct = async (req, res) => {
       description,
       price,
       originalPrice: originalPrice ? parseFloat(originalPrice) : undefined,
+      quantity: parseInt(quantity) || 0,
       inStock: inStock === 'true' || inStock === true,
       newArrival: newArrival === 'true' || newArrival === true
     };

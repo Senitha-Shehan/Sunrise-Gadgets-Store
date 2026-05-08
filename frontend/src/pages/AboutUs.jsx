@@ -64,51 +64,6 @@ function AboutUs() {
         </div>
       </section>
 
-      {/* What We Sell Section */}
-      <section className="about-section bg-[#2D2D44]" style={{ borderTop: '1px solid var(--surface-200)', borderBottom: '1px solid var(--surface-200)' }}>
-        <div className="about-container">
-          
-          <div style={{ textAlign: 'center', marginBottom: '48px', padding: '0 24px' }}>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(2rem, 4vw, 2.5rem)', marginBottom: '12px', letterSpacing: '-0.03em', color: 'var(--surface-950)' }}>
-              What We Sell
-            </h2>
-            <p style={{ color: 'var(--surface-600)', maxWidth: '500px', margin: '0 auto', fontSize: '1.05rem' }}>
-              A curated selection of high-performance gear for your home and office.
-            </p>
-          </div>
-
-          <div className="about-grid-4">
-            {[
-              { image: '/hot-water.jpg', title: 'Hot Water Products', desc: 'Reliable heating solutions for modern homes.' },
-              { image: '/projectors.webp', title: 'Projectors', desc: 'Cinematic 4K and portable HD setups.' },
-              { image: '/smart gadets.jpg', title: 'Smart Gadgets', desc: 'Everyday tech to make life easier.' },
-              { image: '/accessories.webp', title: 'Accessories', desc: 'High-quality cables, mounts, and audio components.' }
-            ].map(item => (
-              <div 
-                key={item.title} 
-                className="about-card" 
-                style={{ padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column', border: '1px solid var(--surface-200)' }}
-              >
-                <div style={{ height: '220px', width: '100%', background: 'var(--surface-100)', overflow: 'hidden' }}>
-                  <img 
-                    src={item.image} 
-                    alt={item.title} 
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s ease' }} 
-                    onMouseEnter={e => e.currentTarget.style.transform='scale(1.05)'} 
-                    onMouseLeave={e => e.currentTarget.style.transform='scale(1)'} 
-                  />
-                </div>
-                <div style={{ padding: '24px' }}>
-                  <h3 style={{ fontSize: '1.25rem', marginBottom: '8px', color: 'var(--surface-950)' }}>{item.title}</h3>
-                  <p style={{ color: 'var(--surface-600)', margin: 0 }}>{item.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-        </div>
-      </section>
-
       {/* Why Choose Us Section - Full Banner */}
       <section style={{ 
         position: 'relative', 

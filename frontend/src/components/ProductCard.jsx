@@ -30,18 +30,16 @@ function ProductCard({ product }) {
         onMouseLeave={() => setHovered(false)}
         style={{
           background: 'white',
-          borderRadius: '12px',
-          padding: '10px',
+          borderRadius: 'var(--radius-lg)',
+          padding: isMobile ? '12px' : '16px',
           display: 'flex',
           flexDirection: 'column',
           height: '100%',
-          boxShadow: hovered
-            ? '0 12px 32px rgba(24, 95, 165, 0.1)'
-            : '0 4px 12px rgba(0,0,0,0.03)',
+          boxShadow: hovered ? '0 20px 40px -12px rgba(0,0,0,0.12)' : '0 2px 8px rgba(0,0,0,0.04)',
           border: '1px solid',
-          borderColor: hovered ? 'rgba(25, 110, 86, 0.1)' : 'rgba(0,0,0,0.04)',
-          transform: (hovered && !isMobile) ? 'translateY(-4px)' : 'translateY(0)',
-          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          borderColor: hovered ? 'rgba(24, 95, 165, 0.15)' : '#f0f0f0',
+          transform: (hovered && !isMobile) ? 'translateY(-8px)' : 'translateY(0)',
+          transition: 'all 0.5s cubic-bezier(0.2, 1, 0.3, 1)',
           cursor: 'pointer',
           position: 'relative',
           overflow: 'hidden',
@@ -52,14 +50,14 @@ function ProductCard({ product }) {
           style={{
             position: 'relative',
             aspectRatio: '1/1',
-            borderRadius: '8px',
+            borderRadius: 'var(--radius-md)',
             overflow: 'hidden',
-            background: 'var(--surface-50)',
+            background: '#F9FAFB',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             flexShrink: 0,
-            marginBottom: '12px'
+            marginBottom: isMobile ? '12px' : '16px'
           }}
         >
           {product.images && product.images.length > 0 && !imgError ? (
@@ -70,30 +68,29 @@ function ProductCard({ product }) {
                 width: '100%',
                 height: '100%',
                 objectFit: 'contain',
-                padding: '12px',
-                transform: hovered ? 'scale(1.08)' : 'scale(1)',
-                transition: 'transform 0.5s ease',
+                padding: isMobile ? '12px' : '20px',
+                transform: hovered ? 'scale(1.05)' : 'scale(1)',
+                transition: 'transform 0.8s cubic-bezier(0.2, 1, 0.3, 1)',
               }}
               loading="lazy"
               onError={() => setImgError(true)}
             />
           ) : (
-            <div style={{ fontSize: '2.5rem' }}>🔌</div>
+            <div style={{ fontSize: '2.5rem', opacity: 0.3 }}>🔌</div>
           )}
 
           {/* Badges */}
           <div style={{ position: 'absolute', top: '8px', left: '8px', zIndex: 2, display: 'flex', gap: '4px' }}>
             {product.newArrival && (
               <span style={{
-                background: 'var(--brand-600)', /* Teal */
+                background: 'var(--brand-500)',
                 color: 'white',
                 padding: '4px 8px',
                 borderRadius: '6px',
-                fontSize: '0.65rem',
-                fontWeight: 800,
+                fontSize: '0.6rem',
+                fontWeight: 900,
                 textTransform: 'uppercase',
-                letterSpacing: '0.02em',
-                boxShadow: '0 4px 12px rgba(15, 110, 86, 0.2)'
+                letterSpacing: '0.05em'
               }}>New</span>
             )}
           </div>
@@ -105,9 +102,9 @@ function ProductCard({ product }) {
               backdropFilter: 'blur(2px)'
             }}>
               <span style={{ 
-                background: 'var(--surface-900)', color: 'white', padding: '6px 12px', 
-                borderRadius: '8px', fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase' 
-              }}>Out of Stock</span>
+                background: '#000', color: 'white', padding: '6px 12px', 
+                borderRadius: '8px', fontSize: '0.65rem', fontWeight: 900, textTransform: 'uppercase'
+              }}>Sold Out</span>
             </div>
           )}
         </div>
@@ -118,53 +115,64 @@ function ProductCard({ product }) {
         {/* Content Body */}
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
           <div style={{ marginBottom: '4px' }}>
-            <span style={{ color: 'var(--brand-700)', fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              {product.brand || 'Premium Accessory'}
+            <span style={{ 
+              color: '#6B7280', 
+              fontSize: '0.65rem', 
+              fontWeight: 600, 
+              textTransform: 'uppercase', 
+              letterSpacing: '0.1em'
+            }}>
+              {product.brand || 'Premium'}
             </span>
           </div>
 
           <h3 style={{
-            fontFamily: 'var(--font-display)',
-            fontWeight: 700,
-            fontSize: '0.9rem',
-            color: 'var(--brand-500)', /* Dark Blue */
-            lineHeight: 1.3,
-            marginBottom: '10px',
+            fontFamily: 'var(--font-sans)',
+            fontWeight: 600,
+            fontSize: isMobile ? '0.85rem' : '1rem',
+            color: '#000000',
+            lineHeight: 1.4,
+            marginBottom: '12px',
             display: '-webkit-box',
             WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical',
             overflow: 'hidden',
+            minHeight: '2.8em'
           }}>
             {product.name}
           </h3>
 
-          {/* Rating placeholder */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '2px', marginBottom: '12px' }}>
-            {[1,2,3,4,5].map(i => (
-              <svg key={i} width="12" height="12" viewBox="0 0 24 24" fill={i <= 4 ? "var(--brand-700)" : "rgba(0,0,0,0.1)"}><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-            ))}
-            <span style={{ fontSize: '0.65rem', color: 'var(--surface-400)', marginLeft: '4px' }}>(24)</span>
-          </div>
-
           <div style={{ flex: 1 }} />
 
-          {/* Footer */}
+          {/* Pricing and Action */}
           <div style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '4px'
+            display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: '4px'
           }}>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
+              {product.originalPrice && product.originalPrice > product.price && (
+                <span style={{ fontSize: '0.7rem', color: '#9CA3AF', textDecoration: 'line-through', marginBottom: '1px' }}>
+                  {formatPrice(product.originalPrice)}
+                </span>
+              )}
               <span style={{
-                fontFamily: 'var(--font-display)', 
-                fontWeight: 800,
-                fontSize: '1.1rem',
-                letterSpacing: '-0.02em', 
-                color: 'var(--surface-900)'
+                fontFamily: 'var(--font-sans)', 
+                fontWeight: 700,
+                fontSize: isMobile ? '1rem' : '1.15rem',
+                color: '#000000',
+                lineHeight: 1
               }}>
                 {formatPrice(product.price)}
               </span>
-              {product.originalPrice && product.originalPrice > product.price && (
-                <span style={{ fontSize: '0.7rem', color: 'var(--surface-400)', textDecoration: 'line-through' }}>
-                  {formatPrice(product.originalPrice)}
+              {product.quantity !== undefined && (
+                <span style={{
+                  fontSize: '0.65rem',
+                  color: product.quantity > 0 ? '#059669' : '#dc2626',
+                  fontWeight: 600,
+                  marginTop: '4px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em'
+                }}>
+                  {product.quantity > 0 ? `${product.quantity} in stock` : 'Out of stock'}
                 </span>
               )}
             </div>
@@ -179,9 +187,10 @@ function ProductCard({ product }) {
                 setTimeout(() => setJustAdded(false), 2000);
               }}
               style={{
-                padding: '10px 14px',
-                borderRadius: '10px',
-                background: justAdded ? '#10b981' : (hovered ? 'var(--brand-600)' : 'var(--brand-500)'),
+                width: '36px',
+                height: '36px',
+                borderRadius: '50%',
+                background: justAdded ? '#10b981' : (hovered ? 'var(--brand-500)' : '#000'),
                 color: 'white',
                 border: 'none',
                 cursor: 'pointer',
@@ -189,31 +198,22 @@ function ProductCard({ product }) {
                 zIndex: 2, 
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px',
-                fontWeight: 700,
-                fontSize: '0.7rem',
-                textTransform: 'uppercase',
-                boxShadow: hovered ? '0 4px 12px rgba(24, 95, 165, 0.2)' : 'none',
+                justifyContent: 'center',
+                boxShadow: hovered ? '0 4px 12px rgba(0,0,0,0.15)' : 'none',
               }}
               aria-label="Add to cart"
             >
               {justAdded ? (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5"><polyline points="20 6 9 17 4 12"/></svg>
               ) : (
-                <>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
-                  <span>Add</span>
-                </>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
               )}
             </button>
           </div>
         </div>
       </article>
     </div>
-      </article>
-    </div>
   );
 }
 
 export default ProductCard;
-

@@ -16,7 +16,11 @@ export function CartProvider({ children }) {
 
   // Persist to localStorage whenever cart changes
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(cartItems));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cartItems));
+    } catch {
+      // Ignore persistence errors so cart usage still works in private or restricted sessions.
+    }
   }, [cartItems]);
 
   const addToCart = (product) => {
@@ -38,9 +42,10 @@ export function CartProvider({ children }) {
   };
 
   const updateQty = (id, qty) => {
-    if (qty < 1) { removeFromCart(id); return; }
+    const nextQty = Number(qty);
+    if (!Number.isFinite(nextQty) || nextQty < 1) { removeFromCart(id); return; }
     setCartItems(prev =>
-      prev.map(item => item._id === id ? { ...item, qty } : item)
+      prev.map(item => item._id === id ? { ...item, qty: Math.floor(nextQty) } : item)
     );
   };
 

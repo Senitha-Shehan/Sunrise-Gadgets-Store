@@ -9,9 +9,9 @@ const navLinks = [
 ];
 
 const mobileLinks = [
-  { to: '/', label: 'Products', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> },
-  { to: '/about', label: 'About', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> },
-  { to: '/contact', label: 'Contact', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l2.27-2.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg> },
+  { to: '/', label: 'Products', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="14" y="14" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /></svg> },
+  { to: '/about', label: 'About', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg> },
+  { to: '/contact', label: 'Contact', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l2.27-2.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" /></svg> },
 ];
 
 function Nav() {
@@ -28,15 +28,6 @@ function Nav() {
   }, []);
 
   useEffect(() => {
-    if (!menuOpen) return undefined;
-    const onEscape = (event) => {
-      if (event.key === 'Escape') setMenuOpen(false);
-    };
-    document.addEventListener('keydown', onEscape);
-    return () => document.removeEventListener('keydown', onEscape);
-  }, [menuOpen]);
-
-  useEffect(() => {
     setMenuOpen(false);
   }, [location.pathname]);
 
@@ -48,17 +39,15 @@ function Nav() {
           top: 0,
           zIndex: 40,
           transition: 'all 0.3s ease',
-          background: scrolled
-            ? 'var(--brand-500)'
-            : 'var(--brand-500)',
-          borderBottom: scrolled
-            ? '1px solid rgba(255,255,255,0.1)'
-            : '1px solid rgba(255,255,255,0.06)',
-          boxShadow: scrolled ? '0 4px 32px rgba(0,0,0,0.15)' : 'none',
+          background: scrolled ? 'rgba(10, 17, 40, 0.98)' : 'rgba(10, 17, 40, 0.92)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          borderBottom: '1px solid rgba(255,255,255,0.08)',
+          boxShadow: scrolled ? '0 4px 32px rgba(0,0,0,0.28)' : 'none',
         }}
       >
-        <div className="nav-shell" style={{ maxWidth: '1280px', margin: '0 auto', padding: scrolled ? '0 24px' : '4px 24px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '68px', gap: '24px' }}>
+        <div className="nav-shell" style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '68px', gap: '20px' }}>
 
             {/* Logo + Brand */}
             <Link
@@ -76,7 +65,7 @@ function Nav() {
                 height: '42px',
                 borderRadius: '12px',
                 overflow: 'hidden',
-                border: '2px solid var(--brand-700)',
+                border: '2px solid rgba(255,255,255,0.2)',
                 boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
                 flexShrink: 0,
               }}>
@@ -86,25 +75,26 @@ function Nav() {
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
               </div>
-              <div className="hidden sm:block">
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <span className="nav-brand-title">
-                  Sunrise Gadgets <span style={{ color: 'var(--brand-700)' }}>Store</span>
+                  Sunrise Gadgets Store
                 </span>
                 <span className="nav-brand-subtitle">
-                  Sri Lanka's Premium Tech
+                  Expect More Pay Less
                 </span>
               </div>
             </Link>
 
             {/* Search Bar - Desktop */}
             <div className="hidden lg:flex flex-1 max-w-md relative">
-              <input 
-                type="text" 
-                placeholder="Search gadgets, accessories..." 
+              <input
+                type="text"
+                placeholder="Search gadgets, accessories..."
                 className="w-full bg-white/10 border border-white/20 rounded-xl px-5 py-2.5 text-sm text-white placeholder:text-white/50 focus:bg-white/20 focus:outline-none transition-all"
+                style={{ border: '1px solid rgba(255,255,255,0.2)' }}
               />
               <svg className="absolute right-4 top-1/2 -translate-y-1/2 text-white/50" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
             </div>
 
@@ -114,12 +104,6 @@ function Nav() {
                 <Link
                   key={link.label}
                   to={link.to}
-                  onClick={(e) => {
-                    if (link.label === 'Products' && location.pathname === '/') {
-                      e.preventDefault();
-                      document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
-                    }
-                  }}
                   style={{
                     padding: '8px 18px',
                     color: 'white',
@@ -130,41 +114,30 @@ function Nav() {
                     textDecoration: 'none',
                     borderRadius: '10px',
                     transition: 'all 0.2s',
-                    letterSpacing: '0.01em',
                   }}
-                  onMouseEnter={e => { e.target.style.opacity = '1'; e.target.style.background = 'rgba(255,255,255,0.15)'; }}
-                  onMouseLeave={e => { 
-                    if (location.pathname !== link.to) {
-                      e.target.style.opacity = '0.8';
-                      e.target.style.background = 'transparent';
-                    } else {
-                      e.target.style.background = 'rgba(255,255,255,0.1)';
-                    }
-                  }}
+                  onMouseEnter={e => { if (location.pathname !== link.to) { e.target.style.opacity = '1'; e.target.style.background = 'rgba(255,255,255,0.08)'; } }}
+                  onMouseLeave={e => { if (location.pathname !== link.to) { e.target.style.opacity = '0.8'; e.target.style.background = 'transparent'; } }}
                 >
                   {link.label}
                 </Link>
               ))}
             </div>
 
-            {/* Cart Icon + Hamburger */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              {/* Cart Button */}
+            {/* Icons */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <button
                 onClick={() => navigate('/cart')}
-                aria-label="Shopping cart"
                 style={{
                   position: 'relative', background: 'rgba(255,255,255,0.1)',
                   border: '1px solid rgba(255,255,255,0.1)',
                   borderRadius: '12px', padding: '10px', cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: 'white', transition: 'all 0.2s',
+                  color: 'white', display: 'flex', transition: 'all 0.2s',
                 }}
+                onMouseEnter={e => e.target.style.background = 'rgba(255,255,255,0.2)'}
+                onMouseLeave={e => e.target.style.background = 'rgba(255,255,255,0.1)'}
               >
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
-                  <line x1="3" y1="6" x2="21" y2="6" />
-                  <path d="M16 10a4 4 0 01-8 0" />
+                  <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 01-8 0" />
                 </svg>
                 {cartCount > 0 && (
                   <span style={{
@@ -173,40 +146,24 @@ function Nav() {
                     borderRadius: '999px', minWidth: '18px', height: '18px',
                     fontSize: '0.65rem', fontWeight: 800, display: 'flex',
                     alignItems: 'center', justifyContent: 'center', padding: '0 4px',
-                    animation: 'fadeIn 0.2s ease', border: '2px solid var(--brand-500)',
-                  }}>{cartCount > 99 ? '99+' : cartCount}</span>
+                    border: '2px solid var(--surface-950)',
+                  }}>{cartCount}</span>
                 )}
               </button>
 
-              {/* Hamburger */}
               <button
                 onClick={() => setMenuOpen(true)}
-                aria-label="Open menu"
-                aria-expanded={menuOpen}
-                aria-controls="mobile-menu"
                 className="nav-hamburger"
                 style={{
-                  background: 'rgba(255,255,255,0.1)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: '12px',
-                  padding: '10px',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'white',
-                  transition: 'all 0.2s',
-                  minWidth: '44px',
-                  minHeight: '44px',
+                  background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '12px', padding: '10px', cursor: 'pointer', color: 'white',
                 }}
               >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="3" y1="12" x2="21" y2="12" />
-                  <line x1="3" y1="6" x2="21" y2="6" />
-                  <line x1="3" y1="18" x2="21" y2="18" />
+                  <line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="18" x2="21" y2="18" />
                 </svg>
               </button>
-            </div>{/* end cart+hamburger */}
+            </div>
           </div>
         </div>
       </nav>
@@ -215,181 +172,62 @@ function Nav() {
       <div
         onClick={() => setMenuOpen(false)}
         style={{
-          position: 'fixed',
-          inset: 0,
-          zIndex: 50,
-          background: 'rgba(0,0,0,0.6)',
-          backdropFilter: 'blur(4px)',
-          opacity: menuOpen ? 1 : 0,
-          pointerEvents: menuOpen ? 'auto' : 'none',
-          transition: 'opacity 0.3s ease',
+          position: 'fixed', inset: 0, zIndex: 50, background: 'rgba(0,0,0,0.6)',
+          backdropFilter: 'blur(4px)', opacity: menuOpen ? 1 : 0,
+          pointerEvents: menuOpen ? 'auto' : 'none', transition: 'opacity 0.3s ease',
         }}
       />
 
       {/* Mobile Drawer */}
       <aside
-        className="nav-drawer"
-        id="mobile-menu"
-        onClick={(event) => event.stopPropagation()}
         style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          height: '100dvh',
-          width: 'min(300px, 85vw)',
-          zIndex: 60,
-          display: 'flex',
-          flexDirection: 'column',
-          background: 'var(--surface-900)',
-          borderRight: '1px solid rgba(6,182,212,0.2)',
+          position: 'fixed', top: 0, left: 0, height: '100dvh', width: '300px',
+          zIndex: 60, display: 'flex', flexDirection: 'column',
+          background: 'var(--surface-950)', borderRight: '1px solid rgba(255,255,255,0.1)',
           transform: menuOpen ? 'translateX(0)' : 'translateX(-100%)',
           transition: 'transform 0.35s cubic-bezier(0.4,0,0.2,1)',
-          boxShadow: '8px 0 40px rgba(0,0,0,0.5)',
         }}
       >
-        {/* Drawer Header */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '20px 24px',
-          borderBottom: '1px solid rgba(255,255,255,0.07)',
-        }}>
+        <div style={{ padding: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '36px', height: '36px', borderRadius: '50%', overflow: 'hidden', border: '2px solid rgba(6,182,212,0.4)' }}>
+            <div style={{ width: '36px', height: '36px', borderRadius: '10px', overflow: 'hidden' }}>
               <img src="/logo.jpg" alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
-            <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, color: 'white', fontSize: '1rem' }}>
-              Sunrise Gadgets <span style={{ color: 'var(--brand-400)' }}>Store</span>
-            </span>
+            <span style={{ fontWeight: 700, color: 'white', fontFamily: 'var(--font-display)' }}>Sunrise Gadgets <span style={{ color: 'var(--brand-400)' }}>Store</span></span>
           </div>
-          <button
-            onClick={() => setMenuOpen(false)}
-            style={{
-              background: 'rgba(255,255,255,0.08)',
-              border: 'none',
-              borderRadius: '8px',
-              padding: '6px',
-              cursor: 'pointer',
-              color: 'rgba(255,255,255,0.7)',
-              display: 'flex',
-            }}
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
+          <button onClick={() => setMenuOpen(false)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
           </button>
         </div>
-
-        {/* Drawer Links */}
-        <nav style={{ flex: 1, padding: '16px 12px', overflowY: 'auto' }}>
+        <nav style={{ padding: '20px' }}>
           {mobileLinks.map(link => (
             <Link
               key={link.label}
               to={link.to}
               onClick={() => setMenuOpen(false)}
               style={{
-                display: 'block',
-                padding: '14px 16px',
-                marginBottom: '4px',
-                color: location.pathname === link.to ? 'white' : 'rgba(255,255,255,0.75)',
-                background: location.pathname === link.to ? 'rgba(6,182,212,0.12)' : 'transparent',
+                display: 'flex', alignItems: 'center', gap: '12px', padding: '14px',
+                color: 'white', textDecoration: 'none', borderRadius: '12px',
+                marginBottom: '6px', background: location.pathname === link.to ? 'rgba(255,255,255,0.1)' : 'transparent',
                 fontWeight: 500,
-                fontSize: '0.95rem',
-                textDecoration: 'none',
-                borderRadius: '12px',
-                transition: 'all 0.2s',
-              }}
-              onMouseEnter={e => {
-                if (location.pathname !== link.to) {
-                  e.target.style.background = 'rgba(6,182,212,0.08)';
-                  e.target.style.color = 'white';
-                }
-              }}
-              onMouseLeave={e => {
-                if (location.pathname !== link.to) {
-                  e.target.style.background = 'transparent';
-                  e.target.style.color = 'rgba(255,255,255,0.75)';
-                }
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span style={{ color: 'var(--brand-500)', display: 'flex' }}>{link.icon}</span>
-                {link.label}
-              </div>
+              <span style={{ color: 'var(--brand-700)' }}>{link.icon}</span> {link.label}
             </Link>
           ))}
         </nav>
-
-        {/* Drawer Footer */}
-        <div style={{ padding: '20px 24px', borderTop: '1px solid rgba(255,255,255,0.07)' }}>
-          <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.35)', marginBottom: '8px', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Contact</div>
-          <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.55)', lineHeight: 1.8, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ color: 'var(--brand-500)', display: 'flex' }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l2.27-2.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg></span>
-              (555) 123-4567
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ color: 'var(--brand-500)', display: 'flex' }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
-              info@sunrisegadgets.com
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ color: 'var(--brand-500)', display: 'flex' }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
-              123 Business Street, City
-            </div>
-          </div>
-
-        </div>
       </aside>
 
       <style>{`
-        @media (min-width: 768px) {
-          .nav-desktop { display: flex !important; }
-          .nav-hamburger { display: none !important; }
+        @media (min-width: 768px) { .nav-desktop { display: flex !important; } .nav-hamburger { display: none !important; } }
+        .nav-brand-title { display: block; font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; color: white; letter-spacing: -0.03em; line-height: 1.1; }
+        .nav-brand-subtitle { display: block; font-size: 0.65rem; color: rgba(255,255,255,0.45); letter-spacing: 0.1em; text-transform: uppercase; }
+        @media (max-width: 480px) {
+          .nav-brand-title { font-size: 0.9rem; }
+          .nav-brand-subtitle { font-size: 0.55rem; }
         }
-
-        .nav-brand-title {
-          display: block;
-          font-family: var(--font-display);
-          font-weight: 800;
-          font-size: 1.1rem;
-          color: white;
-          letter-spacing: -0.03em;
-          line-height: 1.1;
-        }
-
-        .nav-brand-subtitle {
-          display: block;
-          font-size: 0.65rem;
-          color: rgba(255,255,255,0.45);
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-        }
-
-        @media (max-width: 420px) {
-          .nav-brand-title {
-            font-size: 0.95rem;
-          }
-
-          .nav-brand-subtitle {
-            font-size: 0.55rem;
-          }
-        }
-
-        .nav-drawer nav a {
-          min-height: 48px;
-        }
-
-        .nav-shell {
-          padding: 0 20px;
-        }
-
-        @media (max-width: 520px) {
-          .nav-shell {
-            padding: 0 16px;
-          }
-        }
+        .hidden { display: none; }
+        @media (min-width: 640px) { .sm\\:block { display: block; } }
       `}</style>
     </>
   );

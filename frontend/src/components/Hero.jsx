@@ -4,22 +4,19 @@ const defaultHeroSlides = [
   {
     bg: '/hero-bg.jpg',
     tag: '🇱🇰 #1 in Sri Lanka',
-    headline: 'Experience Cinema',
-    sub: 'at Home',
+    headline: 'Experience Cinema at Home',
     desc: 'Ultra-premium 4K projectors, laser systems & smart boards — unbeatable prices delivered island-wide.',
   },
   {
     bg: '/hero-bg-2.jpg',
-    tag: '🔥 New Arrivals 2024',
-    headline: 'Next-Level',
-    sub: 'Smart Tech',
+    tag: '🔥 New Arrivals 2026',
+    headline: 'Next-Level Smart Tech',
     desc: 'From portable projectors to pro-grade digital cinema — we bring the future to your doorstep.',
   },
   {
     bg: '/hero-bg.jpg',
     tag: '⚡ Exclusive Deals',
-    headline: 'Up to 40% Off',
-    sub: 'Premium Gear',
+    headline: 'Up to 40% Off Premium Gear',
     desc: 'Limited-time offers on our curated selection of audio, visual, and projection equipment.',
   },
 ];
@@ -29,13 +26,21 @@ function Hero({ slides, hideStats }) {
   const [current, setCurrent] = useState(0);
   const [animating, setAnimating] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [isTinyMobile, setIsTinyMobile] = useState(window.innerWidth < 420);
+  const [isMobilePhone, setIsMobilePhone] = useState(window.innerWidth >= 420 && window.innerWidth < 768);
+  const [isTablet, setIsTablet] = useState(window.innerWidth >= 768 && window.innerWidth < 1024);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isLandscape, setIsLandscape] = useState(window.innerHeight < window.innerWidth);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-      setIsTinyMobile(window.innerWidth < 420);
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      setIsTinyMobile(w < 420);
+      setIsMobilePhone(w >= 420 && w < 768);
+      setIsTablet(w >= 768 && w < 1024);
+      setIsMobile(w < 768);
+      setIsLandscape(h < w);
     };
     const handleMouseMove = (e) => {
       if (isMobile) return; // Disable parallax on mobile to save battery/reduce jitter
@@ -46,9 +51,11 @@ function Hero({ slides, hideStats }) {
     };
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
     };
   }, [isMobile]);
 
@@ -75,7 +82,7 @@ function Hero({ slides, hideStats }) {
       onMouseLeave={() => setAnimating(false)}
       style={{
         position: 'relative',
-        minHeight: isTinyMobile ? '360px' : (isMobile ? '420px' : 'clamp(500px, 80vh, 700px)'),
+        minHeight: isTinyMobile ? (isLandscape ? '280px' : '380px') : (isMobilePhone ? '420px' : (isTablet ? 'clamp(480px, 70vh, 550px)' : 'clamp(500px, 80vh, 700px)')),
         display: 'flex',
         alignItems: 'center',
         overflow: 'hidden',
@@ -98,23 +105,25 @@ function Hero({ slides, hideStats }) {
       <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(0deg, rgba(2,6,23,1) 0%, transparent 40%)', zIndex: 1 }} />
 
       {/* Decorative Brand Glow */}
+      {!isTinyMobile && (
       <div style={{
-        position: 'absolute', top: '10%', right: '5%',
-        width: '600px', height: '600px', borderRadius: '50%',
+        position: 'absolute', top: '10%', right: isMobile ? '-10%' : '5%',
+        width: isMobile ? '400px' : '600px', height: isMobile ? '400px' : '600px', borderRadius: '50%',
         background: 'radial-gradient(circle, rgba(6,182,212,0.12) 0%, transparent 70%)',
         animation: 'pulse-brand 8s ease-in-out infinite', pointerEvents: 'none', zIndex: 1
       }} />
+      )}
 
       {/* Content */}
-      <div className="hero-content" style={{ position: 'relative', zIndex: 10, padding: isMobile ? '0 20px' : '0' }}>
+      <div className="hero-content" style={{ position: 'relative', zIndex: 10, padding: isTinyMobile ? '0 16px' : (isMobilePhone ? '0 24px' : (isTablet ? '0 40px' : '0')) }}>  
         <div style={{ maxWidth: '800px' }}>
           {/* Tag */}
           <div key={`tag-${current}`} style={{
             display: 'inline-flex', alignItems: 'center', gap: '8px',
             padding: '6px 14px', background: 'rgba(255,255,255,0.04)',
             border: '1px solid rgba(255,255,255,0.1)', borderRadius: '999px',
-            color: 'var(--brand-400)', fontSize: isTinyMobile ? '0.65rem' : '0.75rem', fontWeight: 700,
-            letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '20px',
+            color: 'var(--brand-400)', fontSize: 'clamp(0.65rem, 2vw, 0.85rem)', fontWeight: 700,
+            letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: isTinyMobile ? '12px' : (isMobilePhone ? '16px' : '20px'),
             opacity: animating ? 0 : 1,
             transform: animating ? 'translateY(10px)' : 'translateY(0)',
             transition: 'all 0.7s cubic-bezier(0.2, 0.8, 0.2, 1)',
@@ -125,7 +134,7 @@ function Hero({ slides, hideStats }) {
           </div>
 
           {/* Headline */}
-          <div style={{ marginBottom: isMobile ? '12px' : '20px' }}>
+          <div style={{ marginBottom: isTinyMobile ? '8px' : (isMobilePhone ? '12px' : '20px') }}>
             <h1 key={`h1-${current}`} style={{
               fontFamily: 'var(--font-display)',
               fontSize: isMobile ? 'clamp(2rem, 8vw, 2.8rem)' : 'clamp(2.5rem, 6vw, 5rem)',
@@ -151,8 +160,8 @@ function Hero({ slides, hideStats }) {
           {/* Description */}
           <p key={`desc-${current}`} style={{
             color: 'rgba(255,255,255,0.7)',
-            fontSize: isMobile ? '0.875rem' : 'clamp(1rem, 1.5vw, 1.15rem)',
-            lineHeight: 1.5, maxWidth: '540px', marginBottom: '32px',
+            fontSize: 'clamp(0.875rem, 2.5vw, 1.15rem)',
+            lineHeight: 1.5, maxWidth: '540px', marginBottom: isTinyMobile ? '16px' : (isMobilePhone ? '20px' : (isTablet ? '28px' : '32px')),
             opacity: animating ? 0 : 1,
             transform: animating ? 'translateY(15px)' : 'translateY(0)',
             transition: 'all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s',
@@ -160,8 +169,9 @@ function Hero({ slides, hideStats }) {
           }}>{slide.desc}</p>
 
           {/* Scroll Indicator */}
+          {!isMobile && (
           <div style={{
-            marginTop: '48px',
+            marginTop: isTinyMobile ? '24px' : (isMobilePhone ? '28px' : '48px'),
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
@@ -181,12 +191,13 @@ function Hero({ slides, hideStats }) {
               textTransform: 'uppercase',
             }}>Scroll to explore</span>
           </div>
+          )}
         </div>
 
         {/* Stats - Minimalist Row */}
         {!hideStats && !isMobile && (
           <div style={{
-            display: 'flex', gap: '48px', marginTop: '64px',
+            display: 'flex', gap: isTablet ? '32px' : '48px', marginTop: isTablet ? '40px' : '64px',
             opacity: animating ? 0 : 1, transition: 'opacity 1s ease 0.6s'
           }}>
             {[
@@ -194,20 +205,52 @@ function Hero({ slides, hideStats }) {
               { value: '10k+', label: 'Active Users' },
               { value: 'Islandwide', label: 'Express Shipping' },
             ].map(stat => (
-              <div key={stat.label} style={{ borderLeft: '1px solid rgba(6,182,212,0.3)', paddingLeft: '16px' }}>
-                <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 800, color: 'white', letterSpacing: '-0.02em', lineHeight: 1.1 }}>{stat.value}</div>
-                <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)', marginTop: '4px', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 700 }}>{stat.label}</div>
+              <div key={stat.label} style={{ borderLeft: '1px solid rgba(6,182,212,0.3)', paddingLeft: isTablet ? '12px' : '16px' }}>
+                <div style={{ fontFamily: 'var(--font-display)', fontSize: isTablet ? '1.25rem' : '1.5rem', fontWeight: 800, color: 'white', letterSpacing: '-0.02em', lineHeight: 1.1 }}>{stat.value}</div>
+                <div style={{ fontSize: isTablet ? '0.6rem' : '0.65rem', color: 'rgba(255,255,255,0.4)', marginTop: '4px', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 700 }}>{stat.label}</div>
               </div>
             ))}
           </div>
         )}
       </div>
 
-      {/* Arrow Controls - Minimalist Style */}
+      {/* Navigation Dots - Responsive */}
+      <div style={{ 
+        position: 'absolute', 
+        bottom: isTinyMobile ? '12px' : (isMobilePhone ? '16px' : (isTablet ? '20px' : '40px')), 
+        left: '50%', 
+        transform: 'translateX(-50%)',
+        display: 'flex', 
+        gap: '8px', 
+        zIndex: 20,
+        justifyContent: 'center'
+      }}>
+        {activeSlides.map((_, idx) => (
+          <button
+            key={idx}
+            onClick={() => goTo(idx)}
+            aria-label={`Go to slide ${idx + 1}`}
+            style={{
+              width: idx === current ? '24px' : '8px',
+              height: '8px',
+              borderRadius: '4px',
+              background: idx === current ? 'var(--brand-400)' : 'rgba(255,255,255,0.3)',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'all 0.4s ease',
+              opacity: animating ? 0.5 : 1,
+            }}
+            onMouseEnter={e => { if (idx !== current) e.currentTarget.style.background = 'rgba(255,255,255,0.5)'; }}
+            onMouseLeave={e => { if (idx !== current) e.currentTarget.style.background = 'rgba(255,255,255,0.3)'; }}
+          />
+        ))}
+      </div>
+
+      {/* Arrow Controls - Desktop Only */}
       {!isMobile && (
         <div style={{ position: 'absolute', bottom: '40px', right: '40px', display: 'flex', gap: '12px', zIndex: 20 }}>
-          <button 
-            onClick={goPrev} 
+          <button
+            onClick={goPrev}
             aria-label="Previous slide"
             style={{
               background: 'rgba(255,255,255,0.03)',
@@ -223,8 +266,8 @@ function Hero({ slides, hideStats }) {
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
           </button>
-          <button 
-            onClick={goNext} 
+          <button
+            onClick={goNext}
             aria-label="Next slide"
             style={{
               background: 'rgba(255,255,255,0.03)',

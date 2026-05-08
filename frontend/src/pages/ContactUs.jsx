@@ -1,22 +1,23 @@
 import { useState } from 'react';
+import axios from 'axios';
 
 const contactInfo = [
   { 
     icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>, 
     label: 'Showroom', 
-    value: '123 Galle Road, Colombo 03, Sri Lanka', 
-    sub: 'Open Mon–Sat, 9 AM – 6 PM' 
+    value: 'No53/A, 6th Ln, Piliyandala 10304', 
+    sub: 'Open Mon–Sat, 9 AM – 8 PM' 
   },
   { 
     icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l2.27-2.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>, 
     label: 'Phone', 
-    value: '+94 11 234 5678', 
+    value: '+94 77 848 8955', 
     sub: 'We reply within 1 business day' 
   },
   { 
     icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>, 
     label: 'Email', 
-    value: 'info@sunrisegadgets.lk', 
+    value: 'sunrisegadgetsstore.lk@gmail.com', 
     sub: 'We reply within 1 business day' 
   },
   { 
@@ -41,14 +42,17 @@ function ContactUs() {
 
   const handleChange = (e) => setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus('sending');
-    // Simulate async send
-    setTimeout(() => {
+    try {
+      await axios.post('/contact', form);
       setStatus('success');
       setForm({ name: '', email: '', phone: '', subject: '', message: '' });
-    }, 1200);
+    } catch (err) {
+      setStatus('error');
+      console.error('Failed to send message:', err);
+    }
   };
 
   const inputBase = {
@@ -147,6 +151,15 @@ function ContactUs() {
                 <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '1.2rem', color: 'var(--surface-900)', marginBottom: '8px' }}>Message Sent!</h3>
                 <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '20px' }}>Thank you! We'll be in touch within 1 business day.</p>
                 <button onClick={() => setStatus(null)} className="btn-brand" style={{ fontSize: '0.875rem' }}>Send Another</button>
+              </div>
+            ) : status === 'error' ? (
+              <div style={{ textAlign: 'center', padding: '48px 24px' }}>
+                <div style={{ width: '72px', height: '72px', borderRadius: '50%', background: '#fee2e2', color: '#dc2626', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                </div>
+                <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '1.2rem', color: 'var(--surface-900)', marginBottom: '8px' }}>Something went wrong</h3>
+                <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '20px' }}>We couldn't send your message. Please try again or contact us directly.</p>
+                <button onClick={() => setStatus(null)} className="btn-brand" style={{ fontSize: '0.875rem' }}>Try Again</button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>

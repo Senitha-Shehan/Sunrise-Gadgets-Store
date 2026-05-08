@@ -176,7 +176,7 @@ function ProductDetail() {
               </div>
 
               {/* Name */}
-              <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(1.4rem, 3vw, 2.1rem)', color: 'var(--surface-900)', letterSpacing: '-0.03em', lineHeight: 1.2, margin: 0 }}>
+              <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(1.4rem, 3vw, 2.1rem)', color: '#000000', letterSpacing: '-0.03em', lineHeight: 1.2, margin: 0 }}>
                 {product.name}
               </h1>
 

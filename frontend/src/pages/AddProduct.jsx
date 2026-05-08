@@ -159,6 +159,7 @@ function AddProduct({ editingProduct, onSuccess }) {
   const [unifiedImages, setUnifiedImages] = useState([]);
   const [newArrival, setNewArrival] = useState(false);
   const [included, setIncluded] = useState('');
+  const [quantity, setQuantity] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -183,6 +184,7 @@ function AddProduct({ editingProduct, onSuccess }) {
       setSpecs(editingProduct.specs || []);
       setNewArrival(editingProduct.newArrival || false);
       setIncluded(editingProduct.included?.join(', ') || '');
+      setQuantity(editingProduct.quantity?.toString() || '');
       setUnifiedImages(editingProduct.images?.map(img => ({ id: img.public_id, type: 'existing', data: img })) || []);
     }
   }, [editingProduct]);
@@ -226,6 +228,7 @@ function AddProduct({ editingProduct, onSuccess }) {
       if (originalPrice) formData.append('originalPrice', parseFloat(originalPrice));
       formData.append('inStock', inStock);
       formData.append('newArrival', newArrival);
+      formData.append('quantity', parseInt(quantity) || 0);
       formData.append('included', included);
       formData.append('specs', JSON.stringify(specs));
       
@@ -302,6 +305,9 @@ function AddProduct({ editingProduct, onSuccess }) {
                     <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs uppercase">Rs.</span>
                     <input type="number" value={originalPrice} onChange={e => setOriginalPrice(e.target.value)} min="0" step="0.01" placeholder="0.00" className={`${inputClasses} pl-14`} />
                   </div>
+                <FieldGroup label="Stock Quantity">
+                  <input type="number" value={quantity} onChange={e => setQuantity(e.target.value)} required min="0" step="1" placeholder="e.g. 25" className={inputClasses} />
+                </FieldGroup>
                 </FieldGroup>
                 
                 <div className="md:col-span-2 flex flex-wrap gap-4 pt-2">
