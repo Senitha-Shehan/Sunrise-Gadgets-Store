@@ -38,6 +38,16 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Delete all orders (admin utility)
+router.delete('/', async (req, res) => {
+  try {
+    const result = await Order.deleteMany({});
+    res.json({ deletedCount: result.deletedCount });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Update order status
 router.patch('/:id/status', async (req, res) => {
   try {
@@ -51,6 +61,17 @@ router.patch('/:id/status', async (req, res) => {
     res.json(order);
   } catch (err) {
     res.status(400).json({ error: err.message });
+  }
+});
+
+// Delete a single order (admin)
+router.delete('/:id', async (req, res) => {
+  try {
+    const order = await Order.findByIdAndDelete(req.params.id);
+    if (!order) return res.status(404).json({ error: 'Order not found' });
+    res.json({ deleted: true, id: req.params.id });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 

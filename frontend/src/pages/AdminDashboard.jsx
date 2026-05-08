@@ -28,6 +28,7 @@ function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [updatingOrderId, setUpdatingOrderId] = useState(null);
+  const [deletingOrderId, setDeletingOrderId] = useState(null);
   const [notice, setNotice] = useState('');
   const [newCatName, setNewCatName] = useState('');
   const [isAddingCat, setIsAddingCat] = useState(false);
@@ -141,7 +142,36 @@ function AdminDashboard() {
     orders: orders.length,
     pending: orders.filter(order => order.status === 'Pending').length,
     processing: orders.filter(order => order.status === 'Processing').length,
-    revenue: orders.reduce((sum, order) => sum + (order.summary?.total || 0), 0),
+  };
+
+  const clearOrders = async () => {
+    if (!window.confirm('This will permanently delete ALL orders. Continue?')) return;
+    try {
+      setLoading(true);
+      const res = await axios.delete('/orders');
+      setNotice(`Cleared ${res.data.deletedCount || 0} orders.`);
+      window.setTimeout(() => setNotice(''), 2500);
+      fetchData();
+    } catch (err) {
+      alert('Failed to clear orders');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteOrder = async (id) => {
+    if (!window.confirm('Delete this order? This action cannot be undone.')) return;
+    try {
+      setDeletingOrderId(id);
+      await axios.delete(`/orders/${id}`);
+      setNotice(`Order ${formatOrderId(id)} deleted.`);
+      window.setTimeout(() => setNotice(''), 2500);
+      fetchData();
+    } catch (err) {
+      alert('Failed to delete order');
+    } finally {
+      setDeletingOrderId(null);
+    }
   };
 
   if (loading) {
@@ -228,12 +258,11 @@ function AdminDashboard() {
 
         {activeTab === 'orders' && (
           <>
-            <div className="mb-8 grid gap-4 md:grid-cols-4">
+            <div className="mb-8 grid gap-4 md:grid-cols-3">
               {[
                 { label: 'All Orders', value: stats.orders, tone: 'bg-white' },
                 { label: 'Pending Review', value: stats.pending, tone: 'bg-brand-50' },
                 { label: 'Processing', value: stats.processing, tone: 'bg-blue-50' },
-                { label: 'Revenue', value: formatCurrency(stats.revenue), tone: 'bg-emerald-50' },
               ].map(card => (
                 <div key={card.label} className={`rounded-[24px] border border-slate-200 p-5 shadow-sm ${card.tone}`}>
                   <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">{card.label}</div>
@@ -253,6 +282,13 @@ function AdminDashboard() {
                   {status}
                 </button>
               ))}
+              <button
+                onClick={clearOrders}
+                className="ml-auto rounded-full px-4 py-2 text-xs font-black uppercase tracking-widest transition-all border bg-red-50 text-red-600 border-red-100 hover:bg-red-100 hover:text-red-700"
+                title="Delete all orders"
+              >
+                Clear Orders
+              </button>
             </div>
           </>
         )}
@@ -352,7 +388,6 @@ function AdminDashboard() {
                       <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Order Details</th>
                       <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Customer Contact</th>
                       <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Shipment Status</th>
-                      <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Revenue</th>
                       <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Fulfillment</th>
                     </tr>
                   </thead>
@@ -385,19 +420,25 @@ function AdminDashboard() {
                             {ORDER_STATUS_OPTIONS.map(status => <option key={status} value={status}>{status}</option>)}
                           </select>
                         </td>
-                        <td className="px-8 py-6 text-right">
-                          <div className="font-black text-slate-900 text-lg tracking-tight leading-none">{formatCurrency(order.summary?.total)}</div>
-                          <div className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">{order.items?.length || 0} Product(s)</div>
-                        </td>
                         <td className="px-8 py-6 text-center">
-                          <button onClick={() => setSelectedOrder(order)} className="px-6 py-2.5 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-slate-800 transition-all shadow-lg shadow-slate-200">
-                            Details
-                          </button>
+                          <div className="flex items-center justify-center gap-2">
+                            <button onClick={() => setSelectedOrder(order)} className="px-4 py-2 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-slate-800 transition-all shadow-lg shadow-slate-200">
+                              Details
+                            </button>
+                            <button
+                              onClick={() => deleteOrder(order._id)}
+                              disabled={deletingOrderId === order._id}
+                              className="px-3 py-2 bg-red-50 text-red-600 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-red-100 hover:text-red-700 transition-all disabled:opacity-50"
+                              title="Delete order"
+                            >
+                              {deletingOrderId === order._id ? 'Deleting...' : 'Delete'}
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     )) : (
                       <tr>
-                        <td colSpan="5" className="px-8 py-16 text-center text-slate-500">
+                        <td colSpan="4" className="px-8 py-16 text-center text-slate-500">
                           No orders match the current search or status filter.
                         </td>
                       </tr>
