@@ -109,11 +109,17 @@ function AdminDashboard() {
     if (!newCatName.trim()) return;
     setIsAddingCat(true);
     try {
-      await axios.post('/categories', { name: newCatName });
+      console.log('Adding category with baseURL:', axios.defaults.baseURL);
+      const res = await axios.post('/categories', { name: newCatName });
+      console.log('Category added successfully:', res.data);
       setNewCatName('');
       fetchData();
+      setNotice(`Category "${newCatName}" added successfully!`);
+      window.setTimeout(() => setNotice(''), 2500);
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to add category');
+      console.error('Failed to add category:', err);
+      const errorMsg = err.response?.data?.message || err.message || 'Failed to add category';
+      alert(errorMsg);
     } finally {
       setIsAddingCat(false);
     }
