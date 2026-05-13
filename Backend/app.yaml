@@ -11,3 +11,12 @@ automatic_scaling:
 env_variables:
   NODE_ENV: production
   MONGO_URI: mongodb+srv://senitha200109:seni0109@cluster0.pxvzl45.mongodb.net/sunrise_gadgets
+  CLOUDINARY_CLOUD_NAME: dcpsl0aud
+  CLOUDINARY_API_KEY: "992212981231368"
+  CLOUDINARY_API_SECRET: i27QwWzK3VqLFZ0os0bXI0zL2IQ
+  EMAIL_HOST: smtp.gmail.com
+  EMAIL_PORT: "587"
+  EMAIL_USER: sunrisegadgetsstore.lk@gmail.com
+  EMAIL_PASS: "tysa dqmw ggeb cvjt"
+  ADMIN_EMAIL: sunrisegadgetsstore.lk@gmail.com
+  FRONTEND_URL: https://euphonious-mousse-b95cd0.netlify.app/
