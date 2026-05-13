@@ -30,6 +30,13 @@ const addProduct = async (req, res) => {
   try {
     const { name, brand, category, description, price, originalPrice, quantity, inStock, newArrival, included, specs } = req.body;
     
+    // Validate required fields
+    if (!name || !name.trim()) return res.status(400).json({ error: 'Product name is required' });
+    if (!brand || !brand.trim()) return res.status(400).json({ error: 'Brand is required' });
+    if (!category || !category.trim()) return res.status(400).json({ error: 'Category is required' });
+    if (!description || !description.trim()) return res.status(400).json({ error: 'Description is required' });
+    if (!price || parseFloat(price) <= 0) return res.status(400).json({ error: 'Valid price is required' });
+    
     // Check if files were uploaded
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ error: 'Please upload at least one image file' });
@@ -54,11 +61,11 @@ const addProduct = async (req, res) => {
     }
     
     const newProduct = new Product({ 
-      name, 
-      brand,
-      category,
-      description, 
-      price,
+      name: name.trim(), 
+      brand: brand.trim(),
+      category: category.trim(),
+      description: description.trim(), 
+      price: parseFloat(price),
       originalPrice: originalPrice ? parseFloat(originalPrice) : undefined,
       quantity: parseInt(quantity) || 0,
       images,
@@ -68,13 +75,14 @@ const addProduct = async (req, res) => {
       specs: parsedSpecs
     });
     
-    await newProduct.save();
-    res.status(201).json(newProduct);
+    const savedProduct = await newProduct.save();
+    console.log('Product created successfully:', savedProduct._id);
+    res.status(201).json(savedProduct);
   } catch (error) {
-    console.error(error);
+    console.error('Error creating product:', error);
     res.status(500).json({ 
-      error: 'Could not create product',
-      details: error.message 
+      error: error.message || 'Could not create product',
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
 };
@@ -84,12 +92,19 @@ const updateProduct = async (req, res) => {
   try {
     const { name, brand, category, description, price, originalPrice, quantity, inStock, newArrival, included, specs } = req.body;
     
+    // Validate required fields
+    if (!name || !name.trim()) return res.status(400).json({ error: 'Product name is required' });
+    if (!brand || !brand.trim()) return res.status(400).json({ error: 'Brand is required' });
+    if (!category || !category.trim()) return res.status(400).json({ error: 'Category is required' });
+    if (!description || !description.trim()) return res.status(400).json({ error: 'Description is required' });
+    if (!price || parseFloat(price) <= 0) return res.status(400).json({ error: 'Valid price is required' });
+    
     let updateData = {
-      name,
-      brand,
-      category,
-      description,
-      price,
+      name: name.trim(),
+      brand: brand.trim(),
+      category: category.trim(),
+      description: description.trim(),
+      price: parseFloat(price),
       originalPrice: originalPrice ? parseFloat(originalPrice) : undefined,
       quantity: parseInt(quantity) || 0,
       inStock: inStock === 'true' || inStock === true,
@@ -153,6 +168,11 @@ const updateProduct = async (req, res) => {
       finalImages = [...existingImages, ...newImages];
     }
 
+    // Validate at least one image exists
+    if (finalImages.length === 0) {
+      return res.status(400).json({ error: 'At least one image is required' });
+    }
+
     updateData.images = finalImages.slice(0, 5); // Enforce max 5 limit
 
     // 4. Cleanup: Delete images from Cloudinary that were removed
@@ -182,12 +202,13 @@ const updateProduct = async (req, res) => {
       return res.status(404).json({ error: 'Product not found' });
     }
 
+    console.log('Product updated successfully:', updatedProduct._id);
     res.json(updatedProduct);
   } catch (error) {
-    console.error(error);
+    console.error('Error updating product:', error);
     res.status(500).json({ 
-      error: 'Could not update product',
-      details: error.message 
+      error: error.message || 'Could not update product',
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
 };

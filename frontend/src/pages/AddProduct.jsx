@@ -218,18 +218,27 @@ function AddProduct({ editingProduct, onSuccess }) {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    
+    // Validation
+    if (!name.trim()) { setError('Product name is required'); setLoading(false); return; }
+    if (!brand.trim()) { setError('Brand name is required'); setLoading(false); return; }
+    if (!category) { setError('Category is required'); setLoading(false); return; }
+    if (!description.trim()) { setError('Description is required'); setLoading(false); return; }
+    if (!price || parseFloat(price) <= 0) { setError('Valid price is required'); setLoading(false); return; }
+    if (unifiedImages.length === 0) { setError('At least one image is required'); setLoading(false); return; }
+    
     try {
       const formData = new FormData();
-      formData.append('name', name);
-      formData.append('brand', brand);
+      formData.append('name', name.trim());
+      formData.append('brand', brand.trim());
       formData.append('category', category);
-      formData.append('description', description);
+      formData.append('description', description.trim());
       formData.append('price', parseFloat(price));
       if (originalPrice) formData.append('originalPrice', parseFloat(originalPrice));
       formData.append('inStock', inStock);
       formData.append('newArrival', newArrival);
       formData.append('quantity', parseInt(quantity) || 0);
-      formData.append('included', included);
+      formData.append('included', included.trim());
       formData.append('specs', JSON.stringify(specs));
       
       const existingImages = unifiedImages.filter(i => i.type === 'existing').map(i => i.data);
@@ -243,15 +252,22 @@ function AddProduct({ editingProduct, onSuccess }) {
       formData.append('imageOrder', JSON.stringify(imageOrder));
       newFiles.forEach(img => formData.append('images', img));
 
-      if (editingProduct) {
-        await axios.put(`/products/${editingProduct._id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
-      } else {
-        await axios.post('/products', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
-      }
+      console.log('Submitting product with baseURL:', axios.defaults.baseURL);
+      const response = editingProduct 
+        ? await axios.put(`/products/${editingProduct._id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+        : await axios.post('/products', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+      
+      console.log('Product saved successfully:', response.data);
       setLoading(false);
+      setError(null);
       if (onSuccess) onSuccess(); else navigate('/');
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to save product');
+      console.error('Product save error:', err);
+      const errorMsg = err.response?.data?.error 
+        || err.response?.data?.message 
+        || err.message 
+        || 'Failed to save product';
+      setError(errorMsg);
       setLoading(false);
     }
   };
