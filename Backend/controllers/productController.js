@@ -28,38 +28,60 @@ const getProductById = async (req, res) => {
 // Add a new product with multiple image uploads
 const addProduct = async (req, res) => {
   try {
+    console.log('=== ADD PRODUCT REQUEST ===');
+    console.log('Body keys:', Object.keys(req.body));
+    console.log('Files received:', req.files?.length || 0);
+    
     const { name, brand, category, description, price, originalPrice, quantity, inStock, newArrival, included, specs } = req.body;
     
+    console.log('1. Validating fields...');
     // Validate required fields
     if (!name || !name.trim()) return res.status(400).json({ error: 'Product name is required' });
     if (!brand || !brand.trim()) return res.status(400).json({ error: 'Brand is required' });
     if (!category || !category.trim()) return res.status(400).json({ error: 'Category is required' });
     if (!description || !description.trim()) return res.status(400).json({ error: 'Description is required' });
     if (!price || parseFloat(price) <= 0) return res.status(400).json({ error: 'Valid price is required' });
+    console.log('✓ Field validation passed');
     
+    console.log('2. Checking files...');
     // Check if files were uploaded
     if (!req.files || req.files.length === 0) {
+      console.error('No files received in request');
       return res.status(400).json({ error: 'Please upload at least one image file' });
     }
+    console.log(`✓ ${req.files.length} file(s) received`);
     
+    console.log('3. Processing images...');
     // Process multiple images from Cloudinary
-    const images = req.files.map(file => ({
-      url: file.path,      // Cloudinary URL
-      public_id: file.filename // Cloudinary Public ID
-    }));
+    const images = req.files.map(file => {
+      console.log('  Processing file:', file.originalname);
+      return {
+        url: file.path,      // Cloudinary URL
+        public_id: file.filename // Cloudinary Public ID
+      };
+    });
+    console.log('✓ Images processed:', images.length);
     
+    console.log('4. Processing included items...');
     // Process included items (split by comma if it's a string)
     const includedItems = typeof included === 'string' ? 
       included.split(',').map(item => item.trim()).filter(item => item) : 
       (Array.isArray(included) ? included : []);
+    console.log('✓ Included items:', includedItems.length);
     
+    console.log('5. Processing specs...');
     // Process specs (parse JSON string from FormData)
     let parsedSpecs = [];
     if (specs) {
-      try { parsedSpecs = JSON.parse(specs); } 
-      catch (e) { console.error('Error parsing specs:', e); }
+      try { 
+        parsedSpecs = JSON.parse(specs); 
+        console.log('✓ Specs parsed:', parsedSpecs.length);
+      } catch (e) { 
+        console.error('Error parsing specs:', e.message); 
+      }
     }
     
+    console.log('6. Creating product document...');
     const newProduct = new Product({ 
       name: name.trim(), 
       brand: brand.trim(),
@@ -74,12 +96,18 @@ const addProduct = async (req, res) => {
       included: includedItems,
       specs: parsedSpecs
     });
+    console.log('✓ Product document created');
     
+    console.log('7. Saving to database...');
     const savedProduct = await newProduct.save();
-    console.log('Product created successfully:', savedProduct._id);
+    console.log('✓ Product saved successfully:', savedProduct._id);
+    console.log('=== END ADD PRODUCT ===');
+    
     res.status(201).json(savedProduct);
   } catch (error) {
-    console.error('Error creating product:', error);
+    console.error('❌ ERROR in addProduct:', error);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
     res.status(500).json({ 
       error: error.message || 'Could not create product',
       details: process.env.NODE_ENV === 'development' ? error.stack : undefined

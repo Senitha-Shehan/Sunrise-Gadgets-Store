@@ -262,12 +262,14 @@ function AddProduct({ editingProduct, onSuccess }) {
       setError(null);
       if (onSuccess) onSuccess(); else navigate('/');
     } catch (err) {
-      console.error('Product save error - Full error object:', err);
+      console.error('=== PRODUCT SAVE ERROR ===');
+      console.error('Full error object:', err);
       console.error('Response status:', err.response?.status);
-      console.error('Response data:', err.response?.data);
+      console.error('Response data object:', JSON.stringify(err.response?.data, null, 2));
       console.error('Response headers:', err.response?.headers);
       console.error('Error message:', err.message);
       console.error('Error code:', err.code);
+      console.error('=== END ERROR ===');
       
       let errorMsg = 'Failed to save product';
       
@@ -275,6 +277,8 @@ function AddProduct({ editingProduct, onSuccess }) {
         errorMsg = err.response.data.error;
       } else if (err.response?.data?.message) {
         errorMsg = err.response.data.message;
+      } else if (err.response?.data?.details) {
+        errorMsg = err.response.data.details;
       } else if (err.message) {
         errorMsg = err.message;
       } else if (err.code === 'ERR_NETWORK') {
@@ -283,7 +287,7 @@ function AddProduct({ editingProduct, onSuccess }) {
         errorMsg = 'Invalid request - Please check all fields are filled correctly.';
       }
       
-      console.error('Final error message:', errorMsg);
+      console.error('Final error message to show user:', errorMsg);
       setError(errorMsg);
       setLoading(false);
     }
