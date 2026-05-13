@@ -58,11 +58,15 @@ function AdminDashboard() {
         axios.get('/categories'),
         axios.get('/orders'),
       ]);
-      setProducts(prodRes.data);
-      setCategories(catRes.data);
-      setOrders(orderRes.data);
-    } catch {
+      setProducts(Array.isArray(prodRes.data) ? prodRes.data : []);
+      setCategories(Array.isArray(catRes.data) ? catRes.data : []);
+      setOrders(Array.isArray(orderRes.data) ? orderRes.data : []);
+    } catch (err) {
+      console.error('Failed to fetch dashboard data:', err);
       // Keep the UI responsive even if one request fails.
+      setProducts([]);
+      setCategories([]);
+      setOrders([]);
     } finally {
       setLoading(false);
     }
@@ -125,13 +129,16 @@ function AdminDashboard() {
     }
   };
 
-  const filteredProducts = products.filter(product =>
+  const productsArray = Array.isArray(products) ? products : [];
+  const ordersArray = Array.isArray(orders) ? orders : [];
+
+  const filteredProducts = productsArray.filter(product =>
     product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     product.brand?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     product.category?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const filteredOrders = orders
+  const filteredOrders = ordersArray
     .filter(order =>
       order.customer?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order._id?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -139,9 +146,9 @@ function AdminDashboard() {
     .filter(order => statusFilter === 'All' || order.status === statusFilter);
 
   const stats = {
-    orders: orders.length,
-    pending: orders.filter(order => order.status === 'Pending').length,
-    processing: orders.filter(order => order.status === 'Processing').length,
+    orders: ordersArray.length,
+    pending: ordersArray.filter(order => order.status === 'Pending').length,
+    processing: ordersArray.filter(order => order.status === 'Processing').length,
   };
 
   const clearOrders = async () => {
