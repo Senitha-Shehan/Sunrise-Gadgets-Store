@@ -1,0 +1,56 @@
+# Netlify Configuration for Sunrise Gadgets Store
+# Build and deployment settings for the frontend
+
+[build]
+  # Build command for Vite React application
+  command = "cd frontend && npm run build"
+  
+  # Directory to deploy (Vite outputs to dist/)
+  publish = "frontend/dist"
+  
+  # Node version for build
+  environment = { NODE_VERSION = "18.17.0" }
+
+# SPA routing - redirect all requests to index.html for React Router
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Cache control for static assets
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Cache control for HTML
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# API proxy to backend (if backend is also deployed)
+# Uncomment and update with your backend URL
+# [[redirects]]
+#   from = "/api/*"
+#   to = "https://your-backend-url/api/:splat"
+#   status = 200
+#   force = true
+
+# Environment variables (set these in Netlify dashboard)
+# VITE_API_URL - Backend API URL (e.g., https://your-backend.herokuapp.com)
+
+# Pre-production deployment context
+[context.deploy-preview]
+  command = "cd frontend && npm run build"
+  publish = "frontend/dist"
+
+# Production deployment context  
+[context.production]
+  command = "cd frontend && npm run build"
+  publish = "frontend/dist"
+
+# Development/staging context
+[context.staging]
+  command = "cd frontend && npm run build"
+  publish = "frontend/dist"
