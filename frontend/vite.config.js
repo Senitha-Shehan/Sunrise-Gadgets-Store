@@ -7,10 +7,10 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     proxy: {
-      '/products': 'http://localhost:5000',
-      '/categories': 'http://localhost:5000',
-      '/orders': 'http://localhost:5000',
-      '/uploads': 'http://localhost:5000',
+      '/products': 'https://project-62f13b8e-684a-4407-bb9.uc.r.appspot.com/',
+      '/categories': 'https://project-62f13b8e-684a-4407-bb9.uc.r.appspot.com/',
+      '/orders': 'https://project-62f13b8e-684a-4407-bb9.uc.r.appspot.com/',
+      '/uploads': 'https://project-62f13b8e-684a-4407-bb9.uc.r.appspot.com/',
     }
   }
 })
