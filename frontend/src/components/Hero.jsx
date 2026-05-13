@@ -9,7 +9,7 @@ const defaultHeroSlides = [
   },
   {
     bg: '/hero-bg-2.jpg',
-    tag: '🔥 New Arrivals 2026',
+    tag: '🔥 Hot Deals',
     headline: 'Next-Level Smart Tech',
     desc: 'From portable projectors to pro-grade digital cinema — we bring the future to your doorstep.',
   },

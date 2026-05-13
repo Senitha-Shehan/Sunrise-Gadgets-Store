@@ -146,7 +146,7 @@ function ProductCard({ product, showImageSlideshow = false, highlightPricing = f
                 fontWeight: 900,
                 textTransform: 'uppercase',
                 letterSpacing: '0.05em'
-              }}>{badgeLabel || 'New'}</span>
+              }}>{badgeLabel || 'Hot'}</span>
             )}
           </div>
           

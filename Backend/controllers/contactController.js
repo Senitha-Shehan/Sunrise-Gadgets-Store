@@ -111,7 +111,7 @@ const sendContactMessage = async (req, res) => {
                       <p style="margin: 8px 0;"><strong>📞 Phone:</strong> +94 11 234 5678</p>
                       <p style="margin: 8px 0;"><strong>📍 Showroom:</strong> 123 Galle Road, Colombo 03, Sri Lanka</p>
                       <p style="margin: 8px 0;"><strong>⏰ Hours:</strong> Mon–Sat, 9 AM – 6 PM</p>
-                      <p style="margin: 8px 0;"><strong>💬 WhatsApp:</strong> +94 78 448 8955</p>
+                      <p style="margin: 8px 0;"><strong>💬 WhatsApp:</strong> +94 71 622 2203</p>
                     </div>
 
                     <p style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eeeeee; font-size: 12px; color: #888888;">

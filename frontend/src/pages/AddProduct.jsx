@@ -317,8 +317,8 @@ function AddProduct({ editingProduct, onSuccess }) {
                         <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.143-7.714L1 12l6.857-2.286L9 3z" /></svg>
                       </div>
                       <div>
-                        <div className="text-sm font-bold text-[#F5F5F5]">New Arrival</div>
-                        <div className="text-[10px] text-slate-400 font-medium">Highlight in new collection</div>
+                        <div className="text-sm font-bold text-[#F5F5F5]">Hot Deals</div>
+                        <div className="text-[10px] text-slate-400 font-medium">Highlight as hot deal product</div>
                       </div>
                     </div>
                     <input type="checkbox" checked={newArrival} onChange={e => setNewArrival(e.target.checked)} className="w-6 h-6 accent-cyan-500" />
@@ -410,7 +410,7 @@ function AddProduct({ editingProduct, onSuccess }) {
                     <span className="text-xs font-bold uppercase tracking-widest opacity-40">Awaiting Product Media</span>
                   </div>
                 )}
-                {newArrival && <div className="absolute top-4 left-4 bg-cyan-500 text-white text-[10px] font-black px-3 py-1.5 rounded-full shadow-lg">NEW</div>}
+                {newArrival && <div className="absolute top-4 left-4 bg-cyan-500 text-white text-[10px] font-black px-3 py-1.5 rounded-full shadow-lg">HOT</div>}
                 {!inStock && <div className="absolute inset-0 bg-[#2D2D44]/60 backdrop-blur-[2px] flex items-center justify-center font-black text-[#F5F5F5] uppercase tracking-widest text-sm">Out of Stock</div>}
               </div>
               <div className="p-6 space-y-4">

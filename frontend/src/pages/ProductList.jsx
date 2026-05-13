@@ -196,13 +196,14 @@ function ProductList() {
   useEffect(() => {
     let filtered = [...products];
 
-    // Search filtering (by name, brand, description)
+    // Search filtering (by name, brand, description, category)
     if (searchTerm?.trim()) {
       const s = searchTerm.toLowerCase().trim();
       filtered = filtered.filter(p =>
         p.name?.toLowerCase().includes(s) ||
         p.brand?.toLowerCase().includes(s) ||
-        p.description?.toLowerCase().includes(s)
+        p.description?.toLowerCase().includes(s) ||
+        p.category?.toLowerCase().includes(s)
       );
     }
 

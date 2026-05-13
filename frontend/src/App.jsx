@@ -11,6 +11,7 @@ import CartPage from './pages/CartPage';
 import Checkout from './pages/Checkout';
 import Nav from './components/Nav';
 import Footer from './components/Footer';
+import WhatsAppButton from './components/WhatsAppButton';
 import { CartProvider } from './context/CartContext';
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
           </Routes>
         </main>
         <Footer />
+        <WhatsAppButton />
       </div>
     </CartProvider>
   );

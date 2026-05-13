@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useCart } from '../context/CartContext';
 import usePageMetadata from '../hooks/usePageMetadata';
 
-const WA_NUMBER = '94702005088';
+const WA_NUMBER = '94716222203'; // Client WhatsApp number
 
 function ProductDetail() {
   const { id } = useParams();
@@ -168,7 +168,7 @@ function ProductDetail() {
             <div className="detail-info-pad">
               {/* Badges */}
               <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                {product.newArrival && <span className="badge badge-new">✨ New Arrival</span>}
+                {product.newArrival && <span className="badge badge-new">✨ Hot Deal</span>}
                 {product.inStock === false && <span className="badge" style={{ background: '#ef4444', color: 'white', boxShadow: '0 2px 8px rgba(239,68,68,0.4)' }}>Out of Stock</span>}
                 {product.inStock !== false && <span className="badge" style={{ background: '#10b981', color: 'white', boxShadow: '0 2px 8px rgba(16,185,129,0.3)' }}>In Stock</span>}
                 {product.brand && <span style={{ padding: '4px 14px', borderRadius: '999px', fontSize: '0.75rem', fontWeight: 600, background: 'rgba(6,182,212,0.08)', color: 'var(--brand-600)', border: '1px solid rgba(6,182,212,0.2)' }}>{product.brand}</span>}
