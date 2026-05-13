@@ -30,11 +30,23 @@ const addProduct = async (req, res) => {
   try {
     console.log('=== ADD PRODUCT REQUEST ===');
     console.log('Body keys:', Object.keys(req.body));
+    console.log('Body values:', JSON.stringify(req.body, null, 2).substring(0, 500));
     console.log('Files received:', req.files?.length || 0);
+    if (req.files?.length > 0) {
+      console.log('File details:', req.files.map(f => ({ 
+        originalname: f.originalname, 
+        mimetype: f.mimetype,
+        path: f.path,
+        filename: f.filename
+      })));
+    }
     
     const { name, brand, category, description, price, originalPrice, quantity, inStock, newArrival, included, specs } = req.body;
     
     console.log('1. Validating fields...');
+    console.log('name:', name, '| brand:', brand, '| category:', category);
+    console.log('price:', price, '| quantity:', quantity);
+    
     // Validate required fields
     if (!name || !name.trim()) return res.status(400).json({ error: 'Product name is required' });
     if (!brand || !brand.trim()) return res.status(400).json({ error: 'Brand is required' });
@@ -54,7 +66,7 @@ const addProduct = async (req, res) => {
     console.log('3. Processing images...');
     // Process multiple images from Cloudinary
     const images = req.files.map(file => {
-      console.log('  Processing file:', file.originalname);
+      console.log('  Processing file:', file.originalname, '-> URL:', file.path);
       return {
         url: file.path,      // Cloudinary URL
         public_id: file.filename // Cloudinary Public ID
@@ -82,7 +94,7 @@ const addProduct = async (req, res) => {
     }
     
     console.log('6. Creating product document...');
-    const newProduct = new Product({ 
+    const productData = {
       name: name.trim(), 
       brand: brand.trim(),
       category: category.trim(),
@@ -95,7 +107,10 @@ const addProduct = async (req, res) => {
       newArrival: newArrival === 'true' || newArrival === true,
       included: includedItems,
       specs: parsedSpecs
-    });
+    };
+    console.log('Product data to save:', JSON.stringify(productData, null, 2).substring(0, 500));
+    
+    const newProduct = new Product(productData);
     console.log('✓ Product document created');
     
     console.log('7. Saving to database...');
@@ -108,9 +123,13 @@ const addProduct = async (req, res) => {
     console.error('❌ ERROR in addProduct:', error);
     console.error('Error message:', error.message);
     console.error('Error stack:', error.stack);
+    
+    // Send detailed error response
     res.status(500).json({ 
       error: error.message || 'Could not create product',
-      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      details: error.stack,
+      type: error.name,
+      code: error.code
     });
   }
 };
