@@ -166,19 +166,24 @@ function ProductList() {
     // Fetch products from backend
     axios.get('/products')
       .then(res => {
-        setProducts(res.data);
-        setFilteredProducts(res.data);
+        const products = Array.isArray(res.data) ? res.data : [];
+        setProducts(products);
+        setFilteredProducts(products);
         setLoading(false);
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error('Failed to fetch products:', err);
         setError('Failed to fetch products');
+        setProducts([]);
+        setFilteredProducts([]);
         setLoading(false);
       });
       
     // Fetch categories from backend
     axios.get('/categories')
       .then(res => { 
-        const categoryNames = res.data.map(cat => cat.name);
+        const categoryData = Array.isArray(res.data) ? res.data : [];
+        const categoryNames = categoryData.map(cat => cat.name || cat);
         setCategories(categoryNames);
         
         // Initialize all categories as expanded by default
@@ -189,12 +194,16 @@ function ProductList() {
         expandedState['Hot Deals'] = true; // Also initialize Hot Deals
         setExpandedCategories(expandedState);
       })
-      .catch(err => console.error('Failed to load categories', err));
+      .catch(err => {
+        console.error('Failed to load categories:', err);
+        setCategories([]);
+      });
   }, []);
 
   // ===== FILTERING LOGIC =====
   useEffect(() => {
-    let filtered = [...products];
+    const productsToFilter = Array.isArray(products) ? products : [];
+    let filtered = [...productsToFilter];
 
     // Search filtering (by name, brand, description, category)
     if (searchTerm?.trim()) {

@@ -11,6 +11,11 @@
   # Directory to deploy (relative to base, Vite outputs to dist/)
   publish = "dist"
 
+# Environment variables for build (can also be set in Netlify UI)
+[env]
+  VITE_API_URL = "https://your-backend-api-url.com"
+  # Replace with your actual backend URL
+
 # SPA routing - redirect all requests to index.html for React Router
 [[redirects]]
   from = "/*"
@@ -29,16 +34,13 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
-# API proxy to backend (if backend is also deployed)
-# Uncomment and update with your backend URL
+# API proxy to backend (alternative to VITE_API_URL)
+# Uncomment if you want Netlify to proxy API requests
 # [[redirects]]
 #   from = "/api/*"
 #   to = "https://your-backend-url/api/:splat"
 #   status = 200
 #   force = true
-
-# Environment variables (set these in Netlify dashboard)
-# VITE_API_URL - Backend API URL (e.g., https://your-backend.herokuapp.com)
 
 # Pre-production deployment context
 [context.deploy-preview]
