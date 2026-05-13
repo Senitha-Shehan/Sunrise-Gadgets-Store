@@ -14,7 +14,7 @@
 # Build environment (these are available at build time)
 [build.environment]
   VITE_API_URL = "https://project-62f13b8e-684a-4407-bb9.uc.r.appspot.com"
-  NODE_ENV = "production"
+
 
 # SPA routing - redirect all requests to index.html for React Router
 [[redirects]]
