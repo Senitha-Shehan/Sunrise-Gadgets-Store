@@ -108,13 +108,14 @@ function AdminDashboard() {
     e.preventDefault();
     if (!newCatName.trim()) return;
     setIsAddingCat(true);
+    const categoryName = newCatName; // Capture name before clearing
     try {
       console.log('Adding category with baseURL:', axios.defaults.baseURL);
-      const res = await axios.post('/categories', { name: newCatName });
+      const res = await axios.post('/categories', { name: categoryName });
       console.log('Category added successfully:', res.data);
       setNewCatName('');
       fetchData();
-      setNotice(`Category "${newCatName}" added successfully!`);
+      setNotice(`Category "${categoryName}" added successfully!`);
       window.setTimeout(() => setNotice(''), 2500);
     } catch (err) {
       console.error('Failed to add category:', err);
