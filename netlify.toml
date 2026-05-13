@@ -13,8 +13,7 @@
 
 # Environment variables for build (can also be set in Netlify UI)
 [env]
-  VITE_API_URL = "https://your-backend-api-url.com"
-  # Replace with your actual backend URL
+  VITE_API_URL = "https://project-62f13b8e-684a-4407-bb9.uc.r.appspot.com"
 
 # SPA routing - redirect all requests to index.html for React Router
 [[redirects]]
