@@ -6,11 +6,11 @@
   --font-display: 'Sora', 'Inter', system-ui, sans-serif;
 
   /* Brand Palette - Updated to Dark Blue & Teal */
-  --brand-50: #eff6ff;
-  --brand-100: #dbeafe;
-  --brand-200: #bfdbfe;
-  --brand-400: #60a5fa;
-  --brand-500: #185FA5;
+  --brand-50: #eef1f7;
+  --brand-100: #d8dfec;
+  --brand-200: #bcc7dc;
+  --brand-400: #5f7092;
+  --brand-500: #0a1128;
   /* Primary Dark Blue */
   --brand-600: #0F6E56;
   /* Secondary Teal */
@@ -31,12 +31,12 @@
   /* Light Gray Background */
 
   /* Gradients */
-  --gradient-brand: linear-gradient(135deg, #185FA5 0%, #0F6E56 100%);
-  --gradient-dark: linear-gradient(160deg, #185FA5 0%, #0a1128 100%);
+  --gradient-brand: linear-gradient(135deg, #0a1128 0%, #0F6E56 100%);
+  --gradient-dark: linear-gradient(160deg, #0a1128 0%, #0a1128 100%);
   --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.04) 100%);
 
   /* Shadows */
-  --shadow-brand: 0 0 30px rgba(24, 95, 165, 0.3);
+  --shadow-brand: 0 0 30px rgba(10, 17, 40, 0.3);
   --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
   --shadow-card-hover: 0 20px 48px rgba(0, 0, 0, 0.14), 0 4px 12px rgba(0, 0, 0, 0.08);
   --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.3);

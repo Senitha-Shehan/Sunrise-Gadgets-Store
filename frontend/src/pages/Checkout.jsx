@@ -242,8 +242,8 @@ function Checkout() {
         </div>
       </div>
 
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
-        <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.6fr 1fr', gap: '32px' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px', width: '100%' }}>
+        <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.6fr 1fr', gap: '32px', maxWidth: isMobile ? '100%' : '100%', margin: '0 auto', justifyContent: isMobile ? 'center' : 'auto' }}>
           
           {/* Form Content */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>

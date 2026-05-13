@@ -56,7 +56,7 @@ function SkeletonCard() {
  * @param {boolean} isOpen - Whether section is expanded
  * @param {function} onToggle - Callback when header is clicked
  */
-function SectionHeader({ title, count, isOpen, onToggle }) {
+function SectionHeader({ title, subtitle, count, isOpen, onToggle }) {
   return (
     <div
       onClick={onToggle}
@@ -91,18 +91,25 @@ function SectionHeader({ title, count, isOpen, onToggle }) {
         </div>
 
         {/* Title */}
-        <h2
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontWeight: 800,
-            fontSize: 'clamp(1.4rem, 4vw, 2rem)',
-            color: 'var(--surface-900)',
-            letterSpacing: '-0.03em',
-            margin: 0,
-          }}
-        >
-          {title}
-        </h2>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+          <h2
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontWeight: 800,
+              fontSize: 'clamp(1.4rem, 4vw, 2rem)',
+              color: 'var(--surface-900)',
+              letterSpacing: '-0.03em',
+              margin: 0,
+            }}
+          >
+            {title}
+          </h2>
+          {subtitle && (
+            <span style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: 500 }}>
+              {subtitle}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Item Count Badge */}
@@ -179,7 +186,7 @@ function ProductList() {
           acc[cat] = true;
           return acc;
         }, {});
-        expandedState['New Arrivals'] = true; // Also initialize New Arrivals
+        expandedState['Hot Deals'] = true; // Also initialize Hot Deals
         setExpandedCategories(expandedState);
       })
       .catch(err => console.error('Failed to load categories', err));
@@ -224,7 +231,7 @@ function ProductList() {
   }, [products, searchTerm, selectedCategory, minPrice, maxPrice]);
 
   // ===== DERIVED STATE =====
-  const newArrivals = filteredProducts.filter(p => p.newArrival);
+  const hotDeals = filteredProducts.filter(p => p.newArrival);
 
   // Group products by category
   const productsByCategory = categories.reduce((acc, category) => {
@@ -400,20 +407,34 @@ function ProductList() {
           </div>
         )}
 
-        {/* NEW ARRIVALS SECTION - Grid Format with Collapse */}
-        {newArrivals.length > 0 && (
-          <section style={{ marginBottom: isMobile ? '48px' : '64px' }}>
+        {/* HOT DEALS SECTION - Grid Format with Collapse */}
+        {hotDeals.length > 0 && (
+          <section style={{
+            marginBottom: isMobile ? '48px' : '64px',
+            padding: isMobile ? '16px 0 18px' : '20px 0 24px',
+            background: 'linear-gradient(135deg, rgba(24,95,165,0.07) 0%, rgba(15,110,86,0.05) 100%)',
+            border: '1px solid rgba(24,95,165,0.10)',
+            borderRadius: '24px',
+          }}>
             <SectionHeader
-              title="New Arrivals"
-              count={newArrivals.length}
-              isOpen={expandedCategories['New Arrivals'] !== false}
-              onToggle={() => toggleCategory('New Arrivals')}
+              title="Hot Deals"
+              subtitle="Best offers, limited stock"
+              count={hotDeals.length}
+              isOpen={expandedCategories['Hot Deals'] !== false}
+              onToggle={() => toggleCategory('Hot Deals')}
+              
             />
-            {expandedCategories['New Arrivals'] !== false && (
-              <div className="product-grid">
-                {newArrivals.map(p => (
+            {expandedCategories['Hot Deals'] !== false && (
+              <div className="product-grid" style={{ padding: isMobile ? '0 16px' : '0 20px' }}>
+                {hotDeals.map(p => (
                   <div key={p._id}>
-                    <ProductCard product={p} />
+                    <ProductCard
+                      product={p}
+                      showImageSlideshow
+                      highlightPricing
+                      compactMode
+                      badgeLabel="Hot Deal"
+                    />
                   </div>
                 ))}
               </div>
