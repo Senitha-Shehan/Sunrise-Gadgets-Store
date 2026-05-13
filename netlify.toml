@@ -2,14 +2,14 @@
 # Build and deployment settings for the frontend
 
 [build]
-  # Build command for Vite React application
-  command = "cd frontend && npm run build"
+  # Set base directory to frontend folder
+  base = "frontend"
   
-  # Directory to deploy (Vite outputs to dist/)
-  publish = "frontend/dist"
+  # Build command (runs from frontend directory)
+  command = "npm run build"
   
-  # Node version for build
-  environment = { NODE_VERSION = "18.17.0" }
+  # Directory to deploy (relative to base, Vite outputs to dist/)
+  publish = "dist"
 
 # SPA routing - redirect all requests to index.html for React Router
 [[redirects]]
@@ -42,15 +42,15 @@
 
 # Pre-production deployment context
 [context.deploy-preview]
-  command = "cd frontend && npm run build"
-  publish = "frontend/dist"
+  command = "npm run build"
+  publish = "dist"
 
 # Production deployment context  
 [context.production]
-  command = "cd frontend && npm run build"
-  publish = "frontend/dist"
+  command = "npm run build"
+  publish = "dist"
 
 # Development/staging context
 [context.staging]
-  command = "cd frontend && npm run build"
-  publish = "frontend/dist"
+  command = "npm run build"
+  publish = "dist"
