@@ -262,11 +262,28 @@ function AddProduct({ editingProduct, onSuccess }) {
       setError(null);
       if (onSuccess) onSuccess(); else navigate('/');
     } catch (err) {
-      console.error('Product save error:', err);
-      const errorMsg = err.response?.data?.error 
-        || err.response?.data?.message 
-        || err.message 
-        || 'Failed to save product';
+      console.error('Product save error - Full error object:', err);
+      console.error('Response status:', err.response?.status);
+      console.error('Response data:', err.response?.data);
+      console.error('Response headers:', err.response?.headers);
+      console.error('Error message:', err.message);
+      console.error('Error code:', err.code);
+      
+      let errorMsg = 'Failed to save product';
+      
+      if (err.response?.data?.error) {
+        errorMsg = err.response.data.error;
+      } else if (err.response?.data?.message) {
+        errorMsg = err.response.data.message;
+      } else if (err.message) {
+        errorMsg = err.message;
+      } else if (err.code === 'ERR_NETWORK') {
+        errorMsg = 'Network error - Cannot reach backend API. Check your internet connection or backend URL.';
+      } else if (err.code === 'ERR_BAD_REQUEST') {
+        errorMsg = 'Invalid request - Please check all fields are filled correctly.';
+      }
+      
+      console.error('Final error message:', errorMsg);
       setError(errorMsg);
       setLoading(false);
     }
