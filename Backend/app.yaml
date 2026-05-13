@@ -10,4 +10,4 @@ automatic_scaling:
 
 env_variables:
   NODE_ENV: production
-  MONGO_URI: "mongodb+srv://senitha200109:Seni%400109@cluster0.pxvzl45.mongodb.net/"
+  MONGO_URI: mongodb+srv://senitha200109:seni0109@cluster0.pxvzl45.mongodb.net/sunrise_gadgets
