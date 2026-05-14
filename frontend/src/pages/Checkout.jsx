@@ -262,11 +262,11 @@ function Checkout() {
               <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '24px' }}>
                 <div style={{ gridColumn: isMobile ? 'auto' : 'span 2' }}>
                   <label style={labelStyle}>Full Name</label>
-                  <input type="text" name="fullName" required value={formData.fullName} onChange={handleChange} style={inputStyle} placeholder="Senitha Shehan" />
+                  <input type="text" name="fullName" required value={formData.fullName} onChange={handleChange} style={inputStyle} placeholder="e.g. John Smith" />
                 </div>
                 <div>
                   <label style={labelStyle}>Email Address</label>
-                  <input type="email" name="email" required value={formData.email} onChange={handleChange} style={inputStyle} placeholder="senitha@example.com" />
+                  <input type="email" name="email" required value={formData.email} onChange={handleChange} style={inputStyle} placeholder="john@example.com" />
                 </div>
                 <div>
                   <label style={labelStyle}>Phone Number</label>
