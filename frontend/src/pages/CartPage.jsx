@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 
-const WA_NUMBER = '94702005088';
+const WA_NUMBER = '94716222203';
 
 function formatPrice(price) {
   return new Intl.NumberFormat('si-LK', {
