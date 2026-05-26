@@ -82,7 +82,7 @@ function Hero({ slides, hideStats }) {
       onMouseLeave={() => setAnimating(false)}
       style={{
         position: 'relative',
-        minHeight: isTinyMobile ? (isLandscape ? '210px' : '280px') : (isMobilePhone ? '300px' : (isTablet ? 'clamp(440px, 65vh, 520px)' : 'clamp(500px, 80vh, 700px)')),
+        minHeight: isTinyMobile ? (isLandscape ? '140px' : '200px') : (isMobilePhone ? '240px' : (isTablet ? 'clamp(320px, 50vh, 380px)' : 'clamp(360px, 60vh, 520px)')),
         display: 'flex',
         alignItems: 'center',
         overflow: 'hidden',
