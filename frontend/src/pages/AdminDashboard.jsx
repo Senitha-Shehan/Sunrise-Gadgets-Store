@@ -13,7 +13,7 @@ const ORDER_STATUS_META = {
   Cancelled: { label: 'Cancelled', className: 'bg-red-50 text-red-600 border-red-100', step: -1 },
 };
 
-const formatCurrency = (value) => `Rs. ${Number(value || 0).toLocaleString()}`;
+const formatCurrency = (value) => `LKR ${Number(value || 0).toLocaleString()}`;
 const formatOrderId = (id) => `#${String(id || '').slice(-6).toUpperCase()}`;
 
 function AdminDashboard() {

@@ -333,13 +333,13 @@ function AddProduct({ editingProduct, onSuccess }) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <FieldGroup label="Current Price (LKR)">
                   <div className="relative group">
-                    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs uppercase">Rs.</span>
+                    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs uppercase">LKR</span>
                     <input type="number" value={price} onChange={e => setPrice(e.target.value)} required min="0" step="0.01" placeholder="0.00" className={`${inputClasses} pl-14 font-black text-cyan-600 text-lg`} />
                   </div>
                 </FieldGroup>
                 <FieldGroup label="Original Price (MSRP)">
                   <div className="relative group">
-                    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs uppercase">Rs.</span>
+                    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs uppercase">LKR</span>
                     <input type="number" value={originalPrice} onChange={e => setOriginalPrice(e.target.value)} min="0" step="0.01" placeholder="0.00" className={`${inputClasses} pl-14`} />
                   </div>
                 <FieldGroup label="Stock Quantity">
@@ -456,8 +456,8 @@ function AddProduct({ editingProduct, onSuccess }) {
                   <h4 className="text-xl font-bold text-[#F5F5F5] leading-tight">{name || 'Your Product Title'}</h4>
                 </div>
                 <div className="flex items-baseline gap-3 pt-2">
-                  <div className="text-2xl font-black text-[#F5F5F5]">Rs. {parseInt(price || 0).toLocaleString()}</div>
-                  {originalPrice && <div className="text-sm text-slate-400 line-through">Rs. {parseInt(originalPrice).toLocaleString()}</div>}
+                  <div className="text-2xl font-black text-[#F5F5F5]">LKR {parseInt(price || 0).toLocaleString()}</div>
+                  {originalPrice && <div className="text-sm text-slate-400 line-through">LKR {parseInt(originalPrice).toLocaleString()}</div>}
                 </div>
                 <button type="button" className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-[0.15em] opacity-80 cursor-default">View Details</button>
               </div>

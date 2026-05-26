@@ -83,7 +83,7 @@ function Checkout() {
         total,
       };
       
-      const WA_NUMBER = '94702005088';
+      const WA_NUMBER = '94716222203';
       const orderItemsList = cartItems.map(item => `• ${item.name} (x${item.qty})`).join('\n');
       const waMessage = `✨ *NEW ORDER RECEIVED* ✨\n\n` +
                         `*Order ID:* #${savedOrderId}\n` +
@@ -92,7 +92,7 @@ function Checkout() {
                         `*District:* ${formData.district}\n` +
                         `*Address:* ${formData.address}\n\n` +
                         `*Items:*\n${orderItemsList}\n\n` +
-                        `*Total: Rs. ${total.toLocaleString()}*\n\n` +
+                        `*Total: LKR ${total.toLocaleString()}*\n\n` +
                         `*Notes:* ${formData.notes || 'N/A'}\n\n` +
                         `_Order placed via Sunrise Gadgets Store_`;
       
@@ -195,11 +195,11 @@ function Checkout() {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', fontSize: '0.88rem', color: 'var(--surface-600)' }}>
                 <span>Subtotal</span>
-                <strong style={{ color: 'var(--surface-900)' }}>Rs. {orderSubtotal.toLocaleString()}</strong>
+                <strong style={{ color: 'var(--surface-900)' }}>LKR {orderSubtotal.toLocaleString()}</strong>
               </div>
               <div style={{ borderTop: '1px solid var(--surface-200)', paddingTop: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                 <span style={{ fontWeight: 800, color: 'var(--surface-900)' }}>Total</span>
-                <strong style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', color: 'var(--brand-600)' }}>Rs. {orderTotal.toLocaleString()}</strong>
+                <strong style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', color: 'var(--brand-600)' }}>LKR {orderTotal.toLocaleString()}</strong>
               </div>
             </aside>
           </div>
@@ -297,7 +297,7 @@ function Checkout() {
               </div>
 
               <div style={{ marginTop: '24px', padding: '16px 18px', borderRadius: '16px', background: 'var(--surface-50)', border: '1px solid var(--surface-100)', color: 'var(--surface-600)', fontSize: '0.88rem', lineHeight: 1.6 }}>
-                This checkout creates an order record first, then opens WhatsApp so your team can confirm the request with the saved order reference.
+                This checkout creates an order record first, then opens WhatsApp so Our team can confirm the request with the saved order reference.
               </div>
             </section>
           </div>
@@ -325,7 +325,7 @@ function Checkout() {
                       <div style={{ fontSize: '0.75rem', color: 'var(--surface-500)', fontWeight: 600 }}>Qty: {item.qty}</div>
                     </div>
                     <div style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--surface-900)' }}>
-                      Rs. {(item.price * item.qty).toLocaleString()}
+                      LKR {(item.price * item.qty).toLocaleString()}
                     </div>
                   </div>
                 ))}
@@ -334,13 +334,13 @@ function Checkout() {
               <div style={{ borderTop: '1px solid var(--surface-100)', paddingTop: '24px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', color: 'var(--surface-500)', fontWeight: 600 }}>
                   <span>Subtotal</span>
-                  <span style={{ color: 'var(--surface-900)' }}>Rs. {subtotal.toLocaleString()}</span>
+                  <span style={{ color: 'var(--surface-900)' }}>LKR {subtotal.toLocaleString()}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '8px' }}>
                   <span style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--surface-900)' }}>Total</span>
                   <div style={{ textAlign: 'right' }}>
                     <div style={{ fontSize: '1.75rem', fontWeight: 900, color: 'var(--brand-500)', letterSpacing: '-0.02em', lineHeight: 1 }}>
-                      Rs. {total.toLocaleString()}
+                      LKR {total.toLocaleString()}
                     </div>
                   </div>
                 </div>
@@ -355,7 +355,7 @@ function Checkout() {
                 {loading ? (
                   <div style={{ width: '24px', height: '24px', border: '3px solid rgba(255,255,255,0.3)', borderTop: '3px solid white', borderRadius: '50%', animation: 'spin 0.6s linear infinite' }} />
                 ) : (
-                  'Confirm Order & Open WhatsApp'
+                  'Confirm Order'
                 )}
               </button>
 

@@ -41,7 +41,7 @@ const sendCustomerInvoice = async (order) => {
           <span style="color: #888888; font-size: 12px;">Quantity: ${item.quantity}</span>
         </td>
         <td align="right" style="padding: 15px 0; border-bottom: 1px solid #eeeeee; font-family: Arial, sans-serif; color: #185FA5; font-weight: bold;">
-          Rs. ${Number(item.price).toLocaleString()}
+          LKR ${Number(item.price).toLocaleString()}
         </td>
       </tr>
     `).join('');
@@ -78,15 +78,15 @@ const sendCustomerInvoice = async (order) => {
                       ${itemsHtml}
                       <tr>
                         <td style="padding-top: 20px; font-size: 14px; color:#777777;">Subtotal</td>
-                        <td align="right" style="padding-top: 20px; font-weight: bold;">Rs. ${summary.subtotal.toLocaleString()}</td>
+                        <td align="right" style="padding-top: 20px; font-weight: bold;">LKR ${summary.subtotal.toLocaleString()}</td>
                       </tr>
                       <tr>
                         <td style="padding: 5px 0; font-size: 14px; color:#777777;">Shipping</td>
-                        <td align="right" style="padding: 5px 0; font-weight: bold;">Rs. ${summary.shipping.toLocaleString()}</td>
+                        <td align="right" style="padding: 5px 0; font-weight: bold;">LKR ${summary.shipping.toLocaleString()}</td>
                       </tr>
                       <tr>
                         <td style="padding-top: 15px; border-top: 2px solid #eeeeee; font-size: 18px; font-weight: bold;">Total</td>
-                        <td align="right" style="padding-top: 15px; border-top: 2px solid #eeeeee; font-size: 22px; font-weight: bold; color: #0F6E56;">Rs. ${summary.total.toLocaleString()}</td>
+                        <td align="right" style="padding-top: 15px; border-top: 2px solid #eeeeee; font-size: 22px; font-weight: bold; color: #0F6E56;">LKR ${summary.total.toLocaleString()}</td>
                       </tr>
                     </table>
 
@@ -138,7 +138,7 @@ const sendAdminNotification = async (order) => {
     const adminEmailHtml = `
       <div style="font-family: Arial, sans-serif; padding: 20px; border: 2px solid #e11d48; border-radius: 10px;">
         <h2 style="color: #e11d48; margin-top: 0;">🚀 NEW ORDER RECEIVED</h2>
-        <p style="font-size: 24px; font-weight: bold; color: #333;">Total: Rs. ${summary.total.toLocaleString()}</p>
+        <p style="font-size: 24px; font-weight: bold; color: #333;">Total: LKR ${summary.total.toLocaleString()}</p>
         <hr>
         <p><b>Customer:</b> ${customer.name}</p>
         <p><b>District:</b> ${customer.district}</p>
