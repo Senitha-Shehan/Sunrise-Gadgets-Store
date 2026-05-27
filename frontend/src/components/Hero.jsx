@@ -2,22 +2,22 @@ import { useState, useEffect } from 'react';
 
 const defaultHeroSlides = [
   {
-    bg: '/hero-bg.jpg',
+    bg: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=1200&h=600&fit=crop',
     tag: '🇱🇰 #1 in Sri Lanka',
     headline: 'Expect More Pay Less',
-    desc: 'Ultra-premium 4K projectors, laser systems & smart boards — unbeatable prices delivered island-wide.',
+    desc: 'Premium 4K projectors, laser displays & smart boards — unbeatable prices delivered island-wide.',
   },
   {
-    bg: '/hero-bg-2.jpg',
+    bg: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1200&h=600&fit=crop',
     tag: '🔥 Hot Deals',
     headline: 'Next-Level Smart Tech',
-    desc: 'From portable projectors to pro-grade digital cinema — we bring the future to your doorstep.',
+    desc: 'Vehicle GPS trackers, smart home solutions & connected devices — bringing innovation to your life.',
   },
   {
-    bg: '/hero-bg.jpg',
+    bg: 'https://images.unsplash.com/photo-1584622614875-e51df1bdc82f?w=1200&h=600&fit=crop',
     tag: '⚡ Exclusive Deals',
     headline: 'Up to 40% Off Premium Gear',
-    desc: 'Limited-time offers on our curated selection of audio, visual, and projection equipment.',
+    desc: 'Hot water units, luxury showers & modern bathroom solutions — comfort meets technology.',
   },
 ];
 
@@ -115,8 +115,8 @@ function Hero({ slides, hideStats }) {
       )}
 
       {/* Content */}
-      <div className="hero-content" style={{ position: 'relative', zIndex: 10, padding: isTinyMobile ? '0 14px' : (isMobilePhone ? '0 16px' : (isTablet ? '0 40px' : '0')) }}>  
-        <div style={{ maxWidth: isMobile ? '460px' : '800px' }}>
+      <div className="hero-content" style={{ position: 'relative', zIndex: 10, padding: isTinyMobile ? '0 14px' : (isMobilePhone ? '0 16px' : (isTablet ? '0 40px' : '0 24px')), textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}>  
+        <div style={{ maxWidth: '100%' }}>
           {/* Tag */}
           <div key={`tag-${current}`} style={{
             display: 'inline-flex', alignItems: 'center', gap: '8px',
@@ -134,27 +134,17 @@ function Hero({ slides, hideStats }) {
           </div>
 
           {/* Headline */}
-          <div style={{ marginBottom: isTinyMobile ? '6px' : (isMobilePhone ? '10px' : '20px') }}>
+          <div style={{ marginBottom: isTinyMobile ? '6px' : (isMobilePhone ? '10px' : '16px') }}>
             <h1 key={`h1-${current}`} style={{
               fontFamily: 'var(--font-display)',
-              fontSize: isTinyMobile ? 'clamp(1.2rem, 7.2vw, 1.7rem)' : (isMobilePhone ? 'clamp(1.45rem, 6.2vw, 2.05rem)' : (isMobile ? 'clamp(2rem, 8vw, 2.8rem)' : 'clamp(2.5rem, 6vw, 5rem)')),
-              fontWeight: 800, lineHeight: 1.05, letterSpacing: '-0.04em',
-              marginBottom: isTinyMobile ? '4px' : '8px', color: 'white',
+              fontSize: isTinyMobile ? 'clamp(1.2rem, 7.2vw, 1.7rem)' : (isMobilePhone ? 'clamp(1.45rem, 6.2vw, 2.05rem)' : (isMobile ? 'clamp(2rem, 8vw, 2.8rem)' : 'clamp(2.2rem, 5vw, 3.5rem)')),
+              fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.03em',
+              marginBottom: 0, color: 'white',
               textShadow: '0 2px 10px rgba(0,0,0,0.3)',
               opacity: animating ? 0 : 1,
               transform: animating ? 'translateY(10px)' : 'translateY(0)',
               transition: 'all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)',
             }}>{slide.headline}</h1>
-            <h1 key={`h1b-${current}`} style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: isTinyMobile ? 'clamp(1.2rem, 7.2vw, 1.7rem)' : (isMobilePhone ? 'clamp(1.45rem, 6.2vw, 2.05rem)' : (isMobile ? 'clamp(2rem, 8vw, 2.8rem)' : 'clamp(2.5rem, 6vw, 5rem)')),
-              fontWeight: 800, lineHeight: 1.05, letterSpacing: '-0.04em',
-              background: 'linear-gradient(to right, #0891b2, #0e7490, #0891b2)',
-              backgroundSize: '200% auto',
-              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-              transition: 'all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s',
-              animation: 'shimmer 4s linear infinite',
-            }}>{slide.sub}</h1>
           </div>
 
           {/* Description */}
@@ -171,43 +161,44 @@ function Hero({ slides, hideStats }) {
           {/* Scroll Indicator */}
           {!isMobile && (
           <div style={{
-            marginTop: isTinyMobile ? '24px' : (isMobilePhone ? '28px' : '48px'),
+            marginTop: '14px',
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
+            justifyContent: 'center',
             opacity: animating ? 0 : 1,
             transition: 'opacity 0.8s ease 0.5s',
           }}>
             <div style={{
               width: '1px',
-              height: '40px',
+              height: '28px',
               background: 'linear-gradient(to bottom, var(--brand-500), transparent)',
             }} />
             <span style={{
               color: 'rgba(255,255,255,0.4)',
-              fontSize: '0.7rem',
+              fontSize: '0.65rem',
               fontWeight: 600,
-              letterSpacing: '0.2em',
+              letterSpacing: '0.15em',
               textTransform: 'uppercase',
             }}>Scroll to explore</span>
           </div>
           )}
         </div>
 
-        {/* Stats - Minimalist Row */}
+        {/* Stats - Compact Inline */}
         {!hideStats && !isMobile && (
           <div style={{
-            display: 'flex', gap: isTablet ? '32px' : '48px', marginTop: isTablet ? '40px' : '64px',
-            opacity: animating ? 0 : 1, transition: 'opacity 1s ease 0.6s'
+            display: 'flex', gap: '16px', marginTop: '18px', justifyContent: 'center',
+            opacity: animating ? 0 : 1, transition: 'opacity 1s ease 0.6s', flexWrap: 'wrap'
           }}>
             {[
-              { value: '500+', label: 'Premium Products' },
-              { value: '10k+', label: 'Active Users' },
-              { value: 'Islandwide', label: 'Express Shipping' },
+              { value: '500+', label: 'Products' },
+              { value: '10k+', label: 'Users' },
+              { value: 'Islandwide', label: 'Shipping' },
             ].map(stat => (
-              <div key={stat.label} style={{ borderLeft: '1px solid rgba(6,182,212,0.3)', paddingLeft: isTablet ? '12px' : '16px' }}>
-                <div style={{ fontFamily: 'var(--font-display)', fontSize: isTablet ? '1.25rem' : '1.5rem', fontWeight: 800, color: 'white', letterSpacing: '-0.02em', lineHeight: 1.1 }}>{stat.value}</div>
-                <div style={{ fontSize: isTablet ? '0.6rem' : '0.65rem', color: 'rgba(255,255,255,0.4)', marginTop: '4px', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 700 }}>{stat.label}</div>
+              <div key={stat.label} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <div style={{ fontFamily: 'var(--font-display)', fontSize: '0.9rem', fontWeight: 700, color: 'rgba(255,255,255,0.8)', letterSpacing: '-0.02em' }}>{stat.value}</div>
+                <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.5)', letterSpacing: '0.05em', textTransform: 'uppercase', fontWeight: 600 }}>{stat.label}</div>
               </div>
             ))}
           </div>
