@@ -207,7 +207,7 @@ function AddProduct({ editingProduct, onSuccess }) {
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    if (unifiedImages.length + files.length > 5) { alert(`Limit exceeded. You can only have 5 images total.`); return; }
+    if (unifiedImages.length + files.length > 15) { alert(`Limit exceeded. You can only have 15 images total.`); return; }
     const newItems = files.map(file => ({ id: Math.random().toString(36).substr(2, 9), type: 'new', data: file }));
     setUnifiedImages(prev => [...prev, ...newItems]);
   };
@@ -377,25 +377,25 @@ function AddProduct({ editingProduct, onSuccess }) {
               </div>
             </FormSection>
 
-            <FormSection title="Visual Assets" icon={<svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>}>
+            <FormSection title={`Visual Assets (${unifiedImages.length}/15)`} icon={<svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>}>
               <div className="p-6 bg-[#1A1A2E]/50 rounded-3xl border-2 border-dashed border-white/10">
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                   <div className="flex flex-wrap gap-5">
                     <SortableContext items={unifiedImages.map(i => i.id)} strategy={rectSortingStrategy}>
                       {unifiedImages.map((item, index) => <SortableImage key={item.id} item={item} onRemove={removeImage} isFirst={index === 0} />)}
                     </SortableContext>
-                    {unifiedImages.length < 5 && (
+                    {unifiedImages.length < 15 && (
                       <div className="relative group">
                         <input type="file" multiple accept="image/*" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
                         <div className="w-[100px] h-[100px] rounded-2xl border-2 border-dashed border-slate-300 bg-[#2D2D44] flex flex-col items-center justify-center gap-2 group-hover:border-cyan-400 group-hover:bg-cyan-50 transition-all">
                           <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" className="text-slate-400 group-hover:text-cyan-500"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" /></svg>
-                          <span className="text-[10px] font-black text-slate-400 group-hover:text-cyan-500 uppercase tracking-tighter">Upload</span>
+                          <span className="text-[10px] font-black text-slate-400 group-hover:text-cyan-500 uppercase tracking-tighter">Upload ({unifiedImages.length}/15)</span>
                         </div>
                       </div>
                     )}
                   </div>
                 </DndContext>
-                {unifiedImages.length === 0 && <p className="text-center py-6 text-sm text-slate-400 italic">No images selected. Upload up to 5 photos.</p>}
+                {unifiedImages.length === 0 && <p className="text-center py-6 text-sm text-slate-400 italic">No images selected. Upload up to 15 photos.</p>}
               </div>
             </FormSection>
 

@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import './App.css';
 import ProductList from './pages/ProductList';
 import AddProduct from './pages/AddProduct';
@@ -17,10 +17,18 @@ import { CartProvider } from './context/CartContext';
 function App() {
   const location = useLocation();
 
+  // Normalize double slashes in path (e.g. //admin -> /admin)
+  if (location.pathname.includes('//')) {
+    const cleanPath = location.pathname.replace(/\/+/g, '/');
+    return <Navigate to={`${cleanPath}${location.search}`} replace />;
+  }
+
+  const isAdminRoute = location.pathname.startsWith('/admin');
+
   return (
     <CartProvider>
       <div className="app-shell">
-        <Nav />
+        {!isAdminRoute && <Nav />}
         <main style={{ flex: 1 }} className="page-transition" key={location.pathname}>
           <Routes>
             <Route path="/" element={<ProductList />} />
@@ -35,8 +43,8 @@ function App() {
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
           </Routes>
         </main>
-        <Footer />
-        <WhatsAppButton />
+        {!isAdminRoute && <Footer />}
+        {!isAdminRoute && <WhatsAppButton />}
       </div>
     </CartProvider>
   );

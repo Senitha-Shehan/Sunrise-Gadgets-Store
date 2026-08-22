@@ -220,7 +220,7 @@ const updateProduct = async (req, res) => {
       return res.status(400).json({ error: 'At least one image is required' });
     }
 
-    updateData.images = finalImages.slice(0, 5); // Enforce max 5 limit
+    updateData.images = finalImages.slice(0, 15); // Enforce max 15 limit
 
     // 4. Cleanup: Delete images from Cloudinary that were removed
     const oldProduct = await Product.findById(req.params.id);
@@ -293,7 +293,7 @@ const deleteProduct = async (req, res) => {
 module.exports = {
   getProducts,
   getProductById,
-  addProduct: [upload.array('images', 5), addProduct],
-  updateProduct: [upload.array('images', 5), updateProduct],
+  addProduct: [upload.array('images', 15), addProduct],
+  updateProduct: [upload.array('images', 15), updateProduct],
   deleteProduct
 };

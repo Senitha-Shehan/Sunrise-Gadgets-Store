@@ -136,20 +136,30 @@ function ProductDetail() {
                         pointerEvents: 'none'
                       }} 
                     />
+                    {product.images.length > 1 && (
+                      <div style={{
+                        position: 'absolute', top: '12px', right: '12px',
+                        background: 'rgba(15,23,42,0.75)', backdropFilter: 'blur(8px)',
+                        color: 'white', fontSize: '0.72rem', fontWeight: 800,
+                        padding: '4px 10px', borderRadius: '999px', letterSpacing: '0.05em'
+                      }}>
+                        {selectedImage + 1} / {product.images.length}
+                      </div>
+                    )}
                   </div>
                   {product.images.length > 1 && (
-                    <div style={{ display: 'flex', gap: isTinyMobile ? '8px' : '12px', overflowX: 'auto', paddingBottom: '8px', scrollbarWidth: 'none' }}>
+                    <div style={{ display: 'flex', gap: isTinyMobile ? '8px' : '10px', overflowX: 'auto', paddingBottom: '10px', scrollbarWidth: 'thin' }}>
                       {product.images.map((img, i) => (
                         <button key={i} onClick={() => setSelectedImage(i)}
                           style={{
-                            flexShrink: 0, width: isTinyMobile ? '56px' : '72px', height: isTinyMobile ? '56px' : '72px', borderRadius: '12px', overflow: 'hidden',
-                            border: i === selectedImage ? '2px solid var(--brand-500)' : '2px solid transparent',
-                            boxShadow: i === selectedImage ? '0 4px 12px rgba(6,182,212,0.15)' : '0 2px 6px rgba(0,0,0,0.04)',
-                            opacity: i === selectedImage ? 1 : 0.6,
+                            flexShrink: 0, width: isTinyMobile ? '56px' : '68px', height: isTinyMobile ? '56px' : '68px', borderRadius: '12px', overflow: 'hidden',
+                            border: i === selectedImage ? '2.5px solid var(--brand-600)' : '1.5px solid var(--surface-200)',
+                            boxShadow: i === selectedImage ? '0 4px 12px rgba(15,110,86,0.25)' : '0 2px 6px rgba(0,0,0,0.04)',
+                            opacity: i === selectedImage ? 1 : 0.65,
                             cursor: 'pointer', transition: 'all 0.2s', background: 'white', padding: '2px', minHeight: 'auto',
                           }}
                           onMouseEnter={e => { if (i !== selectedImage) e.currentTarget.style.opacity = '1'; }}
-                          onMouseLeave={e => { if (i !== selectedImage) e.currentTarget.style.opacity = '0.6'; }}
+                          onMouseLeave={e => { if (i !== selectedImage) e.currentTarget.style.opacity = '0.65'; }}
                         >
                           <div style={{ width: '100%', height: '100%', borderRadius: '8px', overflow: 'hidden' }}>
                             <img src={`${img.url}`} alt={`View ${i+1}`} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
