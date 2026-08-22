@@ -135,6 +135,10 @@ const sendAdminNotification = async (order) => {
     const { customer, summary, items } = order;
     const orderId = order._id.toString().slice(-6).toUpperCase();
 
+    // Build normalized frontend URL and dashboard link with order ID parameter
+    const baseUrl = (process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/+$/, '');
+    const dashboardUrl = `${baseUrl}/admin/dashboard?orderId=${order._id}`;
+
     const adminEmailHtml = `
       <div style="font-family: Arial, sans-serif; padding: 20px; border: 2px solid #e11d48; border-radius: 10px;">
         <h2 style="color: #e11d48; margin-top: 0;">🚀 NEW ORDER RECEIVED</h2>
@@ -145,7 +149,7 @@ const sendAdminNotification = async (order) => {
         <p><b>Phone:</b> ${customer.phone}</p>
         <p><b>Items:</b><br>${items.map(i => `${i.quantity}x ${i.name}`).join('<br>')}</p>
         <br>
-        <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/admin" style="background: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">View in Dashboard</a>
+        <a href="${dashboardUrl}" style="background: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">View in Dashboard</a>
       </div>
     `;
 

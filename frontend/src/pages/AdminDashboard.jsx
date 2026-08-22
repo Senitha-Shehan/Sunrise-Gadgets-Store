@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import AddProduct from './AddProduct';
 
@@ -34,6 +34,7 @@ function AdminDashboard() {
   const [isAddingCat, setIsAddingCat] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
@@ -43,12 +44,12 @@ function AdminDashboard() {
 
   useEffect(() => {
     if (!localStorage.getItem('adminLoggedIn')) {
-      navigate('/admin');
+      navigate(`/admin${location.search}`);
       return;
     }
 
     fetchData();
-  }, [navigate]);
+  }, [navigate, location.search]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -58,9 +59,26 @@ function AdminDashboard() {
         axios.get('/categories'),
         axios.get('/orders'),
       ]);
-      setProducts(Array.isArray(prodRes.data) ? prodRes.data : []);
-      setCategories(Array.isArray(catRes.data) ? catRes.data : []);
-      setOrders(Array.isArray(orderRes.data) ? orderRes.data : []);
+      const fetchedProducts = Array.isArray(prodRes.data) ? prodRes.data : [];
+      const fetchedCategories = Array.isArray(catRes.data) ? catRes.data : [];
+      const fetchedOrders = Array.isArray(orderRes.data) ? orderRes.data : [];
+
+      setProducts(fetchedProducts);
+      setCategories(fetchedCategories);
+      setOrders(fetchedOrders);
+
+      // Check if URL has orderId parameter and automatically select that order
+      const params = new URLSearchParams(location.search);
+      const targetOrderId = params.get('orderId');
+      if (targetOrderId && fetchedOrders.length > 0) {
+        const foundOrder = fetchedOrders.find(
+          o => o._id === targetOrderId || String(o._id).toLowerCase().endsWith(targetOrderId.toLowerCase())
+        );
+        if (foundOrder) {
+          setActiveTab('orders');
+          setSelectedOrder(foundOrder);
+        }
+      }
     } catch (err) {
       console.error('Failed to fetch dashboard data:', err);
       // Keep the UI responsive even if one request fails.

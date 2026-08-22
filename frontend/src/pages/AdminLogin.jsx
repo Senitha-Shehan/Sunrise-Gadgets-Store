@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function AdminLogin() {
   const [password, setPassword] = useState('');
@@ -7,6 +7,7 @@ function AdminLogin() {
   const [loading, setLoading] = useState(false);
   const [showPw, setShowPw] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const ADMIN_PASSWORD = 'admin123';
 
   const handleSubmit = (e) => {
@@ -17,7 +18,7 @@ function AdminLogin() {
       if (password === ADMIN_PASSWORD) {
         localStorage.setItem('adminLoggedIn', 'true');
         localStorage.setItem('adminLoginTime', Date.now().toString());
-        navigate('/admin/dashboard');
+        navigate(`/admin/dashboard${location.search}`);
       } else {
         setError('Invalid password. Please try again.');
       }
