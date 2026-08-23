@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import usePageMetadata from '../hooks/usePageMetadata';
 
 const contactInfo = [
   { 
@@ -39,6 +40,12 @@ function ContactUs() {
   const isMobile = window.innerWidth < 768;
   const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
   const [status, setStatus] = useState(null); // 'sending' | 'success' | 'error'
+
+  usePageMetadata({
+    title: 'Contact Us & Showroom Support — Sunrise Gadgets Store',
+    description: 'Get in touch with Sunrise Gadgets Store. Visit our Piliyandala showroom or contact our support team via phone or WhatsApp.',
+    url: 'https://sunrisegadgetsstore.com/contact'
+  });
 
   const handleChange = (e) => setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
 

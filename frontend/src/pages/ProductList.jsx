@@ -3,6 +3,7 @@ import axios from 'axios';
 import Hero from '../components/Hero';
 import SearchFilter from '../components/SearchFilter';
 import ProductCard from '../components/ProductCard';
+import usePageMetadata from '../hooks/usePageMetadata';
 
 // ============================================================================
 // UPGRADED PRODUCT LIST COMPONENT WITH COLLAPSIBLE CATEGORIES
@@ -153,6 +154,30 @@ function ProductList() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [categories, setCategories] = useState([]);
   const [expandedCategories, setExpandedCategories] = useState({});
+
+  const websiteUrl = 'https://sunrisegadgetsstore.com/';
+  const storeSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'OnlineStore',
+    'name': 'Sunrise Gadgets Store',
+    'url': websiteUrl,
+    'logo': `${websiteUrl}logo.jpg`,
+    'description': 'Shop high-quality projectors, interactive smart boards, audio devices, and tech accessories with fast delivery across Sri Lanka at Sunrise Gadgets Store.',
+    'telephone': '+94716222203',
+    'priceRange': 'Rs.',
+    'address': {
+      '@type': 'PostalAddress',
+      'addressCountry': 'LK'
+    }
+  };
+
+  usePageMetadata({
+    title: 'Sunrise Gadgets Store — Premium Projectors, Smart Boards & Tech in Sri Lanka',
+    description: 'Shop high-quality projectors, interactive smart boards, audio devices, and tech accessories with fast delivery across Sri Lanka at Sunrise Gadgets Store.',
+    image: `${websiteUrl}logo.jpg`,
+    url: websiteUrl,
+    schema: storeSchema
+  });
 
   // ===== WINDOW RESIZE HANDLER =====
   useEffect(() => {

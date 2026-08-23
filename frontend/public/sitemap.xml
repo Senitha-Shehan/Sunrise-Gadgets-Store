@@ -1,28 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://yourdomain.com/</loc>
+    <loc>https://sunrisegadgetsstore.com/</loc>
     <priority>1.00</priority>
     <changefreq>daily</changefreq>
   </url>
   <url>
-    <loc>https://yourdomain.com/products</loc>
+    <loc>https://sunrisegadgetsstore.com/contact</loc>
     <priority>0.80</priority>
-    <changefreq>daily</changefreq>
-  </url>
-  <url>
-    <loc>https://yourdomain.com/about</loc>
-    <priority>0.64</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://yourdomain.com/contact</loc>
-    <priority>0.64</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://yourdomain.com/cart</loc>
-    <priority>0.32</priority>
+    <loc>https://sunrisegadgetsstore.com/cart</loc>
+    <priority>0.50</priority>
     <changefreq>weekly</changefreq>
   </url>
 </urlset>

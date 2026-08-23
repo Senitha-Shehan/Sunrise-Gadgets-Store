@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import axios from 'axios';
+import usePageMetadata from '../hooks/usePageMetadata';
 
 function Checkout() {
   const { cartItems, cartTotal, clearCart } = useCart();
@@ -13,12 +14,20 @@ function Checkout() {
   const [placedOrder, setPlacedOrder] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
+  usePageMetadata({
+    title: 'Checkout — Sunrise Gadgets Store',
+    description: 'Complete your order details for fast delivery across Sri Lanka.',
+    url: 'https://sunrisegadgetsstore.com/checkout'
+  });
+
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
   
+  const [errors, setErrors] = useState({});
+
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -33,12 +42,37 @@ function Checkout() {
   const total = subtotal;
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: undefined }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.fullName.trim()) newErrors.fullName = 'Full Name is required';
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email address is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Phone number is required';
+    } else if (!/^(?:\+94|0)?[0-9]{9,10}$/.test(formData.phone.trim().replace(/[\s-]/g, ''))) {
+      newErrors.phone = 'Please enter a valid phone number (e.g. 0771234567)';
+    }
+    if (!formData.address.trim()) newErrors.address = 'Delivery address is required';
+    if (!formData.district) newErrors.district = 'Please select a district';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (cartItems.length === 0) return;
+    if (!validateForm()) return;
     setLoading(true);
 
     const orderData = {
@@ -262,24 +296,28 @@ function Checkout() {
               <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '24px' }}>
                 <div style={{ gridColumn: isMobile ? 'auto' : 'span 2' }}>
                   <label style={labelStyle}>Full Name</label>
-                  <input type="text" name="fullName" required value={formData.fullName} onChange={handleChange} style={inputStyle} placeholder="e.g. John Smith" />
+                  <input type="text" name="fullName" required value={formData.fullName} onChange={handleChange} style={{ ...inputStyle, borderColor: errors.fullName ? '#ef4444' : undefined }} placeholder="e.g. John Smith" />
+                  {errors.fullName && <div style={{ color: '#ef4444', fontSize: '0.78rem', marginTop: '6px', fontWeight: 600 }}>{errors.fullName}</div>}
                 </div>
                 <div>
                   <label style={labelStyle}>Email Address</label>
-                  <input type="email" name="email" required value={formData.email} onChange={handleChange} style={inputStyle} placeholder="john@example.com" />
+                  <input type="email" name="email" required value={formData.email} onChange={handleChange} style={{ ...inputStyle, borderColor: errors.email ? '#ef4444' : undefined }} placeholder="john@example.com" />
+                  {errors.email && <div style={{ color: '#ef4444', fontSize: '0.78rem', marginTop: '6px', fontWeight: 600 }}>{errors.email}</div>}
                 </div>
                 <div>
                   <label style={labelStyle}>Phone Number</label>
-                  <input type="tel" name="phone" required value={formData.phone} onChange={handleChange} style={inputStyle} placeholder="07x xxxxxxx" />
+                  <input type="tel" name="phone" required value={formData.phone} onChange={handleChange} style={{ ...inputStyle, borderColor: errors.phone ? '#ef4444' : undefined }} placeholder="07x xxxxxxx" />
+                  {errors.phone && <div style={{ color: '#ef4444', fontSize: '0.78rem', marginTop: '6px', fontWeight: 600 }}>{errors.phone}</div>}
                 </div>
                 <div style={{ gridColumn: isMobile ? 'auto' : 'span 2' }}>
                   <label style={labelStyle}>Delivery Address</label>
-                  <textarea name="address" required value={formData.address} onChange={handleChange} rows="3" style={{ ...inputStyle, resize: 'none' }} placeholder="No 123, Street Name, City" />
+                  <textarea name="address" required value={formData.address} onChange={handleChange} rows="3" style={{ ...inputStyle, resize: 'none', borderColor: errors.address ? '#ef4444' : undefined }} placeholder="No 123, Street Name, City" />
+                  {errors.address && <div style={{ color: '#ef4444', fontSize: '0.78rem', marginTop: '6px', fontWeight: 600 }}>{errors.address}</div>}
                 </div>
                 <div>
                   <label style={labelStyle}>District</label>
                   <div style={{ position: 'relative' }}>
-                    <select name="district" required value={formData.district} onChange={handleChange} style={{ ...inputStyle, appearance: 'none' }}>
+                    <select name="district" required value={formData.district} onChange={handleChange} style={{ ...inputStyle, appearance: 'none', borderColor: errors.district ? '#ef4444' : undefined }}>
                       <option value="">Select District</option>
                       {['Colombo', 'Gampaha', 'Kalutara', 'Kandy', 'Matale', 'Nuwara Eliya', 'Galle', 'Matara', 'Hambantota', 'Jaffna', 'Kilinochchi', 'Mannar', 'Vavuniya', 'Mullaitivu', 'Batticaloa', 'Ampara', 'Trincomalee', 'Kurunegala', 'Puttalam', 'Anuradhapura', 'Polonnaruwa', 'Badulla', 'Moneragala', 'Ratnapura', 'Kegalle'].map(d => (
                         <option key={d} value={d}>{d}</option>
@@ -289,6 +327,7 @@ function Checkout() {
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="m6 9 6 6 6-6"/></svg>
                     </div>
                   </div>
+                  {errors.district && <div style={{ color: '#ef4444', fontSize: '0.78rem', marginTop: '6px', fontWeight: 600 }}>{errors.district}</div>}
                 </div>
                 <div style={{ gridColumn: isMobile ? 'auto' : 'span 2' }}>
                   <label style={labelStyle}>Order Notes (Optional)</label>

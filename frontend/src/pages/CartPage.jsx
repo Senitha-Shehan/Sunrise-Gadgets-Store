@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import usePageMetadata from '../hooks/usePageMetadata';
 
 const WA_NUMBER = '94716222203';
 
@@ -12,6 +13,12 @@ function CartPage() {
   const { cartItems, removeFromCart, updateQty, clearCart, cartTotal } = useCart();
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  usePageMetadata({
+    title: 'Shopping Cart — Sunrise Gadgets Store',
+    description: 'Review your selected gadgets, update quantities, and proceed to checkout.',
+    url: 'https://sunrisegadgetsstore.com/cart'
+  });
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);

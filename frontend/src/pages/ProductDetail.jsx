@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useCart } from '../context/CartContext';
 import usePageMetadata from '../hooks/usePageMetadata';
+import ProductCard from '../components/ProductCard';
 
 const WA_NUMBER = '94716222203'; // Client WhatsApp number
 
@@ -11,6 +12,7 @@ function ProductDetail() {
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const [product, setProduct] = useState(null);
+  const [relatedProducts, setRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -20,14 +22,46 @@ function ProductDetail() {
   const [isTinyMobile, setIsTinyMobile] = useState(window.innerWidth < 420);
 
   const pageTitle = product
-    ? `${product.name} | Sunrise Gadgets Store`
+    ? `${product.name} — Buy Online | Sunrise Gadgets Store`
     : 'Sunrise Gadgets Store — Product Details';
 
   const pageDescription = product
-    ? `${product.description?.trim().slice(0, 140)}${product.description?.length > 140 ? '...' : ''}`
+    ? `${product.brand || 'Sunrise Gadgets'} ${product.name}: ${product.description?.trim().slice(0, 140)}${product.description?.length > 140 ? '...' : ''}`
     : 'Explore premium projectors, smart boards and electronics by Sunrise Gadgets Store with fast Sri Lanka delivery.';
 
-  usePageMetadata({ title: pageTitle, description: pageDescription });
+  const canonicalUrl = product
+    ? `https://sunrisegadgetsstore.com/products/${product._id}`
+    : 'https://sunrisegadgetsstore.com/';
+  const mainImage = product?.images?.[0]?.url || 'https://sunrisegadgetsstore.com/logo.jpg';
+
+  const productSchema = product ? {
+    '@context': 'https://schema.org/',
+    '@type': 'Product',
+    'name': product.name,
+    'image': product.images?.map(img => img.url) || [mainImage],
+    'description': product.description || `${product.name} by ${product.brand}`,
+    'sku': product._id,
+    'brand': {
+      '@type': 'Brand',
+      'name': product.brand || 'Sunrise Gadgets'
+    },
+    'offers': {
+      '@type': 'Offer',
+      'url': canonicalUrl,
+      'priceCurrency': 'LKR',
+      'price': product.price,
+      'availability': product.inStock !== false ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      'itemCondition': 'https://schema.org/NewCondition'
+    }
+  } : null;
+
+  usePageMetadata({ 
+    title: pageTitle, 
+    description: pageDescription,
+    image: mainImage,
+    url: canonicalUrl,
+    schema: productSchema
+  });
 
   useEffect(() => {
     const handleResize = () => {
@@ -51,8 +85,23 @@ function ProductDetail() {
   };
 
   useEffect(() => {
+    setLoading(true);
+    setSelectedImage(0);
     axios.get(`/products/${id}`)
-      .then(res => { setProduct(res.data); setLoading(false); })
+      .then(res => {
+        setProduct(res.data);
+        setLoading(false);
+        // Fetch related products in the same category
+        axios.get('/products')
+          .then(allRes => {
+            const allProds = Array.isArray(allRes.data) ? allRes.data : [];
+            const related = allProds
+              .filter(p => p._id !== id && (p.category === res.data.category || p.brand === res.data.brand))
+              .slice(0, 4);
+            setRelatedProducts(related);
+          })
+          .catch(() => setRelatedProducts([]));
+      })
       .catch(() => { setError('Failed to fetch product details'); setLoading(false); });
   }, [id]);
 
@@ -394,6 +443,27 @@ function ProductDetail() {
             </div>
           </div>
         </div>
+
+        {/* Related Products Showcase */}
+        {relatedProducts.length > 0 && (
+          <div style={{ marginTop: isMobile ? '28px' : '48px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: isMobile ? '16px' : '24px' }}>
+              <div>
+                <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: isMobile ? '1.15rem' : '1.4rem', color: 'var(--surface-900)', letterSpacing: '-0.02em', margin: 0 }}>
+                  Related Products
+                </h3>
+                <p style={{ fontSize: isMobile ? '0.78rem' : '0.85rem', color: '#64748b', margin: '3px 0 0', fontWeight: 500 }}>
+                  More recommended items in {product.category}
+                </p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+              {relatedProducts.map(relProd => (
+                <ProductCard key={relProd._id} product={relProd} compactMode={isMobile} />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
