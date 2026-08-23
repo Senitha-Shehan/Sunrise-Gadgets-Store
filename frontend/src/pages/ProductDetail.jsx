@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useCart } from '../context/CartContext';
 import usePageMetadata from '../hooks/usePageMetadata';
 import ProductCard from '../components/ProductCard';
+import { getOptimizedImageUrl } from '../utils/imageOptimizer';
 
 const WA_NUMBER = '94716222203'; // Client WhatsApp number
 
@@ -87,22 +88,25 @@ function ProductDetail() {
   useEffect(() => {
     setLoading(true);
     setSelectedImage(0);
-    axios.get(`/products/${id}`)
-      .then(res => {
-        setProduct(res.data);
+
+    Promise.all([
+      axios.get(`/products/${id}`),
+      axios.get('/products').catch(() => ({ data: [] }))
+    ])
+      .then(([prodRes, allRes]) => {
+        setProduct(prodRes.data);
+        const allProds = Array.isArray(allRes.data) ? allRes.data : [];
+        const related = allProds
+          .filter(p => p._id !== id && (p.category === prodRes.data.category || p.brand === prodRes.data.brand))
+          .slice(0, 4);
+        setRelatedProducts(related);
         setLoading(false);
-        // Fetch related products in the same category
-        axios.get('/products')
-          .then(allRes => {
-            const allProds = Array.isArray(allRes.data) ? allRes.data : [];
-            const related = allProds
-              .filter(p => p._id !== id && (p.category === res.data.category || p.brand === res.data.brand))
-              .slice(0, 4);
-            setRelatedProducts(related);
-          })
-          .catch(() => setRelatedProducts([]));
       })
-      .catch(() => { setError('Failed to fetch product details'); setLoading(false); });
+      .catch((err) => {
+        console.error('Failed to load product detail:', err);
+        setError('Failed to fetch product details');
+        setLoading(false);
+      });
   }, [id]);
 
   const formatPrice = (price) =>
@@ -188,8 +192,10 @@ function ProductDetail() {
                       {product.images.map((img, i) => (
                         <div key={i} style={{ width: `${100 / product.images.length}%`, height: '100%', flexShrink: 0 }}>
                           <img 
-                            src={`${img.url}`} 
+                            src={getOptimizedImageUrl(img.url, 1200)} 
                             alt={`${product.name} ${i + 1}`} 
+                            loading={i === 0 ? "eager" : "lazy"}
+                            decoding="async"
                             style={{ 
                               width: '100%', height: '100%', objectFit: 'contain',
                               transform: (i === selectedImage && zoomStyle.display === 'block') ? 'scale(2.5)' : 'scale(1)',
@@ -272,7 +278,7 @@ function ProductDetail() {
                           onMouseLeave={e => { if (i !== selectedImage) e.currentTarget.style.opacity = '0.65'; }}
                         >
                           <div style={{ width: '100%', height: '100%', borderRadius: '8px', overflow: 'hidden' }}>
-                            <img src={`${img.url}`} alt={`View ${i+1}`} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                            <img src={getOptimizedImageUrl(img.url, 150)} alt={`View ${i+1}`} loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                           </div>
                         </button>
                       ))}

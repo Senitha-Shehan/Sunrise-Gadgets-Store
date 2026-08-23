@@ -188,40 +188,36 @@ function ProductList() {
 
   // ===== DATA FETCHING =====
   useEffect(() => {
-    // Fetch products from backend
-    axios.get('/products')
-      .then(res => {
-        const products = Array.isArray(res.data) ? res.data : [];
-        setProducts(products);
-        setFilteredProducts(products);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error('Failed to fetch products:', err);
-        setError('Failed to fetch products');
-        setProducts([]);
-        setFilteredProducts([]);
-        setLoading(false);
-      });
-      
-    // Fetch categories from backend
-    axios.get('/categories')
-      .then(res => { 
-        const categoryData = Array.isArray(res.data) ? res.data : [];
+    // Parallel fetch products and categories to reduce network latency
+    Promise.all([
+      axios.get('/products'),
+      axios.get('/categories')
+    ])
+      .then(([productsRes, categoriesRes]) => {
+        const productsData = Array.isArray(productsRes.data) ? productsRes.data : [];
+        setProducts(productsData);
+        setFilteredProducts(productsData);
+
+        const categoryData = Array.isArray(categoriesRes.data) ? categoriesRes.data : [];
         const categoryNames = categoryData.map(cat => cat.name || cat);
         setCategories(categoryNames);
-        
-        // Initialize all categories as expanded by default
+
         const expandedState = categoryNames.reduce((acc, cat) => {
           acc[cat] = true;
           return acc;
         }, {});
-        expandedState['Hot Deals'] = true; // Also initialize Hot Deals
+        expandedState['Hot Deals'] = true;
         setExpandedCategories(expandedState);
+
+        setLoading(false);
       })
-      .catch(err => {
-        console.error('Failed to load categories:', err);
+      .catch((err) => {
+        console.error('Failed to load storefront data:', err);
+        setError('Failed to fetch products');
+        setProducts([]);
+        setFilteredProducts([]);
         setCategories([]);
+        setLoading(false);
       });
   }, []);
 

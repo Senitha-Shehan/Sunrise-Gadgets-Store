@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
+import { getOptimizedImageUrl } from '../utils/imageOptimizer';
 
 function ProductCard({ product, showImageSlideshow = false, highlightPricing = false, compactMode = false, badgeLabel }) {
   const [hovered, setHovered] = useState(false);
@@ -21,15 +22,16 @@ function ProductCard({ product, showImageSlideshow = false, highlightPricing = f
   }, [product._id]);
 
   useEffect(() => {
-    if (!showImageSlideshow) return undefined;
-    if (!product.images || product.images.length < 2) return undefined;
-
-    const interval = setInterval(() => {
-      setActiveImageIndex(prev => (prev + 1) % product.images.length);
-    }, 2500);
-
+    let interval;
+    if (showImageSlideshow && hovered && product.images && product.images.length > 1) {
+      interval = setInterval(() => {
+        setActiveImageIndex(prev => (prev + 1) % product.images.length);
+      }, 1200);
+    } else {
+      setActiveImageIndex(0);
+    }
     return () => clearInterval(interval);
-  }, [showImageSlideshow, product.images]);
+  }, [showImageSlideshow, hovered, product.images]);
 
   const formatPrice = (price) => {
     return `Rs. ${Number(price || 0).toLocaleString()}`;
@@ -37,9 +39,11 @@ function ProductCard({ product, showImageSlideshow = false, highlightPricing = f
 
   const isHotDealCard = highlightPricing && compactMode;
   const showButtonLabel = !compactMode && !isMobile;
+  const rawImageUrl = product.images?.[activeImageIndex]?.url || product.images?.[0]?.url;
+  const cardImageUrl = getOptimizedImageUrl(rawImageUrl, 600);
 
   return (
-    <div style={{ display: 'block', height: '100%', textDecoration: 'none' }}>
+    <div className="group font-sans" style={{ display: 'block', height: '100%', textDecoration: 'none' }}>
       <article
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
@@ -86,7 +90,7 @@ function ProductCard({ product, showImageSlideshow = false, highlightPricing = f
           {product.images && product.images.length > 0 && !imgError ? (
             <>
               <img
-                src={`${product.images[activeImageIndex]?.url || product.images[0].url}`}
+                src={cardImageUrl}
                 alt={product.name}
                 style={{
                   width: '100%',
@@ -97,6 +101,7 @@ function ProductCard({ product, showImageSlideshow = false, highlightPricing = f
                   transition: 'opacity 0.45s ease, transform 0.8s cubic-bezier(0.2, 1, 0.3, 1)',
                 }}
                 loading="lazy"
+                decoding="async"
                 onError={() => setImgError(true)}
                 key={showImageSlideshow ? `${product._id}-${activeImageIndex}` : product._id}
               />

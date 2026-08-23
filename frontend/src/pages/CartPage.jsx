@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import usePageMetadata from '../hooks/usePageMetadata';
+import { getOptimizedImageUrl } from '../utils/imageOptimizer';
 
 const WA_NUMBER = '94716222203';
 
@@ -136,7 +137,7 @@ function CartPage() {
                   }}
                 >
                   {item.images?.length > 0 ? (
-                    <img src={`${item.images[0].url}`} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src={getOptimizedImageUrl(item.images[0].url, 200)} alt={item.name} loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
                     <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>📦</div>
                   )}

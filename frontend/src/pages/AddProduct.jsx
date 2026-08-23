@@ -22,14 +22,14 @@ import { CSS } from '@dnd-kit/utilities';
 
 function FormSection({ title, icon, children }) {
   return (
-    <div className="bg-[#2D2D44] rounded-[24px] border border-white/10/60 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden mb-8 group">
-      <div className="px-8 py-5 border-b border-white/5 bg-[#1A1A2E]/30 flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-[#2D2D44] border border-white/10 flex items-center justify-center text-slate-400 shadow-sm group-hover:border-cyan-200 group-hover:text-cyan-500 transition-colors">
+    <div className="bg-[#2D2D44] rounded-[24px] border border-white/10/60 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden mb-6 sm:mb-8 group">
+      <div className="px-4 py-4 sm:px-8 sm:py-5 border-b border-white/5 bg-[#1A1A2E]/30 flex items-center gap-3">
+        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#2D2D44] border border-white/10 flex items-center justify-center text-slate-400 shadow-sm group-hover:border-cyan-200 group-hover:text-cyan-500 transition-colors shrink-0">
           {icon}
         </div>
-        <h3 className="text-base font-bold text-[#F5F5F5] tracking-tight">{title}</h3>
+        <h3 className="text-sm sm:text-base font-bold text-[#F5F5F5] tracking-tight">{title}</h3>
       </div>
-      <div className="p-8">
+      <div className="p-4 sm:p-8">
         {children}
       </div>
     </div>
@@ -116,8 +116,8 @@ function SortableImage({ item, onRemove, isFirst }) {
     transform: CSS.Transform.toString(transform),
     transition,
     position: 'relative',
-    width: '100px',
-    height: '100px',
+    width: '84px',
+    height: '84px',
     borderRadius: '16px',
     overflow: 'hidden',
     border: item.type === 'existing' ? '1px solid #e2e8f0' : '2px solid #0891b2',
@@ -299,10 +299,10 @@ function AddProduct({ editingProduct, onSuccess }) {
     : null;
 
   return (
-    <div className="bg-[#1A1A2E]/50 p-6 lg:p-10">
+    <div className="bg-[#1A1A2E]/50 p-3 sm:p-6 lg:p-10">
       <form onSubmit={handleSubmit} className="max-w-[1200px] mx-auto">
         
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-start">
           
           {/* Left Column: Form Sections */}
           <div className="lg:col-span-7 xl:col-span-8 space-y-2">
@@ -377,18 +377,18 @@ function AddProduct({ editingProduct, onSuccess }) {
             </FormSection>
 
             <FormSection title={`Visual Assets (${unifiedImages.length}/15)`} icon={<svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>}>
-              <div className="p-6 bg-[#1A1A2E]/50 rounded-3xl border-2 border-dashed border-white/10">
+              <div className="p-4 sm:p-6 bg-[#1A1A2E]/50 rounded-3xl border-2 border-dashed border-white/10">
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                  <div className="flex flex-wrap gap-5">
+                  <div className="flex flex-wrap gap-3 sm:gap-5">
                     <SortableContext items={unifiedImages.map(i => i.id)} strategy={rectSortingStrategy}>
                       {unifiedImages.map((item, index) => <SortableImage key={item.id} item={item} onRemove={removeImage} isFirst={index === 0} />)}
                     </SortableContext>
                     {unifiedImages.length < 15 && (
                       <div className="relative group">
                         <input type="file" multiple accept="image/*" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
-                        <div className="w-[100px] h-[100px] rounded-2xl border-2 border-dashed border-slate-300 bg-[#2D2D44] flex flex-col items-center justify-center gap-2 group-hover:border-cyan-400 group-hover:bg-cyan-50 transition-all">
-                          <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" className="text-slate-400 group-hover:text-cyan-500"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" /></svg>
-                          <span className="text-[10px] font-black text-slate-400 group-hover:text-cyan-500 uppercase tracking-tighter">Upload ({unifiedImages.length}/15)</span>
+                        <div className="w-[84px] h-[84px] rounded-2xl border-2 border-dashed border-slate-300 bg-[#2D2D44] flex flex-col items-center justify-center gap-1 group-hover:border-cyan-400 group-hover:bg-cyan-50 transition-all">
+                          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" className="text-slate-400 group-hover:text-cyan-500"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" /></svg>
+                          <span className="text-[9px] font-black text-slate-400 group-hover:text-cyan-500 uppercase tracking-tighter">Upload ({unifiedImages.length}/15)</span>
                         </div>
                       </div>
                     )}
@@ -401,14 +401,14 @@ function AddProduct({ editingProduct, onSuccess }) {
             <FormSection title="Technical Specs" icon={<svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>}>
               <div className="space-y-6">
                 {specs.map((spec, index) => (
-                  <div key={index} className="flex gap-4 group animate-fade-in items-end">
+                  <div key={index} className="flex flex-col sm:flex-row gap-3 sm:gap-4 group animate-fade-in items-stretch sm:items-end">
                     <FieldGroup label="Key" className="flex-1">
                       <input type="text" value={spec.key} className={inputClasses} onChange={e => { const n=[...specs]; n[index].key=e.target.value; setSpecs(n); }} />
                     </FieldGroup>
                     <FieldGroup label="Value" className="flex-[2]">
                       <input type="text" value={spec.value} className={inputClasses} onChange={e => { const n=[...specs]; n[index].value=e.target.value; setSpecs(n); }} />
                     </FieldGroup>
-                    <button type="button" onClick={() => setSpecs(specs.filter((_, i) => i !== index))} className="mb-1 w-12 h-12 flex items-center justify-center rounded-2xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all shrink-0">
+                    <button type="button" onClick={() => setSpecs(specs.filter((_, i) => i !== index))} className="self-end sm:self-auto mb-0 sm:mb-1 w-full sm:w-12 h-11 sm:h-12 flex items-center justify-center rounded-2xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all shrink-0">
                       <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                     </button>
                   </div>

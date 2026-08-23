@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import AddProduct from './AddProduct';
+import { getOptimizedImageUrl } from '../utils/imageOptimizer';
 
 const ORDER_STATUS_OPTIONS = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
 
@@ -236,24 +237,24 @@ function AdminDashboard() {
             ))}
           </nav>
 
-          <div className="mt-auto pt-6 border-t border-slate-100 hidden lg:block">
-            <button onClick={() => navigate('/')} className="w-full flex items-center gap-3 px-4 py-3 text-slate-500 font-bold text-sm hover:text-slate-900 transition-all">
-              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-              View Storefront
+          <div className="mt-auto pt-6 border-t border-slate-100 flex lg:flex-col gap-2">
+            <button onClick={() => navigate('/')} className="flex-1 lg:w-full flex items-center justify-center lg:justify-start gap-2 px-3 lg:px-4 py-2.5 lg:py-3 text-slate-500 font-bold text-xs lg:text-sm hover:text-slate-900 bg-slate-50 lg:bg-transparent rounded-xl lg:rounded-none transition-all">
+              <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+              <span>View Storefront</span>
             </button>
-            <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-red-400 font-bold text-sm hover:text-red-600 transition-all">
-              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-              Sign Out
+            <button onClick={handleLogout} className="flex-1 lg:w-full flex items-center justify-center lg:justify-start gap-2 px-3 lg:px-4 py-2.5 lg:py-3 text-red-500 font-bold text-xs lg:text-sm hover:text-red-700 bg-red-50 lg:bg-transparent rounded-xl lg:rounded-none transition-all">
+              <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+              <span>Sign Out</span>
             </button>
           </div>
         </div>
       </aside>
 
       <main className="flex-1 p-4 lg:p-10 max-w-[1440px] mx-auto w-full">
-        <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+        <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 lg:mb-12">
           <div>
-            <h2 className="text-3xl font-black text-slate-900 tracking-tighter capitalize">{activeTab}</h2>
-            <p className="text-slate-400 font-medium text-sm mt-1">Everything you need to run your business.</p>
+            <h2 className="text-2xl lg:text-3xl font-black text-slate-900 tracking-tighter capitalize">{activeTab}</h2>
+            <p className="text-slate-400 font-medium text-xs lg:text-sm mt-1">Everything you need to run your business.</p>
           </div>
 
           <div className="flex items-center gap-3">
@@ -268,8 +269,8 @@ function AdminDashboard() {
               <svg className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
             </div>
             {activeTab === 'inventory' && (
-              <button onClick={() => { setEditingProduct(null); setShowAddForm(true); }} className="px-6 py-3.5 bg-slate-900 text-white rounded-[20px] font-black text-sm uppercase tracking-widest hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 shrink-0">
-                New Product
+              <button onClick={() => { setEditingProduct(null); setShowAddForm(true); }} className="px-4 lg:px-6 py-3.5 bg-slate-900 text-white rounded-[20px] font-black text-xs lg:text-sm uppercase tracking-widest hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 shrink-0">
+                + New
               </button>
             )}
           </div>
@@ -283,33 +284,33 @@ function AdminDashboard() {
 
         {activeTab === 'orders' && (
           <>
-            <div className="mb-8 grid gap-4 md:grid-cols-3">
+            <div className="mb-8 grid gap-4 grid-cols-2 md:grid-cols-3">
               {[
                 { label: 'All Orders', value: stats.orders, tone: 'bg-white' },
                 { label: 'Pending Review', value: stats.pending, tone: 'bg-brand-50' },
                 { label: 'Processing', value: stats.processing, tone: 'bg-blue-50' },
               ].map(card => (
-                <div key={card.label} className={`rounded-[24px] border border-slate-200 p-5 shadow-sm ${card.tone}`}>
+                <div key={card.label} className={`rounded-[24px] border border-slate-200 p-4 lg:p-5 shadow-sm ${card.tone}`}>
                   <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">{card.label}</div>
-                  <div className="mt-2 text-2xl font-black tracking-tight text-slate-900">{card.value}</div>
+                  <div className="mt-1 lg:mt-2 text-xl lg:text-2xl font-black tracking-tight text-slate-900">{card.value}</div>
                 </div>
               ))}
             </div>
 
-            <div className="mb-8 flex flex-wrap gap-2">
+            <div className="mb-8 flex flex-wrap gap-2 items-center">
               {['All', ...ORDER_STATUS_OPTIONS].map(status => (
                 <button
                   key={status}
                   type="button"
                   onClick={() => setStatusFilter(status)}
-                  className={`rounded-full px-4 py-2 text-xs font-black uppercase tracking-widest transition-all border ${statusFilter === status ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:text-slate-900'}`}
+                  className={`rounded-full px-3.5 py-1.5 text-[11px] font-black uppercase tracking-widest transition-all border ${statusFilter === status ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:text-slate-900'}`}
                 >
                   {status}
                 </button>
               ))}
               <button
                 onClick={clearOrders}
-                className="ml-auto rounded-full px-4 py-2 text-xs font-black uppercase tracking-widest transition-all border bg-red-50 text-red-600 border-red-100 hover:bg-red-100 hover:text-red-700"
+                className="ml-auto rounded-full px-3.5 py-1.5 text-[11px] font-black uppercase tracking-widest transition-all border bg-red-50 text-red-600 border-red-100 hover:bg-red-100 hover:text-red-700"
                 title="Delete all orders"
               >
                 Clear Orders
@@ -322,7 +323,8 @@ function AdminDashboard() {
           {activeTab === 'inventory' ? (
             <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
               <div className="xl:col-span-3 space-y-6">
-                <div className="bg-white rounded-[32px] border border-slate-200 overflow-hidden shadow-sm">
+                {/* Desktop Table View */}
+                <div className="bg-white rounded-[32px] border border-slate-200 overflow-hidden shadow-sm hidden md:block">
                   <div className="overflow-x-auto">
                     <table className="w-full text-left min-w-[700px]">
                       <thead className="bg-slate-50/50">
@@ -338,7 +340,7 @@ function AdminDashboard() {
                           <tr key={product._id} className="hover:bg-slate-50/30 transition-colors">
                             <td className="px-8 py-6">
                               <div className="flex items-center gap-5">
-                                <img src={product.images?.[0]?.url} alt={product.name} className="w-14 h-14 rounded-2xl object-cover bg-slate-100 border border-slate-100 shadow-sm" />
+                                <img src={getOptimizedImageUrl(product.images?.[0]?.url, 150)} alt={product.name} loading="lazy" decoding="async" className="w-14 h-14 rounded-2xl object-cover bg-slate-100 border border-slate-100 shadow-sm" />
                                 <div>
                                   <div className="font-bold text-slate-900 text-base">{product.name}</div>
                                   <div className="text-xs font-bold text-brand-500 uppercase tracking-tight">{product.brand} • {product.category}</div>
@@ -374,10 +376,48 @@ function AdminDashboard() {
                     </table>
                   </div>
                 </div>
+
+                {/* Mobile Inventory Cards View */}
+                <div className="space-y-4 md:hidden">
+                  {filteredProducts.length > 0 ? filteredProducts.map(product => (
+                    <div key={product._id} className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                      <div className="flex items-center gap-3">
+                        <img src={getOptimizedImageUrl(product.images?.[0]?.url, 150)} alt={product.name} loading="lazy" decoding="async" className="w-14 h-14 rounded-xl object-cover bg-slate-100 border border-slate-100 shrink-0" />
+                        <div className="min-w-0 flex-1">
+                          <div className="font-bold text-slate-900 text-sm truncate">{product.name}</div>
+                          <div className="text-[10px] font-bold text-brand-500 uppercase tracking-tight">{product.brand} • {product.category}</div>
+                        </div>
+                        <span className={`px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter shrink-0 ${product.inStock ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}`}>
+                          {product.inStock ? 'Active' : 'Out of Stock'}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                        <div>
+                          <div className="font-black text-slate-900 text-sm">{formatCurrency(product.price)}</div>
+                          {product.originalPrice > product.price && <div className="text-[10px] text-slate-400 line-through">{formatCurrency(product.originalPrice)}</div>}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button onClick={() => { setEditingProduct(product); setShowAddForm(true); }} className="px-3 py-2 bg-slate-100 rounded-xl text-slate-700 text-xs font-bold flex items-center gap-1">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                            Edit
+                          </button>
+                          <button onClick={() => handleDelete(product._id)} className="px-3 py-2 bg-red-50 text-red-600 rounded-xl text-xs font-bold flex items-center gap-1">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )) : (
+                    <div className="bg-white p-8 rounded-2xl border border-slate-200 text-center text-slate-500 text-sm">
+                      No products match your search.
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="space-y-6">
-                <div className="bg-white p-8 rounded-[32px] border border-slate-200 shadow-sm">
+                <div className="bg-white p-6 lg:p-8 rounded-[32px] border border-slate-200 shadow-sm">
                   <h3 className="text-xl font-black text-slate-900 tracking-tight mb-6">Collections</h3>
                   <div className="space-y-3 mb-8">
                     {categories.map(category => (
@@ -405,71 +445,127 @@ function AdminDashboard() {
               </div>
             </div>
           ) : (
-            <div className="bg-white rounded-[32px] border border-slate-200 shadow-sm overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left min-w-[1100px]">
-                  <thead className="bg-slate-50/50">
-                    <tr>
-                      <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Order Details</th>
-                      <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Customer Contact</th>
-                      <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Shipment Status</th>
-                      <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Fulfillment</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-50">
-                    {filteredOrders.length > 0 ? filteredOrders.map(order => (
-                      <tr key={order._id} className="hover:bg-slate-50/30 transition-colors group">
-                        <td className="px-8 py-6">
-                          <div className="font-mono text-xs text-slate-400 mb-1">{formatOrderId(order._id)}</div>
-                          <div className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">{new Date(order.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</div>
-                        </td>
-                        <td className="px-8 py-6">
-                          <div className="font-bold text-slate-900 text-base">{order.customer?.name}</div>
-                          <a
-                            href={`https://wa.me/${String(order.customer?.phone || '').replace(/[^0-9]/g, '')}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 mt-2 px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-xl text-[10px] font-black uppercase tracking-tighter hover:bg-emerald-100 transition-all shadow-sm"
-                          >
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" /></svg>
-                            Connect to WhatsApp
-                          </a>
-                        </td>
-                        <td className="px-8 py-6">
-                          <select
-                            value={order.status}
-                            disabled={updatingOrderId === order._id}
-                            onChange={(e) => updateOrderStatus(order._id, e.target.value)}
-                            className={`text-[10px] font-black uppercase px-4 py-2 rounded-xl appearance-none cursor-pointer outline-none border transition-all disabled:opacity-60 ${ORDER_STATUS_META[order.status]?.className || 'bg-slate-50 text-slate-600 border-slate-100'}`}
-                          >
-                            {ORDER_STATUS_OPTIONS.map(status => <option key={status} value={status}>{status}</option>)}
-                          </select>
-                        </td>
-                        <td className="px-8 py-6 text-center">
-                          <div className="flex items-center justify-center gap-2">
-                            <button onClick={() => setSelectedOrder(order)} className="px-4 py-2 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-slate-800 transition-all shadow-lg shadow-slate-200">
-                              Details
-                            </button>
-                            <button
-                              onClick={() => deleteOrder(order._id)}
-                              disabled={deletingOrderId === order._id}
-                              className="px-3 py-2 bg-red-50 text-red-600 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-red-100 hover:text-red-700 transition-all disabled:opacity-50"
-                              title="Delete order"
-                            >
-                              {deletingOrderId === order._id ? 'Deleting...' : 'Delete'}
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    )) : (
+            <div>
+              {/* Desktop Orders Table View */}
+              <div className="bg-white rounded-[32px] border border-slate-200 shadow-sm overflow-hidden hidden md:block">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left min-w-[1100px]">
+                    <thead className="bg-slate-50/50">
                       <tr>
-                        <td colSpan="4" className="px-8 py-16 text-center text-slate-500">
-                          No orders match the current search or status filter.
-                        </td>
+                        <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Order Details</th>
+                        <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Customer Contact</th>
+                        <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Shipment Status</th>
+                        <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Fulfillment</th>
                       </tr>
-                    )}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-slate-50">
+                      {filteredOrders.length > 0 ? filteredOrders.map(order => (
+                        <tr key={order._id} className="hover:bg-slate-50/30 transition-colors group">
+                          <td className="px-8 py-6">
+                            <div className="font-mono text-xs text-slate-400 mb-1">{formatOrderId(order._id)}</div>
+                            <div className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">{new Date(order.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+                          </td>
+                          <td className="px-8 py-6">
+                            <div className="font-bold text-slate-900 text-base">{order.customer?.name}</div>
+                            <a
+                              href={`https://wa.me/${String(order.customer?.phone || '').replace(/[^0-9]/g, '')}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 mt-2 px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-xl text-[10px] font-black uppercase tracking-tighter hover:bg-emerald-100 transition-all shadow-sm"
+                            >
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" /></svg>
+                              Connect to WhatsApp
+                            </a>
+                          </td>
+                          <td className="px-8 py-6">
+                            <select
+                              value={order.status}
+                              disabled={updatingOrderId === order._id}
+                              onChange={(e) => updateOrderStatus(order._id, e.target.value)}
+                              className={`text-[10px] font-black uppercase px-4 py-2 rounded-xl appearance-none cursor-pointer outline-none border transition-all disabled:opacity-60 ${ORDER_STATUS_META[order.status]?.className || 'bg-slate-50 text-slate-600 border-slate-100'}`}
+                            >
+                              {ORDER_STATUS_OPTIONS.map(status => <option key={status} value={status}>{status}</option>)}
+                            </select>
+                          </td>
+                          <td className="px-8 py-6 text-center">
+                            <div className="flex items-center justify-center gap-2">
+                              <button onClick={() => setSelectedOrder(order)} className="px-4 py-2 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-slate-800 transition-all shadow-lg shadow-slate-200">
+                                Details
+                              </button>
+                              <button
+                                onClick={() => deleteOrder(order._id)}
+                                disabled={deletingOrderId === order._id}
+                                className="px-3 py-2 bg-red-50 text-red-600 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-red-100 hover:text-red-700 transition-all disabled:opacity-50"
+                                title="Delete order"
+                              >
+                                {deletingOrderId === order._id ? 'Deleting...' : 'Delete'}
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      )) : (
+                        <tr>
+                          <td colSpan="4" className="px-8 py-16 text-center text-slate-500">
+                            No orders match the current search or status filter.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Mobile Order Cards View */}
+              <div className="space-y-4 md:hidden">
+                {filteredOrders.length > 0 ? filteredOrders.map(order => (
+                  <div key={order._id} className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
+                      <div>
+                        <div className="font-mono text-xs font-bold text-slate-900">{formatOrderId(order._id)}</div>
+                        <div className="text-[10px] text-slate-400 font-medium">{new Date(order.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+                      </div>
+                      <select
+                        value={order.status}
+                        disabled={updatingOrderId === order._id}
+                        onChange={(e) => updateOrderStatus(order._id, e.target.value)}
+                        className={`text-[10px] font-black uppercase px-3 py-1.5 rounded-xl appearance-none cursor-pointer outline-none border transition-all disabled:opacity-60 ${ORDER_STATUS_META[order.status]?.className || 'bg-slate-50 text-slate-600 border-slate-100'}`}
+                      >
+                        {ORDER_STATUS_OPTIONS.map(status => <option key={status} value={status}>{status}</option>)}
+                      </select>
+                    </div>
+
+                    <div className="space-y-1">
+                      <div className="font-bold text-slate-900 text-base">{order.customer?.name}</div>
+                      <div className="text-xs text-slate-500">{order.customer?.district} • {formatCurrency(order.summary?.total)}</div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100">
+                      <a
+                        href={`https://wa.me/${String(order.customer?.phone || '').replace(/[^0-9]/g, '')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 px-3 py-2 bg-emerald-50 text-emerald-600 rounded-xl text-xs font-bold hover:bg-emerald-100 transition-all"
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" /></svg>
+                        WhatsApp
+                      </a>
+                      <button onClick={() => setSelectedOrder(order)} className="px-3 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold">
+                        Details
+                      </button>
+                      <button
+                        onClick={() => deleteOrder(order._id)}
+                        disabled={deletingOrderId === order._id}
+                        className="px-3 py-2 bg-red-50 text-red-600 rounded-xl text-xs font-bold ml-auto disabled:opacity-50"
+                      >
+                        {deletingOrderId === order._id ? 'Deleting...' : 'Delete'}
+                      </button>
+                    </div>
+                  </div>
+                )) : (
+                  <div className="bg-white p-8 rounded-2xl border border-slate-200 text-center text-slate-500 text-sm">
+                    No orders match the current search or status filter.
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -614,14 +710,14 @@ function AdminDashboard() {
       )}
 
       {showAddForm && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 lg:p-10 animate-in fade-in duration-300">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 lg:p-10 animate-in fade-in duration-300">
           <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-md" onClick={() => setShowAddForm(false)} />
-          <div className="relative w-full max-w-5xl bg-white rounded-[40px] shadow-2xl overflow-hidden flex flex-col max-h-full">
-            <div className="p-8 lg:p-10 flex justify-between items-center bg-white shrink-0 border-b border-slate-100">
-              <h2 className="text-3xl font-black text-slate-900 tracking-tighter">
+          <div className="relative w-full max-w-5xl bg-white rounded-3xl lg:rounded-[40px] shadow-2xl overflow-hidden flex flex-col max-h-[95vh] sm:max-h-full">
+            <div className="p-4 sm:p-6 lg:p-10 flex justify-between items-center bg-white shrink-0 border-b border-slate-100">
+              <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 tracking-tighter">
                 {editingProduct ? 'Update Inventory' : 'Add New Product'}
               </h2>
-              <button onClick={() => setShowAddForm(false)} className="w-12 h-12 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all">
+              <button onClick={() => setShowAddForm(false)} className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all">
                 <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
             </div>
