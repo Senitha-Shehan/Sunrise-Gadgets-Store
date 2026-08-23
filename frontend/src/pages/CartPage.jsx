@@ -5,9 +5,7 @@ import { useCart } from '../context/CartContext';
 const WA_NUMBER = '94716222203';
 
 function formatPrice(price) {
-  return new Intl.NumberFormat('si-LK', {
-    style: 'currency', currency: 'LKR', minimumFractionDigits: 0,
-  }).format(price);
+  return `Rs. ${Number(price || 0).toLocaleString()}`;
 }
 
 function CartPage() {

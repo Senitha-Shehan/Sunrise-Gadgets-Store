@@ -13,7 +13,7 @@ const ORDER_STATUS_META = {
   Cancelled: { label: 'Cancelled', className: 'bg-red-50 text-red-600 border-red-100', step: -1 },
 };
 
-const formatCurrency = (value) => `LKR ${Number(value || 0).toLocaleString()}`;
+const formatCurrency = (value) => `Rs. ${Number(value || 0).toLocaleString()}`;
 const formatOrderId = (id) => `#${String(id || '').slice(-6).toUpperCase()}`;
 
 function AdminDashboard() {
@@ -32,15 +32,8 @@ function AdminDashboard() {
   const [notice, setNotice] = useState('');
   const [newCatName, setNewCatName] = useState('');
   const [isAddingCat, setIsAddingCat] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const navigate = useNavigate();
   const location = useLocation();
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 1024);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   useEffect(() => {
     if (!localStorage.getItem('adminLoggedIn')) {
@@ -184,7 +177,7 @@ function AdminDashboard() {
       setNotice(`Cleared ${res.data.deletedCount || 0} orders.`);
       window.setTimeout(() => setNotice(''), 2500);
       fetchData();
-    } catch (err) {
+    } catch {
       alert('Failed to clear orders');
     } finally {
       setLoading(false);
@@ -199,7 +192,7 @@ function AdminDashboard() {
       setNotice(`Order ${formatOrderId(id)} deleted.`);
       window.setTimeout(() => setNotice(''), 2500);
       fetchData();
-    } catch (err) {
+    } catch {
       alert('Failed to delete order');
     } finally {
       setDeletingOrderId(null);

@@ -166,7 +166,6 @@ function AddProduct({ editingProduct, onSuccess }) {
   const [categoriesList, setCategoriesList] = useState([]);
 
   const inputClasses = "w-full px-5 py-3.5 bg-[#1A1A2E] border border-white/10 rounded-2xl text-[#F5F5F5] text-sm focus:outline-none focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 transition-all placeholder:text-slate-400 font-medium";
-  const selectClasses = "w-full px-5 py-3.5 bg-[#1A1A2E] border border-white/10 rounded-2xl text-[#F5F5F5] text-sm focus:outline-none focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 transition-all appearance-none cursor-pointer font-medium";
 
   useEffect(() => {
     axios.get('/categories').then(res => setCategoriesList(res.data)).catch(err => console.error('Failed to load categories', err));
@@ -331,15 +330,15 @@ function AddProduct({ editingProduct, onSuccess }) {
 
             <FormSection title="Pricing & Availability" icon={<svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <FieldGroup label="Current Price (LKR)">
+                <FieldGroup label="Current Price (Rs.)">
                   <div className="relative group">
-                    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs uppercase">LKR</span>
+                    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs uppercase">Rs.</span>
                     <input type="number" value={price} onChange={e => setPrice(e.target.value)} required min="0" step="0.01" placeholder="0.00" className={`${inputClasses} pl-14 font-black text-cyan-600 text-lg`} />
                   </div>
                 </FieldGroup>
                 <FieldGroup label="Original Price (MSRP)">
                   <div className="relative group">
-                    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs uppercase">LKR</span>
+                    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs uppercase">Rs.</span>
                     <input type="number" value={originalPrice} onChange={e => setOriginalPrice(e.target.value)} min="0" step="0.01" placeholder="0.00" className={`${inputClasses} pl-14`} />
                   </div>
                 <FieldGroup label="Stock Quantity">
@@ -456,8 +455,8 @@ function AddProduct({ editingProduct, onSuccess }) {
                   <h4 className="text-xl font-bold text-[#F5F5F5] leading-tight">{name || 'Your Product Title'}</h4>
                 </div>
                 <div className="flex items-baseline gap-3 pt-2">
-                  <div className="text-2xl font-black text-[#F5F5F5]">LKR {parseInt(price || 0).toLocaleString()}</div>
-                  {originalPrice && <div className="text-sm text-slate-400 line-through">LKR {parseInt(originalPrice).toLocaleString()}</div>}
+                  <div className="text-2xl font-black text-[#F5F5F5]">Rs. {parseInt(price || 0).toLocaleString()}</div>
+                  {originalPrice && <div className="text-sm text-slate-400 line-through">Rs. {parseInt(originalPrice).toLocaleString()}</div>}
                 </div>
                 <button type="button" className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-[0.15em] opacity-80 cursor-default">View Details</button>
               </div>

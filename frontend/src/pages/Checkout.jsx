@@ -92,7 +92,7 @@ function Checkout() {
                         `*District:* ${formData.district}\n` +
                         `*Address:* ${formData.address}\n\n` +
                         `*Items:*\n${orderItemsList}\n\n` +
-                        `*Total: LKR ${total.toLocaleString()}*\n\n` +
+                        `*Total: Rs. ${total.toLocaleString()}*\n\n` +
                         `*Notes:* ${formData.notes || 'N/A'}\n\n` +
                         `_Order placed via Sunrise Gadgets Store_`;
       
@@ -195,11 +195,11 @@ function Checkout() {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', fontSize: '0.88rem', color: 'var(--surface-600)' }}>
                 <span>Subtotal</span>
-                <strong style={{ color: 'var(--surface-900)' }}>LKR {orderSubtotal.toLocaleString()}</strong>
+                <strong style={{ color: 'var(--surface-900)' }}>Rs. {orderSubtotal.toLocaleString()}</strong>
               </div>
               <div style={{ borderTop: '1px solid var(--surface-200)', paddingTop: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                 <span style={{ fontWeight: 800, color: 'var(--surface-900)' }}>Total</span>
-                <strong style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', color: 'var(--brand-600)' }}>LKR {orderTotal.toLocaleString()}</strong>
+                <strong style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', color: 'var(--brand-600)' }}>Rs. {orderTotal.toLocaleString()}</strong>
               </div>
             </aside>
           </div>
@@ -325,7 +325,7 @@ function Checkout() {
                       <div style={{ fontSize: '0.75rem', color: 'var(--surface-500)', fontWeight: 600 }}>Qty: {item.qty}</div>
                     </div>
                     <div style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--surface-900)' }}>
-                      LKR {(item.price * item.qty).toLocaleString()}
+                      Rs. {(item.price * item.qty).toLocaleString()}
                     </div>
                   </div>
                 ))}
@@ -334,13 +334,13 @@ function Checkout() {
               <div style={{ borderTop: '1px solid var(--surface-100)', paddingTop: '24px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', color: 'var(--surface-500)', fontWeight: 600 }}>
                   <span>Subtotal</span>
-                  <span style={{ color: 'var(--surface-900)' }}>LKR {subtotal.toLocaleString()}</span>
+                  <span style={{ color: 'var(--surface-900)' }}>Rs. {subtotal.toLocaleString()}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '8px' }}>
                   <span style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--surface-900)' }}>Total</span>
                   <div style={{ textAlign: 'right' }}>
                     <div style={{ fontSize: '1.75rem', fontWeight: 900, color: 'var(--brand-500)', letterSpacing: '-0.02em', lineHeight: 1 }}>
-                      LKR {total.toLocaleString()}
+                      Rs. {total.toLocaleString()}
                     </div>
                   </div>
                 </div>

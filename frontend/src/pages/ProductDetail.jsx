@@ -57,7 +57,7 @@ function ProductDetail() {
   }, [id]);
 
   const formatPrice = (price) =>
-    new Intl.NumberFormat('si-LK', { style: 'currency', currency: 'LKR', minimumFractionDigits: 2 }).format(price);
+    `Rs. ${Number(price || 0).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
 
   const spinner = (
     <div style={{ width: '44px', height: '44px', border: '3px solid rgba(6,182,212,0.2)', borderTop: '3px solid var(--brand-500)', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 14px' }} />
@@ -125,26 +125,87 @@ function ProductDetail() {
                     onMouseLeave={handleMouseLeave}
                     onMouseEnter={handleMouseMove}
                   >
-                    <img 
-                      src={`${product.images[selectedImage].url}`} 
-                      alt={product.name} 
-                      style={{ 
-                        width: '100%', height: '100%', objectFit: 'contain',
-                        transform: zoomStyle.display === 'block' ? 'scale(2.5)' : 'scale(1)',
-                        transformOrigin: `${zoomStyle.x} ${zoomStyle.y}`,
-                        transition: zoomStyle.display === 'block' ? 'none' : 'transform 0.3s ease-out',
-                        pointerEvents: 'none'
-                      }} 
-                    />
+                    {/* Horizontal Smooth Slide Track */}
+                    <div
+                      style={{
+                        display: 'flex',
+                        width: `${product.images.length * 100}%`,
+                        height: '100%',
+                        transform: `translateX(-${(selectedImage * 100) / product.images.length}%)`,
+                        transition: zoomStyle.display === 'block' ? 'none' : 'transform 0.65s cubic-bezier(0.25, 1, 0.5, 1)',
+                        willChange: 'transform',
+                      }}
+                    >
+                      {product.images.map((img, i) => (
+                        <div key={i} style={{ width: `${100 / product.images.length}%`, height: '100%', flexShrink: 0 }}>
+                          <img 
+                            src={`${img.url}`} 
+                            alt={`${product.name} ${i + 1}`} 
+                            style={{ 
+                              width: '100%', height: '100%', objectFit: 'contain',
+                              transform: (i === selectedImage && zoomStyle.display === 'block') ? 'scale(2.5)' : 'scale(1)',
+                              transformOrigin: `${zoomStyle.x} ${zoomStyle.y}`,
+                              transition: zoomStyle.display === 'block' ? 'none' : 'transform 0.3s ease-out',
+                              pointerEvents: 'none'
+                            }} 
+                          />
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Image Counter Badge */}
                     {product.images.length > 1 && (
                       <div style={{
                         position: 'absolute', top: '12px', right: '12px',
                         background: 'rgba(15,23,42,0.75)', backdropFilter: 'blur(8px)',
                         color: 'white', fontSize: '0.72rem', fontWeight: 800,
-                        padding: '4px 10px', borderRadius: '999px', letterSpacing: '0.05em'
+                        padding: '4px 10px', borderRadius: '999px', letterSpacing: '0.05em',
+                        pointerEvents: 'none', zIndex: 10
                       }}>
                         {selectedImage + 1} / {product.images.length}
                       </div>
+                    )}
+
+                    {/* Prev / Next Controls for Multi-Image */}
+                    {product.images.length > 1 && (
+                      <>
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); setSelectedImage(prev => (prev > 0 ? prev - 1 : product.images.length - 1)); }}
+                          aria-label="Previous Image"
+                          style={{
+                            position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)',
+                            width: '36px', height: '36px', borderRadius: '50%',
+                            background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(4px)',
+                            border: '1px solid rgba(0,0,0,0.08)', color: '#0F172A',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            cursor: 'pointer', boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+                            transition: 'all 0.2s', zIndex: 10, minHeight: 'auto'
+                          }}
+                          onMouseEnter={e => { e.currentTarget.style.background = 'white'; e.currentTarget.style.transform = 'translateY(-50%) scale(1.08)'; }}
+                          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.85)'; e.currentTarget.style.transform = 'translateY(-50%) scale(1)'; }}
+                        >
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); setSelectedImage(prev => (prev < product.images.length - 1 ? prev + 1 : 0)); }}
+                          aria-label="Next Image"
+                          style={{
+                            position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)',
+                            width: '36px', height: '36px', borderRadius: '50%',
+                            background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(4px)',
+                            border: '1px solid rgba(0,0,0,0.08)', color: '#0F172A',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            cursor: 'pointer', boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+                            transition: 'all 0.2s', zIndex: 10, minHeight: 'auto'
+                          }}
+                          onMouseEnter={e => { e.currentTarget.style.background = 'white'; e.currentTarget.style.transform = 'translateY(-50%) scale(1.08)'; }}
+                          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.85)'; e.currentTarget.style.transform = 'translateY(-50%) scale(1)'; }}
+                        >
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                        </button>
+                      </>
                     )}
                   </div>
                   {product.images.length > 1 && (

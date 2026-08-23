@@ -32,11 +32,7 @@ function ProductCard({ product, showImageSlideshow = false, highlightPricing = f
   }, [showImageSlideshow, product.images]);
 
   const formatPrice = (price) => {
-    return new Intl.NumberFormat('si-LK', {
-      style: 'currency',
-      currency: 'LKR',
-      minimumFractionDigits: 0,
-    }).format(price);
+    return `Rs. ${Number(price || 0).toLocaleString()}`;
   };
 
   const isHotDealCard = highlightPricing && compactMode;

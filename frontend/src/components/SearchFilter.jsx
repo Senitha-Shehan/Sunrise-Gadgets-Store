@@ -157,7 +157,7 @@ function SearchFilter({
           {/* Price Range */}
           <div>
             <label style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '8px' }}>
-              Price Range (LKR)
+              Price Range (Rs.)
             </label>
             <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
               <input
