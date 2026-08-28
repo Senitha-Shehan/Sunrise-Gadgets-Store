@@ -2,7 +2,6 @@ runtime: nodejs22
 
 env: standard
 
-
 instance_class: F1
 
 automatic_scaling:
@@ -11,7 +10,9 @@ automatic_scaling:
 
 env_variables:
   NODE_ENV: production
-  MONGO_URI: mongodb+srv://senitha200109:seni0109@cluster0.pxvzl45.mongodb.net/sunrise_gadgets
+  MONGO_URI: mongodb+srv://senitha200109:K6sssO9gbW3kj8Bw@cluster0.pxvzl45.mongodb.net/sunrise_gadgets?retryWrites=true&w=majority
+  JWT_SECRET: sunrise_gadgets_jwt_secret_89f1729b1284a_lk
+  ADMIN_SETUP_KEY: sunrise_setup_key_2026_x89a
   CLOUDINARY_CLOUD_NAME: dcpsl0aud
   CLOUDINARY_API_KEY: "992212981231368"
   CLOUDINARY_API_SECRET: i27QwWzK3VqLFZ0os0bXI0zL2IQ
