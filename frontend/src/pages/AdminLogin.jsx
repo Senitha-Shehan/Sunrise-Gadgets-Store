@@ -1,29 +1,41 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
 
 function AdminLogin() {
+  const [username, setUsername] = useState('admin');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPw, setShowPw] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const ADMIN_PASSWORD = 'admin123';
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
-    setTimeout(() => {
-      if (password === ADMIN_PASSWORD) {
-        localStorage.setItem('adminLoggedIn', 'true');
-        localStorage.setItem('adminLoginTime', Date.now().toString());
-        navigate(`/admin/dashboard${location.search}`);
-      } else {
-        setError('Invalid password. Please try again.');
-      }
+
+    try {
+      const response = await axios.post('/auth/login', {
+        username: username.trim(),
+        password
+      });
+
+      const { token, user } = response.data;
+      localStorage.setItem('adminToken', token);
+      localStorage.setItem('adminUser', JSON.stringify(user));
+      localStorage.setItem('adminLoggedIn', 'true');
+      localStorage.setItem('adminLoginTime', Date.now().toString());
+
+      navigate(`/admin/dashboard${location.search}`);
+    } catch (err) {
+      console.error('Admin login error:', err);
+      const msg = err.response?.data?.error || 'Invalid credentials or server error. Please try again.';
+      setError(msg);
+    } finally {
       setLoading(false);
-    }, 600);
+    }
   };
 
   return (
@@ -71,7 +83,7 @@ function AdminLogin() {
         zIndex: 10,
       }}>
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <div style={{
             width: '72px',
             height: '72px',
@@ -99,7 +111,52 @@ function AdminLogin() {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          <div>
+            <label style={{
+              display: 'block',
+              fontSize: '0.8rem',
+              fontWeight: 600,
+              color: 'rgba(255,255,255,0.5)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.06em',
+              marginBottom: '8px',
+            }}>
+              Username or Email
+            </label>
+            <input
+              id="username"
+              type="text"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
+              placeholder="admin"
+              required
+              style={{
+                width: '100%',
+                padding: '14px 16px',
+                background: 'rgba(255,255,255,0.06)',
+                border: error ? '1.5px solid rgba(239,68,68,0.5)' : '1.5px solid rgba(255,255,255,0.1)',
+                borderRadius: '14px',
+                color: 'white',
+                fontFamily: 'var(--font-sans)',
+                fontSize: '1rem',
+                outline: 'none',
+                boxSizing: 'border-box',
+                transition: 'all 0.2s',
+              }}
+              onFocus={e => {
+                e.target.style.borderColor = 'rgba(6,182,212,0.5)';
+                e.target.style.boxShadow = '0 0 0 3px rgba(6,182,212,0.12)';
+                e.target.style.background = 'rgba(255,255,255,0.09)';
+              }}
+              onBlur={e => {
+                e.target.style.borderColor = error ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.1)';
+                e.target.style.boxShadow = 'none';
+                e.target.style.background = 'rgba(255,255,255,0.06)';
+              }}
+            />
+          </div>
+
           <div style={{ position: 'relative' }}>
             <label style={{
               display: 'block',
@@ -232,3 +289,4 @@ function AdminLogin() {
 }
 
 export default AdminLogin;
+

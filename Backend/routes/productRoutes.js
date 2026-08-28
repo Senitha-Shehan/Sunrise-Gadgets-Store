@@ -1,20 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const { getProducts, getProductById, addProduct, updateProduct, deleteProduct } = require('../controllers/productController');
+const { verifyToken } = require('../middleware/auth');
 
-// GET all products
+// Public endpoints (shoppers)
 router.get('/', getProducts);
-
-// GET a single product by ID
 router.get('/:id', getProductById);
 
-// POST a new product with image upload (upload middleware is in controller)
-router.post('/', addProduct);
+// Protected endpoints (admin only - requires valid JWT)
+router.post('/', verifyToken, addProduct);
+router.put('/:id', verifyToken, updateProduct);
+router.delete('/:id', verifyToken, deleteProduct);
 
-// PUT an existing product (update) (upload middleware is in controller)
-router.put('/:id', updateProduct);
-
-// DELETE a product
-router.delete('/:id', deleteProduct);
-
-module.exports = router;
+module.exports = router;

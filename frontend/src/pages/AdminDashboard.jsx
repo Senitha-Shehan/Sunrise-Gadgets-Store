@@ -37,7 +37,8 @@ function AdminDashboard() {
   const location = useLocation();
 
   useEffect(() => {
-    if (!localStorage.getItem('adminLoggedIn')) {
+    const token = localStorage.getItem('adminToken');
+    if (!token || !localStorage.getItem('adminLoggedIn')) {
       navigate(`/admin${location.search}`);
       return;
     }
@@ -75,7 +76,13 @@ function AdminDashboard() {
       }
     } catch (err) {
       console.error('Failed to fetch dashboard data:', err);
-      // Keep the UI responsive even if one request fails.
+      if (err.response?.status === 401) {
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('adminLoggedIn');
+        localStorage.removeItem('adminUser');
+        navigate('/admin');
+        return;
+      }
       setProducts([]);
       setCategories([]);
       setOrders([]);
@@ -102,9 +109,12 @@ function AdminDashboard() {
   };
 
   const handleLogout = () => {
+    localStorage.removeItem('adminToken');
     localStorage.removeItem('adminLoggedIn');
+    localStorage.removeItem('adminUser');
     navigate('/admin');
   };
+
 
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this product?')) return;

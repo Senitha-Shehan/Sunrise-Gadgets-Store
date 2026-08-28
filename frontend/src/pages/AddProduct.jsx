@@ -168,8 +168,14 @@ function AddProduct({ editingProduct, onSuccess }) {
   const inputClasses = "w-full px-5 py-3.5 bg-[#1A1A2E] border border-white/10 rounded-2xl text-[#F5F5F5] text-sm focus:outline-none focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 transition-all placeholder:text-slate-400 font-medium";
 
   useEffect(() => {
+    const token = localStorage.getItem('adminToken');
+    if (!token || !localStorage.getItem('adminLoggedIn')) {
+      navigate('/admin');
+      return;
+    }
     axios.get('/categories').then(res => setCategoriesList(res.data)).catch(err => console.error('Failed to load categories', err));
-  }, []);
+  }, [navigate]);
+
 
   useEffect(() => {
     if (editingProduct) {
