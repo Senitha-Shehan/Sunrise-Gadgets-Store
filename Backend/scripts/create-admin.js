@@ -24,11 +24,24 @@ async function createAdmin() {
   }
 
   try {
+    const dns = require('dns');
+    try {
+      dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
+      const origLookup = dns.lookup;
+      dns.lookup = function (hostname, options, callback) {
+        if (typeof options === 'function') { callback = options; options = {}; }
+        dns.resolve4(hostname, (err, addresses) => {
+          if (!err && addresses && addresses.length > 0) {
+            if (options && options.all) return callback(null, addresses.map((addr) => ({ address: addr, family: 4 })));
+            return callback(null, addresses[0], 4);
+          }
+          return origLookup(hostname, options, callback);
+        });
+      };
+    } catch (e) {}
+
     console.log('Connecting to MongoDB...');
-    await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(process.env.MONGO_URI);
     console.log('✓ Connected to MongoDB');
 
     let user = await User.findOne({

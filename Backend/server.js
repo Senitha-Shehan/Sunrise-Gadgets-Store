@@ -4,6 +4,33 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
+const dns = require('dns');
+
+// Fallback to Google & Cloudflare DNS to avoid querySrv ENOTFOUND and getaddrinfo ENOTFOUND
+// when local ISP or router DNS fails to resolve .mongodb.net records
+try {
+  dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
+
+  const origLookup = dns.lookup;
+  dns.lookup = function (hostname, options, callback) {
+    if (typeof options === 'function') {
+      callback = options;
+      options = {};
+    }
+
+    dns.resolve4(hostname, (err, addresses) => {
+      if (!err && addresses && addresses.length > 0) {
+        if (options && options.all) {
+          return callback(null, addresses.map((addr) => ({ address: addr, family: 4 })));
+        }
+        return callback(null, addresses[0], 4);
+      }
+      return origLookup(hostname, options, callback);
+    });
+  };
+} catch (e) {
+  // Silent fallback if environment disallows setting custom DNS
+}
 
 dotenv.config();
 const app = express();
@@ -54,10 +81,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log('✓ MongoDB connected successfully'))
 .catch((err) => console.error('❌ MongoDB connection failed:', err));
 

@@ -12,6 +12,7 @@ import Checkout from './pages/Checkout';
 import Nav from './components/Nav';
 import Footer from './components/Footer';
 import WhatsAppButton from './components/WhatsAppButton';
+import ScrollToTop from './components/ScrollToTop';
 import { CartProvider } from './context/CartContext';
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
 
   return (
     <CartProvider>
+      <ScrollToTop />
       <div className="app-shell">
         {!isAdminRoute && <Nav />}
         <main style={{ flex: 1 }} className="page-transition" key={location.pathname}>
